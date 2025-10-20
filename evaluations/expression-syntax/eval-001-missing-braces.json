@@ -1,0 +1,22 @@
+{
+  "id": "expr-001",
+  "skills": ["n8n-expression-syntax"],
+  "query": "I'm trying to access an email field in my n8n Slack node using $json.email but it's showing as literal text '$json.email' in the message. What's wrong?",
+  "expected_behavior": [
+    "Identifies missing curly braces around the expression",
+    "Explains that n8n expressions must be wrapped in {{ }}",
+    "Provides the corrected expression: {{$json.email}}",
+    "Explains that without braces, it's treated as literal text",
+    "References expression format documentation from SKILL.md"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest general JavaScript or template syntax, might not know n8n-specific {{ }} requirement",
+    "expected_quality": "Low - lacks n8n-specific knowledge about expression syntax"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - precise fix with n8n-specific guidance",
+    "uses_skill_content": true,
+    "provides_correct_syntax": true,
+    "explains_why_it_failed": true
+  }
+}

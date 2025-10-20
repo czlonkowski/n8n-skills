@@ -1,0 +1,23 @@
+{
+  "id": "expr-004",
+  "skills": ["n8n-expression-syntax"],
+  "query": "How do I reference data from my 'HTTP Request' node in a later Slack node? I need to access the response data.",
+  "expected_behavior": [
+    "Provides correct $node syntax with quotes around node name",
+    "Shows example: {{$node[\"HTTP Request\"].json.fieldName}}",
+    "Explains that node names with spaces require bracket notation and quotes",
+    "Warns that node names are case-sensitive and must match exactly",
+    "Provides multiple examples from real workflows"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest generic data passing or variable references, might not know n8n $node syntax",
+    "expected_quality": "Medium - might guess at syntax but miss specifics like quotes and case sensitivity"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - precise $node syntax with proper quoting",
+    "uses_skill_content": true,
+    "provides_correct_syntax": true,
+    "explains_case_sensitivity": true,
+    "shows_multiple_examples": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "expr-002",
+  "skills": ["n8n-expression-syntax"],
+  "query": "My webhook workflow is showing {{$json.name}} as undefined even though I'm sending {\"name\": \"John\"} in the webhook POST request. What am I doing wrong?",
+  "expected_behavior": [
+    "Identifies that webhook data is nested under .body property",
+    "Explains the webhook node output structure",
+    "Provides the corrected expression: {{$json.body.name}}",
+    "Shows the complete webhook data structure with headers, params, query, and body",
+    "Emphasizes this is a CRITICAL gotcha specific to webhook nodes"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest debugging or checking data format, unlikely to know webhook-specific structure",
+    "expected_quality": "Low - would miss the webhook .body nesting"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - identifies webhook-specific issue immediately",
+    "uses_skill_content": true,
+    "provides_correct_syntax": true,
+    "explains_webhook_structure": true,
+    "warns_about_common_gotcha": true
+  }
+}

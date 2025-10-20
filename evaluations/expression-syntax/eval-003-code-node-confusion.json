@@ -1,0 +1,23 @@
+{
+  "id": "expr-003",
+  "skills": ["n8n-expression-syntax"],
+  "query": "I'm trying to use {{$json.email}} in my Code node to get the email address, but it's not working. The code shows the literal string '{{$json.email}}' instead of the value. How do I fix this?",
+  "expected_behavior": [
+    "Identifies that Code nodes use direct JavaScript access, NOT expressions",
+    "Explains that {{ }} syntax is NOT used inside Code nodes",
+    "Provides the corrected Code node syntax: $json.email or $input.item.json.email",
+    "Explains when NOT to use expressions (Code nodes, Function nodes)",
+    "References Code node guide or documentation"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest template literal syntax or string interpolation, unlikely to know n8n Code node specifics",
+    "expected_quality": "Low - would not understand Code node vs expression node difference"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - immediately identifies Code node vs expression context",
+    "uses_skill_content": true,
+    "provides_correct_code_syntax": true,
+    "explains_when_not_to_use_expressions": true,
+    "clear_distinction_between_contexts": true
+  }
+}
