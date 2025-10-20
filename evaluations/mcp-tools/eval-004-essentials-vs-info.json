@@ -1,0 +1,25 @@
+{
+  "id": "mcp-004",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "Should I use get_node_info or get_node_essentials to understand how to configure a node? What's the difference?",
+  "expected_behavior": [
+    "Strongly recommends get_node_essentials for most cases",
+    "Explains size difference (5KB vs 100KB+)",
+    "Explains success rate difference (91.7% vs 80%)",
+    "Lists when to use get_node_info (debugging complex issues, need full schema)",
+    "Provides performance comparison (<10ms vs slower)",
+    "References the 20% failure rate for get_node_info",
+    "Shows examples of both tool calls"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May assume more data is better, unlikely to know performance and reliability differences",
+    "expected_quality": "Low - would not understand the critical difference"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - clear recommendation with data-driven reasoning",
+    "uses_skill_content": true,
+    "recommends_essentials": true,
+    "explains_trade_offs": true,
+    "provides_both_examples": true
+  }
+}

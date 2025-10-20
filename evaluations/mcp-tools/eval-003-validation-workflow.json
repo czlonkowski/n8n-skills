@@ -1,0 +1,25 @@
+{
+  "id": "mcp-003",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I've created a Slack node configuration and want to make sure it's valid before deploying. Walk me through the validation process using n8n-mcp tools.",
+  "expected_behavior": [
+    "Recommends validate_node_operation tool",
+    "Explains validation profiles (minimal, runtime, ai-friendly, strict)",
+    "Recommends 'runtime' profile for pre-deployment",
+    "Shows complete validation syntax with all parameters",
+    "Explains validation loop pattern (validate → fix → validate again)",
+    "References VALIDATION_GUIDE.md",
+    "Mentions 23s avg thinking time, 58s avg fixing time from telemetry"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest testing the workflow or checking documentation, unlikely to know validation tools and profiles",
+    "expected_quality": "Medium - might guess at validation but miss profile options"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - complete validation workflow with profiles",
+    "uses_skill_content": true,
+    "recommends_correct_profile": true,
+    "shows_validation_loop": true,
+    "explains_error_handling": true
+  }
+}

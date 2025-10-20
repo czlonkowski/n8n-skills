@@ -1,0 +1,24 @@
+{
+  "id": "mcp-002",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I'm getting 'node not found' errors when calling get_node_essentials. I'm using 'slack' as the nodeType. What's wrong?",
+  "expected_behavior": [
+    "Identifies incorrect nodeType format",
+    "Explains need for prefix: 'nodes-base.slack' not just 'slack'",
+    "Distinguishes between nodeType (nodes-base.*) and workflowNodeType (n8n-nodes-base.*)",
+    "Provides correct syntax: get_node_essentials({nodeType: 'nodes-base.slack'})",
+    "References nodeType format documentation from SKILL.md",
+    "Warns about common format confusion"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest checking spelling or tool availability, unlikely to know specific prefix requirements",
+    "expected_quality": "Low - would not understand nodeType format nuances"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - immediately identifies format issue",
+    "uses_skill_content": true,
+    "provides_correct_format": true,
+    "explains_prefix_difference": true,
+    "gives_working_example": true
+  }
+}

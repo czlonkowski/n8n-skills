@@ -1,0 +1,24 @@
+{
+  "id": "mcp-001",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I need to find a node that can send messages to Slack. Which n8n-mcp tool should I use and how?",
+  "expected_behavior": [
+    "Recommends search_nodes as the starting tool",
+    "Provides correct syntax: search_nodes({query: 'slack'})",
+    "Explains the nodeType format returned (nodes-base.slack)",
+    "Suggests following up with get_node_essentials for configuration details",
+    "References the search → essentials workflow pattern",
+    "Mentions the tool is <20ms fast"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest searching documentation or using generic search, unlikely to know specific MCP tool names and syntax",
+    "expected_quality": "Low - would not know n8n-mcp specific tools"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - precise tool recommendation with syntax",
+    "uses_skill_content": true,
+    "provides_correct_tool": true,
+    "shows_proper_workflow": true,
+    "explains_nodeType_format": true
+  }
+}

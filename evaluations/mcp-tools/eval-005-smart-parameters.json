@@ -1,0 +1,25 @@
+{
+  "id": "mcp-005",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I'm using n8n_update_partial_workflow to connect an IF node to two different handlers. How do I specify which branch (true or false) each connection should use?",
+  "expected_behavior": [
+    "Explains smart parameters for multi-output nodes",
+    "Shows branch parameter: branch='true' or branch='false'",
+    "Provides complete example with addConnection operation",
+    "Explains this is simpler than using sourceIndex manually",
+    "Mentions Switch nodes use case=N parameter",
+    "References WORKFLOW_GUIDE.md for more details",
+    "Shows both true and false branch connections"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "May suggest using output indices without knowing semantic parameters exist",
+    "expected_quality": "Medium - might work but miss the easier smart parameter approach"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - teaches smart parameters for cleaner code",
+    "uses_skill_content": true,
+    "shows_branch_parameter": true,
+    "provides_working_example": true,
+    "mentions_switch_equivalent": true
+  }
+}
