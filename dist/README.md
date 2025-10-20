@@ -9,7 +9,7 @@ This folder contains distribution packages for different Claude platforms.
 Upload each skill separately via Settings → Features → Skills:
 
 - `n8n-expression-syntax-v1.0.0.zip` - n8n expression syntax and common patterns
-- `n8n-mcp-tools-expert-v1.0.0.zip` - Expert guide for using n8n-mcp tools (HIGHEST PRIORITY)
+- `n8n-mcp-tools-expert-v1.0.0.zip` - Expert guide for using n8n-mcp tools (recommended to install first)
 - `n8n-workflow-patterns-v1.0.0.zip` - 5 proven workflow architectural patterns
 - `n8n-validation-expert-v1.0.0.zip` - Validation error interpretation and fixing
 - `n8n-node-configuration-v1.0.0.zip` - Operation-aware node configuration
@@ -96,7 +96,7 @@ After installation, test skills by asking:
 
 ## 🔧 Requirements
 
-- **n8n-mcp MCP server** installed and configured
+- **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
 - **Claude Pro, Max, Team, or Enterprise** plan (for Claude.ai skills)
 - **.mcp.json** configured with n8n-mcp server
 
@@ -131,4 +131,4 @@ MIT License - see `../LICENSE` file
 
 Conceived by Romuald Członkowski - https://www.aiadvisors.pl/en
 
-Part of the n8n-mcp project.
+Part of the [n8n-mcp project](https://github.com/czlonkowski/n8n-mcp).

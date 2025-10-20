@@ -25,7 +25,7 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## Priority
 
-**HIGHEST** - Fixes 20% MCP tool failure rate
+**HIGHEST** - Essential for correct MCP tool usage
 
 ## Dependencies
 
@@ -66,12 +66,12 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## Key Features
 
-✅ **Data-Driven**: Based on 447,557 real MCP tool events
-✅ **Telemetry Insights**: Actual usage patterns (56s between edits, 18s between search/essentials)
-✅ **Critical Mistakes**: Highlights 20% failure rate issues
-✅ **Smart Parameters**: Teaches semantic branch/case routing
-✅ **Auto-Sanitization**: Explains automatic fixes
-✅ **Comprehensive**: Covers all 40+ tools
+✅ **Tool Selection Guide**: Which tool to use for each task
+✅ **Common Patterns**: Most effective tool usage sequences
+✅ **Format Guidance**: nodeType format differences explained
+✅ **Smart Parameters**: Semantic branch/case routing for multi-output nodes
+✅ **Auto-Sanitization**: Explains automatic validation fixes
+✅ **Comprehensive**: Covers all 40+ MCP tools
 
 ## Files
 
@@ -81,22 +81,13 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 - **WORKFLOW_GUIDE.md** (200 lines) - Workflow management
 - **README.md** (this file) - Skill metadata
 
-## Success Metrics
+## What You'll Learn
 
-**Expected outcomes**:
-- Correct nodeType formats (nodes-base.* for search)
-- get_node_essentials preferred over get_node_info
-- Validation profiles used correctly
-- Smart parameters for IF/Switch nodes
-- 20% failure rate reduced to <5%
-
-## Critical Insights
-
-**From MCP Testing Log**:
-- search → essentials: 9,835 occurrences, 18s avg
-- validate → fix: 7,841 loops, 23s thinking, 58s fixing
-- update_partial: 38,287 uses, 56s between edits
-- get_node_info: 20% failure rate (use essentials!)
+- Correct nodeType formats (nodes-base.* for search tools)
+- When to use get_node_essentials vs get_node_info
+- How to use validation profiles effectively
+- Smart parameters for multi-output nodes (IF/Switch)
+- Common tool usage patterns and workflows
 
 ## Last Updated
 

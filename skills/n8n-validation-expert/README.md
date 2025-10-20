@@ -94,39 +94,27 @@ n8n-validation-expert/
 
 **Total**: ~2,224 lines across 4 files
 
-## Error Distribution
+## Common Error Types
 
-Based on 19,113 validation errors:
-
-| Error Type | Frequency | Auto-Fix | Severity |
+| Error Type | Priority | Auto-Fix | Severity |
 |---|---|---|---|
-| missing_required | 45% | ❌ | Error |
-| invalid_value | 28% | ❌ | Error |
-| type_mismatch | 12% | ❌ | Error |
-| invalid_expression | 8% | ❌ | Error |
-| invalid_reference | 5% | ❌ | Error |
-| operator_structure | 2% | ✅ | Warning |
-
-## Validation Loop Statistics
-
-From 7,841 validate → fix cycles:
-
-- **Average thinking time**: 23 seconds
-- **Average fix time**: 58 seconds
-- **Total cycle time**: 81 seconds average
-- **Iterations to success**: 2-3 average
-- **Success rate after 3 iterations**: 94%
+| missing_required | Highest | ❌ | Error |
+| invalid_value | High | ❌ | Error |
+| type_mismatch | Medium | ❌ | Error |
+| invalid_expression | Medium | ❌ | Error |
+| invalid_reference | Low | ❌ | Error |
+| operator_structure | Low | ✅ | Warning |
 
 ## Key Insights
 
 ### 1. Validation is Iterative
-Don't expect to get it right on the first try. The data shows 2-3 iterations is normal!
+Don't expect to get it right on the first try. Multiple validation cycles (typically 2-3) are normal and expected!
 
 ### 2. False Positives Exist
-~40% of warnings are accepted in production workflows. Learn to recognize them.
+Many validation warnings are acceptable in production workflows. This skill helps you recognize which ones to address vs. which to ignore.
 
 ### 3. Auto-Sanitization Works
-Operator structure issues (2% of errors) are auto-fixed. Don't manually fix these!
+Certain error types (like operator structure issues) are automatically fixed by n8n. Don't waste time manually fixing these!
 
 ### 4. Profile Matters
 - `ai-friendly` reduces false positives by 60%

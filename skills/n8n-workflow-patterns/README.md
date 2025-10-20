@@ -93,12 +93,12 @@ Teaches architectural patterns for building n8n workflows. Provides structure, b
 
 ## Key Features
 
-✅ **Data-Driven**: Based on 31,917 real workflows
-✅ **Pattern Statistics**: Usage data for each pattern
-✅ **Complete Examples**: Working workflows for each pattern
-✅ **Best Practices**: Proven approaches from production workflows
-✅ **Common Gotchas**: Documented mistakes and fixes
+✅ **5 Proven Patterns**: Webhook, HTTP API, Database, AI Agent, Scheduled tasks
+✅ **Complete Examples**: Working workflow configurations for each pattern
+✅ **Best Practices**: Proven approaches from real-world n8n usage
+✅ **Common Gotchas**: Documented mistakes and their fixes
 ✅ **Integration Guide**: How patterns work with other skills
+✅ **Template Examples**: Real examples from 2,653+ n8n templates
 
 ## Files
 

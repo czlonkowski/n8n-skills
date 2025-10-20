@@ -3,21 +3,21 @@
 **Expert Claude Code skills for building flawless n8n workflows using the n8n-mcp MCP server**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![n8n-mcp](https://img.shields.io/badge/n8n--mcp-compatible-green.svg)](https://github.com/romualdczlonkowski/n8n-mcp)
+[![n8n-mcp](https://img.shields.io/badge/n8n--mcp-compatible-green.svg)](https://github.com/czlonkowski/n8n-mcp)
 
 ---
 
 ## 🎯 What is this?
 
-This repository contains 5 complementary **Claude Code skills** that teach AI assistants how to build production-ready n8n workflows using the [n8n-mcp](https://github.com/your-link-here) MCP server.
+This repository contains 5 complementary **Claude Code skills** that teach AI assistants how to build production-ready n8n workflows using the [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) MCP server.
 
 ### Why These Skills Exist
 
-Based on analysis of **447,557 real MCP tool usage events**, we identified:
-- **20% failure rate** when using certain MCP tools incorrectly
-- **15,107 validation feedback loops** due to configuration errors
-- **813 searches for "webhook"** showing common workflow patterns
-- **31,917 workflows created** revealing proven architectural patterns
+Building n8n workflows programmatically can be challenging. Common issues include:
+- Using MCP tools incorrectly or inefficiently
+- Getting stuck in validation error loops
+- Not knowing which workflow patterns to use
+- Misconfiguring nodes and their dependencies
 
 These skills solve these problems by teaching Claude:
 - ✅ Correct n8n expression syntax ({{}} patterns)
@@ -53,21 +53,19 @@ Expert guide for using n8n-mcp MCP tools effectively.
 - Smart parameters (branch="true" for IF nodes)
 - Auto-sanitization system explained
 
-**Impact**: **Fixes 20% MCP tool failure rate**
+**Most Important**: Teaches correct MCP tool usage patterns and parameter formats
 
 ### 3. **n8n Workflow Patterns**
-Build workflows using 5 proven architectural patterns from 31,917 real workflows.
+Build workflows using 5 proven architectural patterns.
 
 **Activates when**: Creating workflows, connecting nodes, designing automation.
 
 **Key Features**:
 - 5 proven patterns (webhook processing, HTTP API, database, AI, scheduled)
 - Workflow creation checklist
-- Real examples from 2,653 templates
+- Real examples from 2,653+ n8n templates
 - Connection best practices
 - Pattern selection guide
-
-**Impact**: **Addresses 27.6% of all workflows (webhook processing)**
 
 ### 4. **n8n Validation Expert**
 Interpret validation errors and guide fixing.
@@ -98,7 +96,7 @@ Operation-aware node configuration guidance.
 
 ### Prerequisites
 
-1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/romualdczlonkowski/n8n-mcp))
+1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
 2. **Claude Code**, Claude.ai, or Claude API access
 3. `.mcp.json` configured with n8n-mcp server
 
@@ -171,22 +169,6 @@ All 5 skills compose seamlessly!
 
 ---
 
-## 🔬 Data-Driven Design
-
-These skills are based on telemetry analysis of:
-- **447,557** MCP tool usage events
-- **31,917** workflows created
-- **19,113** validation errors
-- **15,107** validation feedback loops
-- **2,653** workflow templates
-
-Key insights:
-- `search_nodes → get_node_essentials` is the most common pattern (9,835 occurrences, 18s avg)
-- `n8n_update_partial_workflow` is the most-used tool (38,287 uses, 99.0% success)
-- Validation loops average 23s thinking, 58s fixing
-- Webhook workflows represent 27.6% of all workflows (813 searches)
-
----
 
 ## 🧪 Testing
 
@@ -226,25 +208,23 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Conceived by Romuald Członkowski**
 - Website: [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
-- Part of the [n8n-mcp project](https://github.com/romualdczlonkowski/n8n-mcp)
+- Part of the [n8n-mcp project](https://github.com/czlonkowski/n8n-mcp)
 
 ---
 
 ## 🔗 Related Projects
 
-- [n8n-mcp](https://github.com/romualdczlonkowski/n8n-mcp) - MCP server for n8n
+- [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) - MCP server for n8n
 - [n8n](https://n8n.io/) - Workflow automation platform
 
 ---
 
-## 📊 Repository Stats
+## 📊 What's Included
 
-- **5** complementary skills
-- **~3,220** lines of skill content
-- **15-20** evaluation scenarios
-- **88%** documentation coverage (from n8n-mcp)
-- **537** nodes supported
-- **2,653** templates available
+- **5** complementary skills that work together
+- **525+** n8n nodes supported
+- **2,653+** workflow templates for examples
+- **Comprehensive** error catalogs and troubleshooting guides
 
 ---
 
