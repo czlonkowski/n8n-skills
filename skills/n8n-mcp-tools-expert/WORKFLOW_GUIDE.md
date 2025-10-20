@@ -273,15 +273,26 @@ n8n_validate_workflow({
    → Verify changes
 
 5. ACTIVATE (when ready)
+   ⚠️ **IMPORTANT LIMITATION**: Workflow activation is NOT supported via API or MCP.
+   Users must activate workflows manually in the n8n UI.
+
+   The following operation will NOT activate the workflow:
    n8n_update_partial_workflow({id, operations: [{
      type: "updateSettings",
      settings: {active: true}
    }]})
 
+   **Manual activation required**: Navigate to workflow in n8n UI and toggle activation.
+
 6. MONITOR
    n8n_list_executions({workflowId: id})
    n8n_get_execution({id: execution_id})
 ```
+
+**Deployment Note**: After creating and validating workflows via MCP, inform users they must:
+1. Open the workflow in n8n UI (provide workflow ID)
+2. Review the workflow configuration
+3. Manually activate the workflow using the activation toggle
 
 ---
 

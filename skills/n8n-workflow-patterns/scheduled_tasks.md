@@ -709,6 +709,7 @@ Use `search_templates({query: "schedule"})` to find more!
 - [ ] Document workflow purpose
 - [ ] Set up monitoring
 - [ ] Configure alerts
+- [ ] Activate workflow in n8n UI ⚠️ **Manual activation required** (API/MCP cannot activate)
 - [ ] Test in production (short interval first)
 - [ ] Monitor first few executions
 

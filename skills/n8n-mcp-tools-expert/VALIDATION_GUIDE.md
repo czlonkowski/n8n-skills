@@ -302,6 +302,7 @@ Use **ai-friendly** profile to reduce false positives.
 - Iterate validation loop
 - Trust auto-sanitization for operator issues
 - Use minimal profile for quick checks
+- Complete workflow activation manually in n8n UI (API/MCP cannot activate workflows)
 
 ### ❌ Don't
 

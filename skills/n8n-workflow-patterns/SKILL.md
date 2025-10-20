@@ -133,7 +133,7 @@ When building ANY workflow, follow this checklist:
 
 ### Deployment Phase
 - [ ] Review workflow settings (execution order, timeout, error handling)
-- [ ] Activate workflow
+- [ ] Activate workflow ⚠️ **Manual activation required in n8n UI** (API/MCP cannot activate)
 - [ ] Monitor first executions
 - [ ] Document workflow purpose and data flow
 
