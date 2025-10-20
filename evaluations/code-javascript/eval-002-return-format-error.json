@@ -1,0 +1,22 @@
+{
+  "id": "code-js-002",
+  "skills": ["n8n-code-javascript"],
+  "query": "My Code node is showing an error: 'Return value must be an array of objects'. My code returns: return {json: {result: 'success', data: processedData}}; What's wrong?",
+  "expected_behavior": [
+    "Activate n8n-code-javascript skill",
+    "Explain the return format must be an ARRAY of objects",
+    "Show correct syntax: return [{json: {result: 'success', data: processedData}}];",
+    "Note the square brackets [] wrapping the object",
+    "Reference ERROR_PATTERNS.md #3 for detailed explanation",
+    "Show multiple items format as well",
+    "Emphasize this is error #3 in top 5 errors (5% of failures)"
+  ],
+  "expected_content": [
+    "array",
+    "[{json:",
+    "ERROR_PATTERNS.md",
+    "square brackets"
+  ],
+  "priority": "high",
+  "notes": "Return format error is 5% of all failures. Must clearly show array wrapper requirement."
+}

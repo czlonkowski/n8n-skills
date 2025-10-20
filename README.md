@@ -28,7 +28,7 @@ These skills solve these problems by teaching Claude:
 
 ---
 
-## 📚 The 5 Skills
+## 📚 The 7 Skills
 
 ### 1. **n8n Expression Syntax**
 Teaches correct n8n expression syntax and common patterns.
@@ -89,6 +89,32 @@ Operation-aware node configuration guidance.
 - Operation-specific requirements
 - AI connection types (8 types for AI Agent workflows)
 - Common configuration patterns
+
+### 6. **n8n Code JavaScript**
+Write effective JavaScript code in n8n Code nodes.
+
+**Activates when**: Writing JavaScript in Code nodes, troubleshooting Code node errors, making HTTP requests with $helpers, working with dates.
+
+**Key Features**:
+- Data access patterns ($input.all(), $input.first(), $input.item)
+- **Critical gotcha**: Webhook data under `$json.body`
+- Correct return format: `[{json: {...}}]`
+- Built-in functions ($helpers.httpRequest(), DateTime, $jmespath())
+- Top 5 error patterns with solutions (covering 62%+ of failures)
+- 10 production-tested patterns
+
+### 7. **n8n Code Python**
+Write Python code in n8n Code nodes with proper limitations awareness.
+
+**Activates when**: Writing Python in Code nodes, need to know Python limitations, working with standard library.
+
+**Key Features**:
+- **Important**: Use JavaScript for 95% of use cases
+- Python data access (_input, _json, _node)
+- **Critical limitation**: No external libraries (requests, pandas, numpy)
+- Standard library reference (json, datetime, re, etc.)
+- Workarounds for missing libraries
+- Common Python patterns for n8n
 
 ---
 
@@ -161,6 +187,12 @@ Skills activate **automatically** when relevant queries are detected:
 
 "How do I configure the HTTP Request node?"
 → Activates: n8n Node Configuration
+
+"How do I access webhook data in a Code node?"
+→ Activates: n8n Code JavaScript
+
+"Can I use pandas in Python Code node?"
+→ Activates: n8n Code Python
 ```
 
 ### Skills Work Together
@@ -170,10 +202,11 @@ When you ask: **"Build and validate a webhook to Slack workflow"**
 1. **n8n Workflow Patterns** identifies webhook processing pattern
 2. **n8n MCP Tools Expert** searches for webhook and Slack nodes
 3. **n8n Node Configuration** guides node setup
-4. **n8n Expression Syntax** helps with data mapping
-5. **n8n Validation Expert** validates the final workflow
+4. **n8n Code JavaScript** helps process webhook data with proper .body access
+5. **n8n Expression Syntax** helps with data mapping in other nodes
+6. **n8n Validation Expert** validates the final workflow
 
-All 5 skills compose seamlessly!
+All skills compose seamlessly!
 
 ---
 
@@ -238,9 +271,10 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📊 What's Included
 
-- **5** complementary skills that work together
+- **7** complementary skills that work together
 - **525+** n8n nodes supported
 - **2,653+** workflow templates for examples
+- **10** production-tested Code node patterns
 - **Comprehensive** error catalogs and troubleshooting guides
 
 ---

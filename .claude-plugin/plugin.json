@@ -13,7 +13,10 @@
     "automation",
     "mcp",
     "validation",
-    "expressions"
+    "expressions",
+    "code",
+    "javascript",
+    "python"
   ],
   "repository": "https://github.com/czlonkowski/n8n-skills",
   "homepage": "https://github.com/czlonkowski/n8n-skills"

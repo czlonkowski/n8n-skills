@@ -1,0 +1,26 @@
+{
+  "id": "code-js-005",
+  "skills": ["n8n-code-javascript"],
+  "query": "I'm trying to access a field in my Code node but it's not working. My code is: const userName = '{{ $json.name }}'; I'm getting the literal string instead of the value. What am I doing wrong?",
+  "expected_behavior": [
+    "Activate n8n-code-javascript skill",
+    "Explain that {{ }} expression syntax does NOT work in Code nodes",
+    "Clarify distinction: {{ }} is for OTHER nodes (Set, IF, HTTP Request)",
+    "Show correct JavaScript syntax: const userName = $json.name;",
+    "Show JavaScript template literals for string interpolation: `Hello ${$json.name}`",
+    "Reference ERROR_PATTERNS.md #2 for detailed explanation",
+    "Emphasize this is error #2 in top 5 errors (8% of failures)",
+    "Provide comparison table of when to use expressions vs JavaScript"
+  ],
+  "expected_content": [
+    "{{ }}",
+    "expression syntax",
+    "JavaScript",
+    "$json.name",
+    "template literals",
+    "ERROR_PATTERNS.md",
+    "backticks"
+  ],
+  "priority": "high",
+  "notes": "Expression syntax confusion is 8% of failures. Critical to understand Code nodes use JavaScript, not expressions."
+}

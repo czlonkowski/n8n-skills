@@ -1,0 +1,25 @@
+{
+  "id": "code-js-003",
+  "skills": ["n8n-code-javascript"],
+  "query": "How do I make an HTTP API call from inside a JavaScript Code node in n8n? I need to call an external API with authentication.",
+  "expected_behavior": [
+    "Activate n8n-code-javascript skill",
+    "Explain $helpers.httpRequest() built-in function",
+    "Show complete example with method, url, headers",
+    "Include authentication example (Bearer token or API key)",
+    "Show try-catch error handling pattern",
+    "Reference BUILTIN_FUNCTIONS.md for complete API reference",
+    "Mention this is async, needs await",
+    "Show both GET and POST examples if appropriate"
+  ],
+  "expected_content": [
+    "$helpers.httpRequest",
+    "await",
+    "headers",
+    "Authorization",
+    "BUILTIN_FUNCTIONS.md",
+    "try-catch"
+  ],
+  "priority": "medium",
+  "notes": "$helpers.httpRequest() is a key built-in function that many users need to learn."
+}

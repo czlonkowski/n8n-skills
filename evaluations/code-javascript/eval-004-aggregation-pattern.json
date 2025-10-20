@@ -1,0 +1,25 @@
+{
+  "id": "code-js-004",
+  "skills": ["n8n-code-javascript"],
+  "query": "I need to sum up all the 'amount' values from multiple items in my Code node. How do I access all items and calculate a total?",
+  "expected_behavior": [
+    "Activate n8n-code-javascript skill",
+    "Show $input.all() to get all items",
+    "Demonstrate reduce() function for summing",
+    "Include null handling (item.json.amount || 0)",
+    "Show complete return format with result",
+    "Reference COMMON_PATTERNS.md for aggregation patterns",
+    "Reference DATA_ACCESS.md for $input.all() details",
+    "Emphasize 'Run Once for All Items' mode",
+    "Optionally show additional aggregations (count, average)"
+  ],
+  "expected_content": [
+    "$input.all()",
+    "reduce",
+    "COMMON_PATTERNS.md",
+    "DATA_ACCESS.md",
+    "All Items"
+  ],
+  "priority": "high",
+  "notes": "Aggregation is a very common use case. Tests understanding of $input.all() and array methods."
+}
