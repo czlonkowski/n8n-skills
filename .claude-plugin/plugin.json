@@ -15,9 +15,6 @@
     "validation",
     "expressions"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/czlonkowski/n8n-skills"
-  },
+  "repository": "https://github.com/czlonkowski/n8n-skills",
   "homepage": "https://github.com/czlonkowski/n8n-skills"
 }
