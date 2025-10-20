@@ -102,6 +102,23 @@ Operation-aware node configuration guidance.
 
 ### Claude Code
 
+**Method 1: Plugin Installation** (Recommended)
+```bash
+# Install directly as a Claude Code plugin
+/plugin install czlonkowski/n8n-skills
+```
+
+**Method 2: Via Marketplace**
+```bash
+# Add as marketplace, then browse and install
+/plugin marketplace add czlonkowski/n8n-skills
+
+# Then browse available plugins
+/plugin install
+# Select "n8n-mcp-skills" from the list
+```
+
+**Method 3: Manual Installation**
 ```bash
 # 1. Clone this repository
 git clone https://github.com/czlonkowski/n8n-skills.git

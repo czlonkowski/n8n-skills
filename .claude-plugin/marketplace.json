@@ -1,0 +1,33 @@
+{
+  "name": "n8n-mcp-skills",
+  "description": "Expert skills for building n8n workflows",
+  "owner": {
+    "name": "Romuald Członkowski",
+    "url": "https://www.aiadvisors.pl/en"
+  },
+  "plugins": [
+    {
+      "name": "n8n-mcp-skills",
+      "source": ".",
+      "description": "Complete bundle: 5 expert skills for building flawless n8n workflows using n8n-mcp MCP server. Includes skills for expression syntax, MCP tools usage, workflow patterns, validation, and node configuration.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      },
+      "category": "automation",
+      "keywords": [
+        "n8n",
+        "workflow",
+        "mcp",
+        "automation",
+        "validation",
+        "expressions",
+        "skills"
+      ],
+      "homepage": "https://github.com/czlonkowski/n8n-skills",
+      "repository": "https://github.com/czlonkowski/n8n-skills",
+      "license": "MIT"
+    }
+  ]
+}
