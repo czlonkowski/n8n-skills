@@ -1,0 +1,14 @@
+{
+  "id": "pattern-002",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "I want to fetch data from a REST API, transform it, and store it in my database. How should I structure this workflow?",
+  "expected_behavior": [
+    "Identifies this as an HTTP API Integration pattern",
+    "References the http_api_integration.md pattern file",
+    "Explains the structure: Trigger → HTTP Request → Transform → Database → Error Handler",
+    "Discusses authentication handling (credentials)",
+    "Mentions pagination for large datasets",
+    "Suggests retry logic for API failures",
+    "Provides guidance on response parsing and data mapping"
+  ]
+}

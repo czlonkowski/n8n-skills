@@ -1,0 +1,14 @@
+{
+  "id": "pattern-001",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "I need to build a workflow that receives webhook data and sends it to Slack. What's the best way to structure this?",
+  "expected_behavior": [
+    "Identifies this as a Webhook Processing pattern",
+    "References the webhook_processing.md pattern file",
+    "Explains the basic structure: Webhook → Transform → Output",
+    "Mentions data is nested under $json.body for webhook payloads",
+    "Suggests validation and error handling",
+    "May reference real template examples",
+    "Provides checklist: trigger, validation, transformation, output, error handling"
+  ]
+}

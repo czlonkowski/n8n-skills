@@ -1,0 +1,15 @@
+{
+  "id": "pattern-004",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "I want to build an AI agent that can use tools to answer questions. What's the recommended workflow pattern?",
+  "expected_behavior": [
+    "Identifies this as an AI Agent Workflow pattern",
+    "References the ai_agent_workflow.md pattern file",
+    "Explains the structure: Trigger → AI Agent (with Language Model + Tools + Memory)",
+    "Discusses the 8 AI connection types (ai_languageModel, ai_tool, ai_memory, etc.)",
+    "Mentions that ANY node can be an AI tool (connected via ai_tool port)",
+    "Suggests memory integration for conversation context",
+    "Provides guidance on tool configuration and result handling",
+    "May mention langchain package nodes"
+  ]
+}

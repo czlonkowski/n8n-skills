@@ -1,0 +1,15 @@
+{
+  "id": "pattern-005",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "I need to generate a daily report that fetches analytics data and emails it to my team. What's the best workflow structure?",
+  "expected_behavior": [
+    "Identifies this as a Scheduled Tasks pattern",
+    "References the scheduled_tasks.md pattern file",
+    "Explains the structure: Schedule Trigger → Fetch Data → Transform/Aggregate → Format Report → Send Email",
+    "Discusses cron expression configuration",
+    "Mentions timezone considerations",
+    "Suggests error handling and failure notifications",
+    "Provides guidance on data aggregation and report formatting",
+    "May suggest using templates for consistent report structure"
+  ]
+}

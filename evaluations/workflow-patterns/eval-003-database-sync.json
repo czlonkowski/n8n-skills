@@ -1,0 +1,15 @@
+{
+  "id": "pattern-003",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "How do I build a workflow that syncs data between two databases? I need to read from Postgres and write to MySQL.",
+  "expected_behavior": [
+    "Identifies this as a Database Operations pattern",
+    "References the database_operations.md pattern file",
+    "Explains the structure: Schedule/Trigger → Read DB → Transform → Write DB → Error Handler",
+    "Discusses batch processing for large datasets",
+    "Mentions transaction handling and rollback considerations",
+    "Suggests incremental sync strategies (last_modified timestamps)",
+    "Warns about connection pooling and performance",
+    "Provides guidance on data type mapping between databases"
+  ]
+}
