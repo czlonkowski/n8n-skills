@@ -1,0 +1,25 @@
+{
+  "id": "code-python-004",
+  "skill": "n8n-code-python",
+  "name": "Return Format Error - Must Return Array with json Key",
+  "description": "Tests understanding of correct return format for n8n Code nodes",
+  "query": "My Python Code node isn't outputting any data to the next node. Here's my code:\n\n```python\nall_items = _input.all()\n\ntotal = sum(item[\"json\"].get(\"amount\", 0) for item in all_items)\naverage = total / len(all_items) if all_items else 0\n\nreturn {\n    \"total\": total,\n    \"count\": len(all_items),\n    \"average\": average\n}\n```\n\nThe code runs without errors, but the next node receives nothing. What's wrong?",
+  "expected_behavior": [
+    "Identify incorrect return format (missing array wrapper and json key)",
+    "Explain n8n expects array of objects with 'json' key",
+    "Show corrected code with proper format: [{\"json\": {...}}]",
+    "Mention this is Error #5 in ERROR_PATTERNS.md",
+    "Emphasize: MUST return array, even for single result"
+  ],
+  "expected_output_includes": [
+    "[{\"json\":",
+    "array",
+    "return format",
+    "must wrap"
+  ],
+  "correct_code_pattern": "return [{\"json\": {",
+  "should_not_include": [
+    "return {",
+    "return total"
+  ]
+}

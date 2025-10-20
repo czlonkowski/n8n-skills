@@ -1,0 +1,36 @@
+{
+  "id": "code-python-005",
+  "skill": "n8n-code-python",
+  "name": "Standard Library Usage - Know What's Available",
+  "description": "Tests knowledge of available standard library modules",
+  "query": "I need to do the following in a Python Code node:\n\n1. Parse JSON from a string\n2. Calculate SHA256 hash of some data\n3. Format the current date as ISO string\n4. Extract email addresses using regex\n\nWhat modules are available? Can I use external libraries?",
+  "expected_behavior": [
+    "Emphasize NO external libraries available",
+    "List available standard library modules for these tasks",
+    "json module for JSON parsing",
+    "hashlib module for SHA256",
+    "datetime module for dates",
+    "re module for regex",
+    "Provide code examples for each task",
+    "Reference STANDARD_LIBRARY.md"
+  ],
+  "expected_output_includes": [
+    "import json",
+    "import hashlib",
+    "import datetime",
+    "import re",
+    "standard library only",
+    "NO external libraries"
+  ],
+  "should_not_include": [
+    "import requests",
+    "import pandas",
+    "pip install"
+  ],
+  "correct_modules": [
+    "json",
+    "hashlib",
+    "datetime",
+    "re"
+  ]
+}

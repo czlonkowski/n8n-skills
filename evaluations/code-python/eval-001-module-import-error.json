@@ -1,0 +1,28 @@
+{
+  "id": "code-python-001",
+  "skill": "n8n-code-python",
+  "name": "Module Import Error - External Libraries Not Available",
+  "description": "Tests understanding that Python Code nodes have NO external libraries",
+  "query": "I'm writing a Python Code node to fetch data from an API. Here's my code:\n\n```python\nimport requests\n\nurl = \"https://api.example.com/users\"\nresponse = requests.get(url)\ndata = response.json()\n\nreturn [{\"json\": data}]\n```\n\nBut I'm getting a ModuleNotFoundError. What's wrong?",
+  "expected_behavior": [
+    "Immediately identify this is the #1 Python Code node limitation",
+    "Explain that NO external libraries are available (no requests, pandas, numpy)",
+    "Recommend using JavaScript Code node instead (95% recommendation)",
+    "Suggest alternative: Use HTTP Request node BEFORE Python Code node",
+    "Mention urllib.request from standard library as limited workaround",
+    "Emphasize JavaScript has $helpers.httpRequest() built-in",
+    "Reference ERROR_PATTERNS.md Error #1"
+  ],
+  "expected_output_includes": [
+    "ModuleNotFoundError",
+    "NO external libraries",
+    "Use JavaScript",
+    "HTTP Request node",
+    "standard library only"
+  ],
+  "should_not_include": [
+    "pip install",
+    "install requests",
+    "add requirements.txt"
+  ]
+}
