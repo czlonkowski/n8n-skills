@@ -1,0 +1,14 @@
+{
+  "id": "validation-003",
+  "skills": ["n8n-validation-expert"],
+  "query": "I'm getting an error about 'Binary operator cannot have singleValue property'. What does this mean?",
+  "expected_behavior": [
+    "Identifies this as an operator structure issue",
+    "Explains auto-sanitization system",
+    "States that this error will be automatically fixed on next workflow update",
+    "Explains binary vs unary operator distinction",
+    "References the auto-sanitization section",
+    "Suggests that user doesn't need to manually fix this",
+    "May suggest running n8n_update_partial_workflow or validate_workflow to trigger auto-fix"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "validation-002",
+  "skills": ["n8n-validation-expert"],
+  "query": "Validation is warning me about 'best_practice' issues like error handling and retries. Do I need to fix these?",
+  "expected_behavior": [
+    "Identifies these as warnings, not errors",
+    "Explains difference between errors (must fix) and warnings (should fix)",
+    "Discusses when warnings can be acceptable (false positives)",
+    "References FALSE_POSITIVES.md",
+    "Suggests using 'ai-friendly' validation profile to reduce false positives",
+    "Explains that warnings don't prevent workflow activation",
+    "Provides guidance on when to address warnings vs when to accept them"
+  ]
+}

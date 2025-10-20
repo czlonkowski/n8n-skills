@@ -1,0 +1,14 @@
+{
+  "id": "validation-004",
+  "skills": ["n8n-validation-expert"],
+  "query": "I fixed one validation error but now I'm getting a different one. How do I systematically fix all validation errors?",
+  "expected_behavior": [
+    "Explains the validation loop pattern",
+    "References telemetry data (7,841 validate → fix cycles, avg 23s thinking + 58s fixing)",
+    "Provides step-by-step process: validate → read errors → fix → validate again",
+    "Emphasizes iterative approach",
+    "Suggests fixing errors one at a time",
+    "May recommend validate_node_operation for individual nodes",
+    "Explains that this is normal workflow (not a problem)"
+  ]
+}

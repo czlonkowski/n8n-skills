@@ -1,0 +1,13 @@
+{
+  "id": "validation-001",
+  "skills": ["n8n-validation-expert"],
+  "query": "I'm getting a validation error: 'Missing required field: channel'. What does this mean and how do I fix it?",
+  "expected_behavior": [
+    "Identifies this as a 'missing_required' error type",
+    "Explains that the node configuration is incomplete",
+    "Provides guidance on finding what value to provide",
+    "Suggests using get_node_essentials to see required fields",
+    "Explains where to add the missing field in the node configuration",
+    "May reference ERROR_CATALOG.md for details"
+  ]
+}
