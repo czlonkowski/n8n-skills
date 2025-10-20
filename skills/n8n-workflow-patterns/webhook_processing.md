@@ -2,8 +2,6 @@
 
 **Use Case**: Receive HTTP requests from external systems and process them instantly.
 
-**Popularity**: Most searched pattern (813 webhook searches)
-
 ---
 
 ## Pattern Structure

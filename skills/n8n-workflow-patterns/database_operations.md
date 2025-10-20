@@ -2,8 +2,6 @@
 
 **Use Case**: Read, write, sync, and manage database data in workflows.
 
-**Popularity**: Third most common (456 templates)
-
 ---
 
 ## Pattern Structure

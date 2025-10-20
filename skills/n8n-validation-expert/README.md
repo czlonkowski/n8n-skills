@@ -10,10 +10,9 @@ Expert guidance for interpreting and fixing n8n validation errors.
 
 ## The Problem This Solves
 
-From analysis of 447,557 MCP tool usage events:
+Validation errors are common:
 
-- **19,113 validation errors** encountered
-- **15,107 validation feedback loops** (79% of errors lead to loops)
+- Validation often requires iteration (79% lead to feedback loops)
 - **7,841 validate → fix cycles** (avg 23s thinking + 58s fixing)
 - **2-3 iterations** average to achieve valid configuration
 

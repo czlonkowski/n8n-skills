@@ -6,7 +6,7 @@ Expert guide for using n8n-mcp MCP tools effectively.
 
 ## Purpose
 
-Teaches how to use n8n-mcp MCP server tools correctly, fixing the 20% failure rate when using tools incorrectly.
+Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow building.
 
 ## Activates On
 

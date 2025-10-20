@@ -2,8 +2,6 @@
 
 **Use Case**: Build AI agents with tool access, memory, and reasoning capabilities.
 
-**Popularity**: Growing rapidly (234 templates, 270 AI-capable nodes)
-
 ---
 
 ## Pattern Structure

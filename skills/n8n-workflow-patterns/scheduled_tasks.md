@@ -2,8 +2,6 @@
 
 **Use Case**: Recurring automation workflows that run automatically on a schedule.
 
-**Popularity**: Second most common trigger type (28% of workflows)
-
 ---
 
 ## Pattern Structure

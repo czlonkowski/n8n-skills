@@ -22,7 +22,7 @@ Common node configuration patterns organized by node type and operation.
 
 ### HTTP Request (nodes-base.httpRequest)
 
-Most versatile node - 892 templates use this!
+Most versatile node for HTTP operations
 
 #### GET Request
 
@@ -229,7 +229,7 @@ Most common trigger - 813 searches!
 
 ### Slack (nodes-base.slack)
 
-Second most popular - 234 AI agent templates use this!
+Popular choice for AI agent workflows
 
 #### Post Message
 

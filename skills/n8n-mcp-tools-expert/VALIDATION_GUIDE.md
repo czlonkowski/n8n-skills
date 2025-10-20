@@ -8,7 +8,7 @@ Complete guide for validating node configurations and workflows.
 
 **Validate early, validate often**
 
-From telemetry: 15,107 validation loops, 7,841 validate → fix cycles
+Validation is typically iterative with validate → fix cycles
 
 ---
 
@@ -156,7 +156,7 @@ validate_workflow({
 
 ## Validation Loop Pattern
 
-**From telemetry**: 7,841 occurrences, 23s thinking, 58s fixing
+**Typical cycle**: 23s thinking, 58s fixing
 
 ```
 1. Configure node

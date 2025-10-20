@@ -81,7 +81,7 @@ n8n_create_workflow({
 
 **Use when**: Making incremental changes to workflows
 
-**Pattern from telemetry**: 56s avg between edits (iterative building!)
+**Common pattern**: 56s average between edits (iterative building!)
 
 ### 15 Operation Types
 

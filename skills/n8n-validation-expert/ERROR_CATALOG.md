@@ -6,16 +6,16 @@ Comprehensive catalog of n8n validation errors with real examples and fixes.
 
 ## Error Types Overview
 
-From analysis of 19,113 validation errors:
+Common validation errors by priority:
 
-| Error Type | Frequency | Severity | Auto-Fix |
+| Error Type | Priority | Severity | Auto-Fix |
 |---|---|---|---|
-| missing_required | 45% | Error | ❌ |
-| invalid_value | 28% | Error | ❌ |
-| type_mismatch | 12% | Error | ❌ |
-| invalid_expression | 8% | Error | ❌ |
-| invalid_reference | 5% | Error | ❌ |
-| operator_structure | 2% | Warning | ✅ |
+| missing_required | Highest | Error | ❌ |
+| invalid_value | High | Error | ❌ |
+| type_mismatch | Medium | Error | ❌ |
+| invalid_expression | Medium | Error | ❌ |
+| invalid_reference | Low | Error | ❌ |
+| operator_structure | Lowest | Warning | ✅ |
 
 ---
 
@@ -30,7 +30,7 @@ From analysis of 19,113 validation errors:
 - Copying configurations between different operations
 - Switching operations that have different requirements
 
-**Frequency**: 45% of all validation errors
+**Most common validation error**
 
 #### Example 1: Slack Channel Missing
 
@@ -182,7 +182,7 @@ const info = get_node_essentials({
 - Typos in operation names
 - Invalid format for specialized fields (emails, URLs, channels)
 
-**Frequency**: 28% of all validation errors
+**Second most common error**
 
 #### Example 1: Invalid Operation
 
@@ -314,7 +314,7 @@ const info = get_node_essentials({
 - Using expressions where literals are expected
 - JSON serialization issues
 
-**Frequency**: 12% of all validation errors
+**Common error**
 
 #### Example 1: String Instead of Number
 
@@ -450,7 +450,7 @@ const info = get_node_essentials({
 - Referencing non-existent nodes or fields
 - Invalid JavaScript syntax in expressions
 
-**Frequency**: 8% of all validation errors
+**Moderately common**
 
 **Related**: See **n8n Expression Syntax** skill for comprehensive expression guidance
 
@@ -581,7 +581,7 @@ const info = get_node_essentials({
 - Typo in node name
 - Copy-pasting from another workflow
 
-**Frequency**: 5% of all validation errors
+**Less common error**
 
 #### Example 1: Deleted Node Reference
 
@@ -804,7 +804,7 @@ SELECT * FROM users WHERE active = true LIMIT 1000
 
 **Auto-Fix**: ✅ YES - Fixed automatically on workflow save
 
-**Frequency**: 2% of errors (mostly auto-fixed)
+**Rare** (mostly auto-fixed)
 
 #### Fixed Automatically: Binary Operators
 

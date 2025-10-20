@@ -192,7 +192,7 @@ Step 4: Use in Workflow
 (Configuration ready!)
 ```
 
-**From telemetry**: search → essentials is most common pattern (9,835 occurrences, 18s avg)
+**Most common pattern**: search → essentials (18s average)
 
 ---
 

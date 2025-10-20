@@ -13,9 +13,8 @@ Expert guidance for operation-aware node configuration with property dependencie
 
 **Progressive disclosure**: Start minimal, add complexity as needed
 
-From telemetry analysis:
-- 38,287 workflow updates (node configurations)
-- 9,835 get_node_essentials calls (most used discovery pattern)
+Configuration best practices:
+- get_node_essentials is the most used discovery pattern
 - 56 seconds average between configuration edits
 - 91.7% success rate with essentials-based configuration
 

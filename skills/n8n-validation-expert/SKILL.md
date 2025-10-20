@@ -13,10 +13,9 @@ Expert guide for interpreting and fixing n8n validation errors.
 
 **Validate early, validate often**
 
-From telemetry analysis:
-- 19,113 validation errors encountered
-- 15,107 validation feedback loops
-- 7,841 validate → fix cycles
+Validation is typically iterative:
+- Expect validation feedback loops
+- Usually 2-3 validate → fix cycles
 - Average: 23s thinking about errors, 58s fixing them
 
 **Key insight**: Validation is an iterative process, not one-shot!

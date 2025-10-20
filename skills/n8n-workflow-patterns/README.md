@@ -1,12 +1,12 @@
 # n8n Workflow Patterns
 
-Proven architectural patterns from real n8n workflows.
+Proven architectural patterns for building n8n workflows.
 
 ---
 
 ## Purpose
 
-Teaches architectural patterns for building n8n workflows based on analysis of 31,917 real workflows. Provides structure, best practices, and proven approaches for common use cases.
+Teaches architectural patterns for building n8n workflows. Provides structure, best practices, and proven approaches for common use cases.
 
 ## Activates On
 
@@ -121,7 +121,7 @@ Teaches architectural patterns for building n8n workflows based on analysis of 3
 
 ## Pattern Selection Stats
 
-From analysis of 31,917 workflows:
+Common workflow composition:
 
 **Trigger Distribution**:
 - Webhook: 35% (most common)

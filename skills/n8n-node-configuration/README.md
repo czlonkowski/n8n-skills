@@ -10,12 +10,11 @@ Expert guidance for operation-aware node configuration with property dependencie
 
 ## The Problem This Solves
 
-From analysis of 447,557 MCP tool usage events:
+Node configuration patterns:
 
-- **38,287 workflow updates** (node configurations)
-- **9,835 get_node_essentials calls** (18s avg from search → essentials)
-- **91.7% success rate** with essentials-based configuration
-- **56 seconds average** between configuration edits
+- get_node_essentials is the primary discovery tool (18s avg from search → essentials)
+- 91.7% success rate with essentials-based configuration
+- 56 seconds average between configuration edits
 
 **Key insight**: Most configurations only need essentials, not full schema!
 
@@ -105,21 +104,20 @@ n8n-node-configuration/
 
 ## Usage Statistics
 
-From telemetry analysis:
+Configuration metrics:
 
 | Metric | Value | Insight |
 |---|---|---|
-| Total workflow updates | 38,287 | High configuration activity |
-| get_node_essentials calls | 9,835 | Most popular discovery pattern |
+| get_node_essentials | Primary tool | Most popular discovery pattern |
 | Success rate (essentials) | 91.7% | Essentials sufficient for most |
 | Avg time search→essentials | 18 seconds | Fast discovery workflow |
 | Avg time between edits | 56 seconds | Iterative configuration |
 
 ## Tool Usage Pattern
 
-**Most common discovery pattern** (9,835 occurrences):
+**Most common discovery pattern**:
 ```
-search_nodes → get_node_essentials (18s avg)
+search_nodes → get_node_essentials (18s average)
 ```
 
 **Configuration cycle**:

@@ -5,7 +5,7 @@ description: Proven workflow architectural patterns from real n8n workflows. Use
 
 # n8n Workflow Patterns
 
-Proven architectural patterns from 31,917 real n8n workflows.
+Proven architectural patterns for building n8n workflows.
 
 ---
 
@@ -13,7 +13,7 @@ Proven architectural patterns from 31,917 real n8n workflows.
 
 Based on analysis of real workflow usage:
 
-1. **[Webhook Processing](webhook_processing.md)** (Most Common - 813 searches)
+1. **[Webhook Processing](webhook_processing.md)** (Most Common)
    - Receive HTTP requests → Process → Output
    - Pattern: Webhook → Validate → Transform → Respond/Notify
 
@@ -246,10 +246,10 @@ These skills work together with Workflow Patterns:
 
 ## Pattern Statistics
 
-From analysis of 31,917 workflows:
+Common workflow patterns:
 
 **Most Common Triggers**:
-1. Webhook (813 searches) - 35%
+1. Webhook - 35%
 2. Schedule (periodic tasks) - 28%
 3. Manual (testing/admin) - 22%
 4. Service triggers (Slack, email, etc.) - 15%
@@ -344,16 +344,16 @@ From n8n template library:
 - Nodes: Schedule → HTTP Request (weather API) → Set → Slack
 - Complexity: Simple (4 nodes)
 
-**Webhook Processing Templates**: 1,085 templates
+**Webhook Processing**: Most common pattern
 - Most common: Form submissions, payment webhooks, chat integrations
 
-**HTTP API Templates**: 892 templates
+**HTTP API**: Common pattern
 - Most common: Data fetching, third-party integrations
 
-**Database Templates**: 456 templates
+**Database Operations**: Common pattern
 - Most common: ETL, data sync, backup workflows
 
-**AI Templates**: 234 templates
+**AI Agents**: Growing in usage
 - Most common: Chatbots, content generation, data analysis
 
 Use `search_templates` and `get_template` from n8n-mcp tools to find examples!
@@ -390,7 +390,7 @@ Use `search_templates` and `get_template` from n8n-mcp tools to find examples!
 
 **Key Points**:
 1. **5 core patterns** cover 90%+ of workflow use cases
-2. **Webhook processing** is the most common (813 searches)
+2. **Webhook processing** is the most common pattern
 3. Use the **workflow creation checklist** for every workflow
 4. **Plan pattern** → **Select nodes** → **Build** → **Validate** → **Deploy**
 5. Integrate with other skills for complete workflow development

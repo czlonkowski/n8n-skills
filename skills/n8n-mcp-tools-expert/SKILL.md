@@ -23,7 +23,7 @@ n8n-mcp provides **40+ tools** organized into categories:
 
 ## Quick Reference
 
-### Most Used Tools (by frequency & success rate)
+### Most Used Tools (by success rate)
 
 | Tool | Use When | Success Rate | Speed |
 |------|----------|--------------|-------|
@@ -58,7 +58,7 @@ get_node_essentials({nodeType: "nodes-base.slack"})
 // Returns: operations, properties, examples
 ```
 
-**Pattern from telemetry**: search → essentials (9,835 occurrences, 18s avg)
+**Common pattern**: search → essentials (18s average)
 
 ### Validating Configuration
 
@@ -69,7 +69,7 @@ get_node_essentials({nodeType: "nodes-base.slack"})
 3. [Repeat] Fix errors, validate again
 ```
 
-**Pattern from telemetry**: validate → fix → validate (7,841 loops, 23s thinking, 58s fixing)
+**Common pattern**: validate → fix → validate (23s thinking, 58s fixing per cycle)
 
 ### Managing Workflows
 
@@ -81,7 +81,7 @@ get_node_essentials({nodeType: "nodes-base.slack"})
 4. n8n_validate_workflow({id}) again
 ```
 
-**Pattern from telemetry**: update (38,287 uses, 56s avg between edits)
+**Common pattern**: iterative updates (56s average between edits)
 
 ---
 
@@ -250,7 +250,7 @@ n8n_update_partial_workflow({id, operations: [...]})
 
 ### Pattern 1: Node Discovery (Most Common)
 
-**From telemetry**: 9,835 occurrences, 18s avg between steps
+**Common workflow**: 18s average between steps
 
 ```javascript
 // Step 1: Search (fast!)
@@ -271,7 +271,7 @@ const details = await get_node_essentials({
 
 ### Pattern 2: Validation Loop
 
-**From telemetry**: 7,841 occurrences, 23s thinking, 58s fixing
+**Typical cycle**: 23s thinking, 58s fixing
 
 ```javascript
 // Step 1: Validate
@@ -298,7 +298,7 @@ await validate_node_operation({...});  // Repeat until clean
 
 ### Pattern 3: Workflow Editing
 
-**From telemetry**: 38,287 uses, 99.0% success, 56s avg between edits
+**Most used update tool**: 99.0% success rate, 56s average between edits
 
 ```javascript
 // Iterative workflow building (NOT one-shot!)

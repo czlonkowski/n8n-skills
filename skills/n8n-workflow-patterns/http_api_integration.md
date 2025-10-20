@@ -2,8 +2,6 @@
 
 **Use Case**: Fetch data from REST APIs, transform it, and use it in workflows.
 
-**Popularity**: Second most common (892 templates)
-
 ---
 
 ## Pattern Structure
