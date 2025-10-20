@@ -1,0 +1,13 @@
+{
+  "id": "node-config-003",
+  "skills": ["n8n-node-configuration"],
+  "query": "My IF node configuration is valid with operation='equals', but when I change to operation='isEmpty', validation fails. Why?",
+  "expected_behavior": [
+    "Explains that isEmpty is a unary operator (single value)",
+    "Identifies that value2 is not needed for unary operators",
+    "Explains singleValue property dependency",
+    "Mentions auto-sanitization will fix operator structure",
+    "Suggests using get_property_dependencies to understand operator rules",
+    "May reference DEPENDENCIES.md for operator-specific dependencies"
+  ]
+}

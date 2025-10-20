@@ -1,0 +1,13 @@
+{
+  "id": "node-config-002",
+  "skills": ["n8n-node-configuration"],
+  "query": "How do I configure a Slack node to post a message? What fields are required for this specific operation?",
+  "expected_behavior": [
+    "Identifies need to set resource='message' and operation='post'",
+    "Explains operation-specific required fields (channel, text)",
+    "Suggests using get_node_essentials with operation context",
+    "Provides example configuration for this operation",
+    "May reference OPERATION_PATTERNS.md for Slack patterns",
+    "Explains that different operations have different requirements"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "node-config-001",
+  "skills": ["n8n-node-configuration"],
+  "query": "I'm configuring an HTTP Request node with method=POST. What other fields become required or visible when I set this?",
+  "expected_behavior": [
+    "Explains property dependencies (displayOptions)",
+    "Identifies that sendBody becomes visible for POST",
+    "Explains that body becomes required when sendBody=true",
+    "Suggests using get_property_dependencies to see all dependencies",
+    "Provides guidance on checking conditional requirements",
+    "May reference DEPENDENCIES.md for detailed dependency rules"
+  ]
+}
