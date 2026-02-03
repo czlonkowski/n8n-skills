@@ -429,6 +429,11 @@ get_node({
 - operation="insert" → table + values required
 - operation="update" → table + values + where required
 
+**Critical: Write operations return 0 items**
+- INSERT, UPDATE, DELETE produce 0 n8n output items (database returns 0 result rows)
+- Set `alwaysOutputData: true` on write-operation nodes to keep downstream chains alive
+- Downstream nodes should use `$('UpstreamNode').all()` instead of `$input` if they need data
+
 ### Pattern 4: Conditional Logic Nodes
 
 **Examples**: IF, Switch, Merge
