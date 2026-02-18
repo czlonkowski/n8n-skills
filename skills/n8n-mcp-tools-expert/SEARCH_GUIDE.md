@@ -310,6 +310,66 @@ Step 4: Use in Workflow
 
 ---
 
+## n8n_list_credentials (NEW!)
+
+**Speed**: 50-200ms
+
+**Use when**: Need credential IDs for node configuration
+
+**Syntax**:
+```javascript
+n8n_list_credentials({
+  type: "slackApi",         // Optional: filter by credential type
+  name: "Production",       // Optional: filter by name (partial match)
+  limit: 50                 // Optional: max results (default 50)
+})
+```
+
+**Returns**: Credential metadata only (IDs and names, no secrets)
+
+**Common credential types**:
+- `slackApi`, `slackOAuth2Api`
+- `httpHeaderAuth`, `httpBasicAuth`
+- `googleSheetsOAuth2Api`, `gmailOAuth2Api`
+- `postgresApi`, `mysqlApi`
+- `openAiApi`, `anthropicApi`
+
+**Pattern**: Discover credentials → use in node config
+```javascript
+// Step 1: Find Slack credentials
+const creds = await n8n_list_credentials({type: "slackApi"});
+// → [{id: "abc123", name: "Production Slack", type: "slackApi"}]
+
+// Step 2: Use credential ID in workflow node
+{
+  type: "n8n-nodes-base.slack",
+  credentials: {slackApi: {id: "abc123", name: "Production Slack"}}
+}
+```
+
+---
+
+## n8n_sync_installed_nodes (NEW!)
+
+**Speed**: 200-500ms
+
+**Use when**: First connection to n8n instance, or after installing community nodes
+
+**Syntax**:
+```javascript
+n8n_sync_installed_nodes({
+  resetBeforeSync: false,  // Optional: reset all installed flags first
+  includeCore: true        // Optional: mark core nodes as installed
+})
+```
+
+**Effect**: After sync, `search_nodes` defaults to showing only installed nodes
+
+**Requires**: N8N_API_URL + N8N_API_KEY
+**Optional**: N8N_USER_EMAIL + N8N_USER_PASSWORD (for community package discovery)
+
+---
+
 ## Examples
 
 ### Find and Configure HTTP Request

@@ -1,0 +1,24 @@
+{
+  "id": "mcp-006",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I want to create a new webhook workflow called 'Slack Notifier'. How should I start?",
+  "expected_behavior": [
+    "Recommends searching for existing workflows first with n8n_find_workflow",
+    "Shows n8n_find_workflow({name: 'Slack Notifier'}) before creating",
+    "Explains the three match modes: exact, contains, fuzzy",
+    "Shows the pattern: search → create or update existing",
+    "Mentions the activate parameter for one-call creation+activation",
+    "References the workflow lifecycle in WORKFLOW_GUIDE.md"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Would jump straight to n8n_create_workflow without checking for duplicates",
+    "expected_quality": "Medium - works but may create duplicate workflows"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - prevents duplicates and follows best practice",
+    "uses_skill_content": true,
+    "searches_before_creating": true,
+    "uses_find_workflow": true,
+    "mentions_activate_parameter": true
+  }
+}

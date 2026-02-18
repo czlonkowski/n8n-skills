@@ -1,0 +1,26 @@
+{
+  "id": "workflow-006",
+  "skills": ["n8n-workflow-patterns"],
+  "query": "I need to build a webhook to database sync workflow. Walk me through the full creation process.",
+  "expected_behavior": [
+    "Starts with searching for existing workflows (n8n_find_workflow)",
+    "Follows the updated workflow creation checklist",
+    "Mentions credential discovery (n8n_list_credentials) for database credentials",
+    "Includes testing with assertions (expectedOutput)",
+    "Mentions pin data for debugging complex transformations",
+    "Uses the activate parameter or activateWorkflow operation",
+    "Follows the webhook processing + database operations patterns"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Would jump straight to creating the workflow without checking for duplicates or discovering credentials",
+    "expected_quality": "Medium - functional but missing best practices"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - follows complete checklist with new tools",
+    "uses_skill_content": true,
+    "searches_before_creating": true,
+    "discovers_credentials": true,
+    "tests_with_assertions": true,
+    "follows_checklist": true
+  }
+}

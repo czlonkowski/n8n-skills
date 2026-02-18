@@ -1,0 +1,25 @@
+{
+  "id": "mcp-008",
+  "skills": ["n8n-mcp-tools-expert"],
+  "query": "I need to debug my workflow by pinning test data to the HTTP Request node, and then test it to verify the output is correct. How do I do this?",
+  "expected_behavior": [
+    "Shows setPinData operation for n8n_update_partial_workflow",
+    "Shows the correct data format: [{json: {...}}]",
+    "Explains the Internal API requirement (N8N_USER_EMAIL + N8N_USER_PASSWORD)",
+    "Shows n8n_test_workflow with expectedOutput and assertionMode",
+    "Shows clearPinData to clean up after testing",
+    "Mentions graceful degradation if Internal API credentials not configured"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Would suggest manually pinning data in the n8n UI",
+    "expected_quality": "Low - no programmatic approach for pin data or assertions"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - complete test-driven workflow debugging pattern",
+    "uses_skill_content": true,
+    "uses_set_pin_data": true,
+    "uses_test_assertions": true,
+    "mentions_internal_api": true,
+    "shows_cleanup": true
+  }
+}

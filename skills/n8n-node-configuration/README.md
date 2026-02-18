@@ -346,10 +346,15 @@ get_node_essentials({nodeType: "nodes-base.slack"});
 ## Related Documentation
 
 - **n8n-mcp MCP Server**: Provides discovery tools
-- **n8n Node API**: get_node_essentials, get_property_dependencies, get_node_info
+- **n8n Node API**: get_node_essentials, get_property_dependencies, get_node_info, n8n_list_credentials
 - **n8n Schema**: displayOptions mechanism, property definitions
 
 ## Version History
+
+- **v1.1** (2026-02-18): Added credential discovery
+  - n8n_list_credentials tool integration
+  - Credential discovery workflow step
+  - Updated best practices
 
 - **v1.0** (2025-10-20): Initial implementation
   - SKILL.md with configuration workflow

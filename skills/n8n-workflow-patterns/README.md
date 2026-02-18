@@ -38,6 +38,9 @@ Teaches architectural patterns for building n8n workflows. Provides structure, b
 - get_node (understand node operations)
 - search_templates (find example workflows)
 - ai_agents_guide (AI pattern guidance)
+- n8n_find_workflow (search before create)
+- n8n_list_credentials (discover credentials)
+- n8n_test_workflow (test with assertions)
 
 **Related skills**:
 - n8n MCP Tools Expert (find and configure nodes)
@@ -85,12 +88,13 @@ Teaches architectural patterns for building n8n workflows. Provides structure, b
 
 ## Evaluations
 
-5 scenarios (100% coverage expected):
+6 scenarios (100% coverage expected):
 1. **eval-001**: Webhook workflow structure
 2. **eval-002**: HTTP API integration pattern
 3. **eval-003**: Database sync pattern
 4. **eval-004**: AI agent workflow with tools
 5. **eval-005**: Scheduled report generation
+6. **eval-006**: Search before create pattern
 
 ## Key Features
 
@@ -243,7 +247,7 @@ Use `search_templates` to find examples for your use case!
 
 ## Last Updated
 
-2025-10-20
+2026-02-18
 
 ---
 

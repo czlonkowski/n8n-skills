@@ -21,7 +21,7 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## File Count
 
-5 files, ~1,150 lines total
+5 files, ~1,500 lines total
 
 ## Priority
 
@@ -29,7 +29,7 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## Dependencies
 
-**n8n-mcp tools**: All of them! (40+ tools)
+**n8n-mcp tools**: All of them! (45+ tools)
 
 **Related skills**:
 - n8n Expression Syntax (write expressions for workflows)
@@ -45,8 +45,11 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 - Validation profiles (minimal/runtime/ai-friendly/strict)
 - Smart parameters (branch, case for multi-output nodes)
 - Auto-sanitization system
-- Workflow management (15 operation types)
+- Workflow management (20 operation types)
 - AI connection types (8 types)
+- New tools (n8n_find_workflow, n8n_list_credentials, n8n_sync_installed_nodes)
+- Internal API operations (setPinData, clearPinData, updateDescription)
+- Enhanced tools (get_workflow summary mode, create_workflow activate, test_workflow assertions)
 
 ### Tool Categories
 - Node Discovery (search, list, essentials, info)
@@ -57,12 +60,15 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## Evaluations
 
-5 scenarios (100% coverage expected):
+8 scenarios (100% coverage expected):
 1. **eval-001**: Tool selection (search_nodes)
 2. **eval-002**: nodeType format (nodes-base.* prefix)
 3. **eval-003**: Validation workflow (profiles)
 4. **eval-004**: essentials vs info (5KB vs 100KB)
 5. **eval-005**: Smart parameters (branch, case)
+6. **eval-006**: Search before create (n8n_find_workflow)
+7. **eval-007**: Credential discovery (n8n_list_credentials)
+8. **eval-008**: Internal API operations (setPinData, assertions)
 
 ## Key Features
 
@@ -71,7 +77,7 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 ✅ **Format Guidance**: nodeType format differences explained
 ✅ **Smart Parameters**: Semantic branch/case routing for multi-output nodes
 ✅ **Auto-Sanitization**: Explains automatic validation fixes
-✅ **Comprehensive**: Covers all 40+ MCP tools
+✅ **Comprehensive**: Covers all 45+ MCP tools
 
 ## Files
 
@@ -91,7 +97,7 @@ Teaches how to use n8n-mcp MCP server tools correctly for efficient workflow bui
 
 ## Last Updated
 
-2025-10-20
+2026-02-18
 
 ---
 

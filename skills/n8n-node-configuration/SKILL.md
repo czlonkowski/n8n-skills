@@ -105,6 +105,8 @@ Configuration best practices:
    ↓
 2. Use get_node (standard detail is default)
    ↓
+2.5. Discover credentials → n8n_list_credentials({type: "..."})
+   ↓
 3. Configure required fields
    ↓
 4. Validate configuration
@@ -132,6 +134,12 @@ const info = get_node({
 });
 
 // Returns: method, url, sendBody, body, authentication required/optional
+```
+
+**Step 2.5**: Discover credentials
+```javascript
+const creds = n8n_list_credentials({type: "httpHeaderAuth"});
+// Returns: [{id: "abc123", name: "API Header Auth"}]
 ```
 
 **Step 3**: Minimal config
@@ -729,6 +737,11 @@ get_node({
    - Don't manually add/remove singleValue
    - IF/Switch metadata added on save
 
+6. **Discover credentials before configuring**
+   - Use `n8n_list_credentials({type: "..."})` to find credential IDs
+   - Never hardcode credential IDs without verifying they exist
+   - Filter by type to find the right credential
+
 ### ❌ Don't
 
 1. **Jump to detail="full" immediately**
@@ -766,11 +779,12 @@ For comprehensive guides on specific topics:
 
 **Configuration Strategy**:
 1. Start with `get_node` (standard detail is default)
-2. Configure required fields for operation
-3. Validate configuration
-4. Search properties if stuck
-5. Iterate until valid (avg 2-3 cycles)
-6. Deploy with confidence
+2. Discover credentials with n8n_list_credentials
+3. Configure required fields for operation
+4. Validate configuration
+5. Search properties if stuck
+6. Iterate until valid (avg 2-3 cycles)
+7. Deploy with confidence
 
 **Key Principles**:
 - **Operation-aware**: Different operations = different requirements

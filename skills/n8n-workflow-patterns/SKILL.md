@@ -112,6 +112,7 @@ All patterns share these building blocks:
 When building ANY workflow, follow this checklist:
 
 ### Planning Phase
+- [ ] Search for existing workflows (use n8n_find_workflow to prevent duplicates)
 - [ ] Identify the pattern (webhook, API, database, AI, scheduled)
 - [ ] List required nodes (use search_nodes)
 - [ ] Understand data flow (input → transform → output)
@@ -121,6 +122,7 @@ When building ANY workflow, follow this checklist:
 - [ ] Create workflow with appropriate trigger
 - [ ] Add data source nodes
 - [ ] Configure authentication/credentials
+- [ ] Discover credentials (use n8n_list_credentials)
 - [ ] Add transformation nodes (Set, Code, IF)
 - [ ] Add output/action nodes
 - [ ] Configure error handling
@@ -129,11 +131,13 @@ When building ANY workflow, follow this checklist:
 - [ ] Validate each node configuration (validate_node)
 - [ ] Validate complete workflow (validate_workflow)
 - [ ] Test with sample data
+- [ ] Test with assertions (use n8n_test_workflow with expectedOutput)
 - [ ] Handle edge cases (empty data, errors)
 
 ### Deployment Phase
 - [ ] Review workflow settings (execution order, timeout, error handling)
-- [ ] Activate workflow using `activateWorkflow` operation
+- [ ] Activate workflow (use `activate: true` in create, or `activateWorkflow` operation)
+- [ ] Pin test data for debugging (use setPinData operation)
 - [ ] Monitor first executions
 - [ ] Document workflow purpose and data flow
 
@@ -229,6 +233,10 @@ These skills work together with Workflow Patterns:
 - Create workflows (n8n_create_workflow)
 - Deploy templates (n8n_deploy_template)
 - Use ai_agents_guide for AI pattern guidance
+- Search for existing workflows before creating (n8n_find_workflow)
+- Discover credentials for node configuration (n8n_list_credentials)
+- Test workflows with assertions (n8n_test_workflow)
+- Pin test data for debugging (setPinData operation)
 
 **n8n Expression Syntax** - Use to:
 - Write expressions in transformation nodes
@@ -374,6 +382,10 @@ Use `search_templates` and `get_template` from n8n-mcp tools to find examples!
 - Use descriptive node names
 - Document complex workflows (notes field)
 - Monitor workflow executions after deployment
+- Search for existing workflows before creating new ones
+- Discover credentials with n8n_list_credentials before configuring
+- Test workflows with assertions (expectedOutput) before activation
+- Use pin data (setPinData) for debugging complex transformations
 
 ### ❌ Don't
 
@@ -385,6 +397,8 @@ Use `search_templates` and `get_template` from n8n-mcp tools to find examples!
 - Forget to handle empty data cases
 - Mix multiple patterns without clear boundaries
 - Deploy without testing
+- Create workflows without searching for duplicates first
+- Hardcode credential IDs without discovering them first
 
 ---
 

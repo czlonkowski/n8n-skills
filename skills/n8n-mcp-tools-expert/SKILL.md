@@ -30,6 +30,9 @@ n8n-mcp provides tools organized into categories:
 | `search_nodes` | Finding nodes by keyword | <20ms |
 | `get_node` | Understanding node operations (detail="standard") | <10ms |
 | `validate_node` | Checking configurations (mode="full") | <100ms |
+| `n8n_find_workflow` | Search workflows by name before creating | 50-200ms |
+| `n8n_list_credentials` | Discover credential IDs for node config | 50-200ms |
+| `n8n_sync_installed_nodes` | Sync local DB with n8n instance | 200-500ms |
 | `n8n_create_workflow` | Creating workflows | 100-500ms |
 | `n8n_update_partial_workflow` | Editing workflows (MOST USED!) | 50-200ms |
 | `validate_workflow` | Checking complete workflow | 100-500ms |
@@ -80,11 +83,12 @@ get_node({nodeType: "nodes-base.slack", mode: "docs"})
 
 **Workflow**:
 ```
-1. n8n_create_workflow({name, nodes, connections})
-2. n8n_validate_workflow({id})
-3. n8n_update_partial_workflow({id, operations: [...]})
-4. n8n_validate_workflow({id}) again
-5. n8n_update_partial_workflow({id, operations: [{type: "activateWorkflow"}]})
+1. n8n_find_workflow({name: "My Workflow"})  ← NEW: prevent duplicates
+2. n8n_create_workflow({name, nodes, connections, activate: true})  ← NEW: activate param
+3. n8n_validate_workflow({id})
+4. n8n_update_partial_workflow({id, operations: [...]})
+5. n8n_validate_workflow({id}) again
+6. n8n_test_workflow({id, expectedOutput: {...}})  ← NEW: assertions
 ```
 
 **Common pattern**: iterative updates (56s average between edits)
@@ -497,6 +501,9 @@ n8n_health_check({mode: "diagnostic"})
 - tools_documentation, ai_agents_guide
 
 **Requires n8n API** (N8N_API_URL + N8N_API_KEY):
+- n8n_find_workflow
+- n8n_list_credentials
+- n8n_sync_installed_nodes
 - n8n_create_workflow
 - n8n_update_partial_workflow
 - n8n_validate_workflow (by ID)
@@ -507,7 +514,145 @@ n8n_health_check({mode: "diagnostic"})
 - n8n_workflow_versions
 - n8n_autofix_workflow
 
+**Requires n8n Internal API** (N8N_USER_EMAIL + N8N_USER_PASSWORD):
+- setPinData / clearPinData operations
+- updateDescription operation
+- n8n_sync_installed_nodes (community package discovery)
+
 If API tools unavailable, use templates and validation-only workflows.
+
+---
+
+## New Tools
+
+### n8n_find_workflow (PREVENT DUPLICATES!)
+
+**Use when**: Before creating workflows, to check if one with that name exists
+
+```javascript
+// Exact match
+n8n_find_workflow({name: "My Workflow", matchMode: "exact"})
+
+// Contains (default)
+n8n_find_workflow({name: "Webhook", matchMode: "contains"})
+
+// Fuzzy (typo-tolerant)
+n8n_find_workflow({name: "Webook to Slak", matchMode: "fuzzy"})
+```
+
+**Returns**: Matching workflows with webhook URLs, or null if not found
+
+**Pattern**: ALWAYS search before create!
+```javascript
+const existing = await n8n_find_workflow({name: "My Webhook"});
+if (existing) {
+  // Update existing workflow instead
+  n8n_update_partial_workflow({id: existing.id, ...});
+} else {
+  n8n_create_workflow({name: "My Webhook", ...});
+}
+```
+
+### n8n_list_credentials (DISCOVER CREDENTIALS!)
+
+**Use when**: Configuring nodes that need credentials
+
+```javascript
+// By type
+n8n_list_credentials({type: "slackApi"})
+
+// By name
+n8n_list_credentials({name: "Production Slack"})
+```
+
+**Returns**: Credential metadata (IDs and names, no secrets exposed)
+
+**Pattern**: Discover → Configure
+```javascript
+const creds = await n8n_list_credentials({type: "slackApi"});
+// Use cred.id in node configuration
+```
+
+### n8n_sync_installed_nodes (SETUP STEP!)
+
+**Use when**: First time connecting to an n8n instance, or after installing community nodes
+
+```javascript
+n8n_sync_installed_nodes()
+// After sync, search_nodes defaults to showing only installed nodes
+```
+
+**Requires**: N8N_API_URL + N8N_API_KEY (Public API)
+**Optional**: N8N_USER_EMAIL + N8N_USER_PASSWORD (for community package discovery via Internal API)
+
+---
+
+## Enhanced Tools
+
+### n8n_get_workflow: New mode="summary"
+
+Agent-friendly compact overview:
+```javascript
+n8n_get_workflow({id: "abc", mode: "summary"})
+// Returns: nodeCount, triggerType, webhookUrls, credentialsUsed
+```
+
+### n8n_create_workflow: New activate parameter
+
+Create and activate in one call:
+```javascript
+n8n_create_workflow({
+  name: "My Webhook",
+  nodes: [...],
+  connections: {...},
+  activate: true  // NEW: activates immediately
+})
+```
+
+### n8n_test_workflow: Assertion Support
+
+Automated PASS/FAIL testing:
+```javascript
+n8n_test_workflow({
+  id: "workflow-id",
+  testMode: "webhook",
+  webhookData: {message: "test"},
+  expectedOutput: {status: "ok"},  // NEW
+  assertionMode: "partial"         // NEW: "partial" or "exact"
+})
+// Returns: testResult: "PASS" or "FAIL" with field-level details
+```
+
+---
+
+## Internal API Operations
+
+**Requires**: N8N_USER_EMAIL + N8N_USER_PASSWORD (session-based auth)
+
+Three new operations for `n8n_update_partial_workflow`:
+
+### setPinData (Pin test data to nodes)
+```javascript
+{
+  type: "setPinData",
+  nodeName: "HTTP Request",
+  data: [{json: {id: 1, name: "Test"}}]
+}
+```
+
+### clearPinData (Clear pinned data)
+```javascript
+// Clear specific node
+{type: "clearPinData", nodeName: "HTTP Request"}
+
+// Clear all nodes
+{type: "clearPinData"}
+```
+
+### updateDescription (Set workflow description)
+```javascript
+{type: "updateDescription", description: "Processes incoming webhooks and forwards to Slack."}
+```
 
 ---
 
@@ -608,23 +753,30 @@ validate_node({nodeType: "nodes-base.webhook", config: {}, mode: "minimal"})
 ## Summary
 
 **Most Important**:
-1. Use **get_node** with `detail: "standard"` (default) - covers 95% of use cases
-2. nodeType formats differ: `nodes-base.*` (search/validate) vs `n8n-nodes-base.*` (workflows)
-3. Specify **validation profiles** (`runtime` recommended)
-4. Use **smart parameters** (`branch="true"`, `case=0`)
-5. Include **intent parameter** in workflow updates
-6. **Auto-sanitization** runs on ALL nodes during updates
-7. Workflows can be **activated via API** (`activateWorkflow` operation)
-8. Workflows are built **iteratively** (56s avg between edits)
+1. **ALWAYS search before create** with `n8n_find_workflow`
+2. Use **get_node** with `detail: "standard"` (default) - covers 95% of use cases
+3. nodeType formats differ: `nodes-base.*` (search/validate) vs `n8n-nodes-base.*` (workflows)
+4. Use `n8n_list_credentials` to discover credential IDs
+5. Specify **validation profiles** (`runtime` recommended)
+6. Use **smart parameters** (`branch="true"`, `case=0`)
+7. Include **intent parameter** in workflow updates
+8. Test workflows with assertions (`expectedOutput`)
+9. **Auto-sanitization** runs on ALL nodes during updates
+10. Workflows can be **activated via API** (`activateWorkflow` operation)
+11. Internal API enables pin data and description management
+12. Workflows are built **iteratively** (56s avg between edits)
 
 **Common Workflow**:
-1. search_nodes → find node
-2. get_node → understand config
-3. validate_node → check config
-4. n8n_create_workflow → build
-5. n8n_validate_workflow → verify
-6. n8n_update_partial_workflow → iterate
-7. activateWorkflow → go live!
+1. n8n_find_workflow → check for duplicates (NEW!)
+2. search_nodes → find node
+3. get_node → understand config
+4. n8n_list_credentials → find credentials (NEW!)
+5. validate_node → check config
+6. n8n_create_workflow → build (with activate: true)
+7. n8n_validate_workflow → verify
+8. n8n_update_partial_workflow → iterate
+9. n8n_test_workflow → test with assertions (NEW!)
+10. activateWorkflow → go live!
 
 For details, see:
 - [SEARCH_GUIDE.md](SEARCH_GUIDE.md) - Node discovery

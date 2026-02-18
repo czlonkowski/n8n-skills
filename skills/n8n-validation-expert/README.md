@@ -272,10 +272,17 @@ if (preview.fixCount > 0) {
 ## Related Documentation
 
 - **n8n-mcp MCP Server**: Provides validation tools
-- **n8n Validation API**: validate_node_operation, validate_workflow, n8n_autofix_workflow
+- **n8n Validation API**: validate_node_operation, validate_workflow, n8n_autofix_workflow, n8n_test_workflow
+- **n8n Workflow API**: n8n_update_partial_workflow (setPinData, clearPinData operations)
 - **n8n Issues**: #304 (IF metadata), #306 (Switch branches), #338 (credentials)
 
 ## Version History
+
+- **v1.1** (2026-02-18): Added debugging features
+  - Pin data debugging with setPinData/clearPinData
+  - Assertion testing with expectedOutput
+  - Strategy 5: Pin Data for Debugging
+  - Updated best practices
 
 - **v1.0** (2025-10-20): Initial implementation
   - SKILL.md with core concepts

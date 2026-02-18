@@ -12,6 +12,44 @@ If unavailable, use template examples and validation-only workflows.
 
 ---
 
+## n8n_find_workflow (SEARCH BEFORE CREATE!)
+
+**Speed**: 50-200ms
+
+**Use when**: Before creating a new workflow, to prevent duplicates
+
+**Syntax**:
+```javascript
+n8n_find_workflow({
+  name: "Webhook to Slack",     // Required: workflow name to search
+  matchMode: "contains",        // Optional: exact, contains (default), fuzzy
+  activeOnly: false,            // Optional: only search active workflows
+  limit: 10                     // Optional: max results
+})
+```
+
+**Returns**: Matching workflows with webhook URLs, or null if not found
+
+**Match Modes**:
+- `exact` - Exact name match
+- `contains` (default) - Name contains query
+- `fuzzy` - Typo-tolerant with match scores
+
+**Pattern: Always search before create!**
+```javascript
+// Step 1: Check if workflow exists
+const existing = await n8n_find_workflow({name: "My Webhook"});
+
+// Step 2: Create or update
+if (existing) {
+  n8n_update_partial_workflow({id: existing.id, operations: [...]});
+} else {
+  n8n_create_workflow({name: "My Webhook", nodes: [...], connections: {...}});
+}
+```
+
+---
+
 ## n8n_create_workflow
 
 **Speed**: 100-500ms
@@ -73,6 +111,17 @@ n8n_create_workflow({
 - Auto-sanitization runs on creation
 - Validate before creating for best results
 
+**New**: Create and activate in one call:
+```javascript
+n8n_create_workflow({
+  name: "Webhook to Slack",
+  nodes: [...],
+  connections: {...},
+  activate: true  // Activates immediately after creation
+})
+// Returns: workflow with webhookUrls and activation status
+```
+
 ---
 
 ## n8n_update_partial_workflow (MOST USED!)
@@ -83,7 +132,7 @@ n8n_create_workflow({
 
 **Common pattern**: 56s average between edits (iterative building!)
 
-### 17 Operation Types
+### 20 Operation Types
 
 **Node Operations** (6 types):
 1. `addNode` - Add new node
@@ -109,6 +158,11 @@ n8n_create_workflow({
 **Activation Operations** (2 types):
 16. `activateWorkflow` - Activate workflow for automatic execution
 17. `deactivateWorkflow` - Deactivate workflow
+
+**Internal API Operations** (3 types, requires N8N_USER_EMAIL + N8N_USER_PASSWORD):
+18. `setPinData` - Pin test data to a node
+19. `clearPinData` - Clear pinned data from node(s)
+20. `updateDescription` - Set workflow description
 
 ### Intent Parameter (IMPORTANT!)
 
@@ -238,6 +292,46 @@ n8n_update_partial_workflow({
   operations: [{type: "deactivateWorkflow"}]
 })
 ```
+
+### Internal API Operations
+
+**Requires**: N8N_USER_EMAIL + N8N_USER_PASSWORD
+
+```javascript
+// Pin test data to a node for debugging
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  intent: "Pin test data for debugging",
+  operations: [{
+    type: "setPinData",
+    nodeName: "HTTP Request",
+    data: [{json: {id: 1, name: "Test User", email: "test@example.com"}}]
+  }]
+})
+
+// Clear pinned data from specific node
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  operations: [{type: "clearPinData", nodeName: "HTTP Request"}]
+})
+
+// Clear ALL pinned data
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  operations: [{type: "clearPinData"}]
+})
+
+// Set workflow description
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  operations: [{
+    type: "updateDescription",
+    description: "Processes incoming webhooks and forwards to Slack."
+  }]
+})
+```
+
+**Note**: These operations use the n8n Internal REST API (session-based authentication), not the Public API. They are optional and degrade gracefully if credentials are not configured.
 
 ### Example Usage
 
@@ -426,6 +520,20 @@ n8n_test_workflow({
 })
 ```
 
+### Assertion Support (NEW)
+
+Automated output validation:
+```javascript
+n8n_test_workflow({
+  id: "workflow-id",
+  testMode: "webhook",
+  webhookData: {message: "Hello!"},
+  expectedOutput: {status: "ok", processed: true},
+  assertionMode: "partial"  // "partial" (default) or "exact"
+})
+// Returns: testResult: "PASS" or "FAIL" with field-level details
+```
+
 ---
 
 ## n8n_validate_workflow (by ID)
@@ -455,6 +563,7 @@ n8n_validate_workflow({
 - `details` - Full + execution stats
 - `structure` - Nodes + connections only
 - `minimal` - ID, name, active, tags
+- `summary` (NEW) - Agent-friendly compact overview with webhook URLs, credentials used
 
 ```javascript
 // Full workflow
@@ -514,6 +623,10 @@ n8n_executions({
 
 **Standard pattern**:
 ```
+0. SEARCH (prevent duplicates)
+   n8n_find_workflow({name: "..."})
+   → Check if exists already
+
 1. CREATE
    n8n_create_workflow({...})
    → Returns workflow ID
@@ -608,9 +721,12 @@ update → update → update → ... (56s avg between edits)
 8. Use **n8n_deploy_template** for quick starts
 
 **New Tools**:
+- `n8n_find_workflow` - Search before create (NEW!)
+- `n8n_list_credentials` - Discover credential IDs (NEW!)
+- `n8n_sync_installed_nodes` - Sync with n8n instance (NEW!)
 - `n8n_deploy_template` - Deploy templates directly
 - `n8n_workflow_versions` - Version control & rollback
-- `n8n_test_workflow` - Trigger execution
+- `n8n_test_workflow` - Trigger execution with assertions
 - `n8n_executions` - Manage executions
 
 **Related**:

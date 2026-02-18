@@ -630,6 +630,38 @@ n8n_autofix_workflow({
 })
 ```
 
+### Strategy 5: Pin Data for Debugging
+**When**: Workflow executes but produces unexpected output
+
+**Steps**:
+```javascript
+// Pin known test data to isolate the problem
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  operations: [{
+    type: "setPinData",
+    nodeName: "HTTP Request",
+    data: [{json: {id: 1, name: "Test", status: "active"}}]
+  }]
+})
+
+// Test with pinned data
+n8n_test_workflow({
+  id: "workflow-id",
+  expectedOutput: {processed: true},
+  assertionMode: "partial"
+})
+// → testResult: "PASS" or "FAIL" with details
+
+// Clear pin data when done
+n8n_update_partial_workflow({
+  id: "workflow-id",
+  operations: [{type: "clearPinData", nodeName: "HTTP Request"}]
+})
+```
+
+**Requires**: N8N_USER_EMAIL + N8N_USER_PASSWORD for setPinData/clearPinData
+
 ---
 
 ## Best Practices
@@ -644,6 +676,8 @@ n8n_autofix_workflow({
 - Trust auto-sanitization for operator issues
 - Use `get_node` when unclear about requirements
 - Document false positives you accept
+- Use pin data (setPinData) to isolate debugging issues
+- Test with assertions (expectedOutput) for automated validation
 
 ### ❌ Don't
 
