@@ -14,7 +14,7 @@
 
 ## 🎯 What is this?
 
-This repository contains **7 complementary Claude Code skills** that teach AI assistants how to build production-ready n8n workflows using the [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) MCP server.
+This repository contains **20 comprehensive Claude Code skills** that teach AI assistants how to build production-ready n8n workflows using the [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) MCP server.
 
 ### Why These Skills Exist
 
@@ -33,7 +33,9 @@ These skills solve these problems by teaching Claude:
 
 ---
 
-## 📚 The 7 Skills
+## 📚 The 20 Skills
+
+### Core Skills (7)
 
 ### 1. **n8n Expression Syntax**
 Teaches correct n8n expression syntax and common patterns.
@@ -121,6 +123,47 @@ Write Python code in n8n Code nodes with proper limitations awareness.
 - Workarounds for missing libraries
 - Common Python patterns for n8n
 
+### Advanced Skills (13)
+
+### 8. **n8n Workflow Debugging**
+Debug and diagnose n8n workflow failures.
+
+### 9. **n8n Advanced Patterns**
+Advanced orchestration and error handling patterns for enterprise workflows.
+
+### 10. **n8n Performance Optimization**
+Optimize workflow speed, reduce resource usage, and improve throughput.
+
+### 11. **n8n AI Agents**
+Build intelligent agents with multi-step reasoning and LLM integration.
+
+### 12. **n8n Webhook Advanced**
+Production-grade webhook security and reliability patterns.
+
+### 13. **n8n Error Handling**
+Comprehensive error handling and recovery strategies.
+
+### 14. **n8n Data Transformation**
+Data mapping, transformation, and aggregation patterns.
+
+### 15. **n8n Database Operations**
+Database node configuration and SQL query patterns.
+
+### 16. **n8n API Integrations**
+REST API integration patterns and HTTP authentication.
+
+### 17. **n8n Scheduling & Cron**
+Workflow scheduling, cron expressions, and timing patterns.
+
+### 18. **n8n Testing & Validation**
+Workflow testing strategies and validation best practices.
+
+### 19. **n8n Security & Compliance**
+Security hardening and compliance patterns.
+
+### 20. **n8n Monitoring & Logging**
+Monitoring, logging, and observability in workflows.
+
 ---
 
 ## 🚀 Installation
@@ -136,13 +179,13 @@ Write Python code in n8n Code nodes with proper limitations awareness.
 **Method 1: Plugin Installation** (Recommended)
 ```bash
 # Install directly as a Claude Code plugin
-/plugin install czlonkowski/n8n-skills
+/plugin install System25-20/n8n-skills
 ```
 
 **Method 2: Via Marketplace**
 ```bash
 # Add as marketplace, then browse and install
-/plugin marketplace add czlonkowski/n8n-skills
+/plugin marketplace add System25-20/n8n-skills
 
 # Then browse available plugins
 /plugin install
@@ -152,7 +195,7 @@ Write Python code in n8n Code nodes with proper limitations awareness.
 **Method 3: Manual Installation**
 ```bash
 # 1. Clone this repository
-git clone https://github.com/czlonkowski/n8n-skills.git
+git clone https://github.com/System25-20/n8n-skills.git
 
 # 2. Copy skills to your Claude Code skills directory
 cp -r n8n-skills/skills/* ~/.claude/skills/
@@ -276,11 +319,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📊 What's Included
 
-- **7** complementary skills that work together
+- **20** complementary skills that work together
 - **525+** n8n nodes supported
 - **2,653+** workflow templates for examples
 - **10** production-tested Code node patterns
 - **Comprehensive** error catalogs and troubleshooting guides
+- **Advanced patterns** for enterprise workflows
 
 ---
 
