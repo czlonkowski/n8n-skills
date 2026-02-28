@@ -1,36 +1,165 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "n8n-mcp-skills",
-  "description": "Expert skills for building n8n workflows",
+  "version": "2.0.0",
+  "description": "Comprehensive skills package for n8n workflow automation. 12 expert skills (7 core + 5 advanced) covering expression syntax, MCP tools, workflow patterns, validation, performance optimization, debugging, AI agents, and webhook security.",
   "owner": {
     "name": "Romuald Członkowski",
+    "email": "romuald@aiadvisors.pl",
     "url": "https://www.aiadvisors.pl/en"
   },
+  "license": "MIT",
+  "homepage": "https://github.com/czlonkowski/n8n-skills",
+  "repository": "https://github.com/czlonkowski/n8n-skills",
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "mcp",
+    "validation",
+    "expressions",
+    "debugging",
+    "performance",
+    "ai-agents",
+    "webhooks",
+    "code",
+    "javascript",
+    "python",
+    "patterns",
+    "orchestration"
+  ],
   "plugins": [
     {
-      "name": "n8n-mcp-skills",
-      "source": "./",
-      "description": "Complete bundle: 7 expert skills for building flawless n8n workflows using n8n-mcp MCP server. Includes skills for expression syntax, MCP tools usage, workflow patterns, validation, node configuration, JavaScript code, and Python code.",
+      "name": "n8n-expression-syntax",
+      "description": "Master n8n {{}} expression syntax and patterns. Use when writing expressions, accessing $json/$node variables, or troubleshooting expression errors.",
+      "source": "./skills/n8n-expression-syntax",
+      "category": "automation",
       "version": "1.0.0",
       "author": {
         "name": "Romuald Członkowski",
         "url": "https://www.aiadvisors.pl/en"
-      },
+      }
+    },
+    {
+      "name": "n8n-mcp-tools-expert",
+      "description": "Expert guide for n8n-mcp MCP server tools and capabilities. Use when discovering nodes, validating workflows, or managing workflow deployments.",
+      "source": "./skills/n8n-mcp-tools-expert",
       "category": "automation",
-      "keywords": [
-        "n8n",
-        "workflow",
-        "mcp",
-        "automation",
-        "validation",
-        "expressions",
-        "code",
-        "javascript",
-        "python",
-        "skills"
-      ],
-      "homepage": "https://github.com/czlonkowski/n8n-skills",
-      "repository": "https://github.com/czlonkowski/n8n-skills",
-      "license": "MIT"
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-workflow-patterns",
+      "description": "Proven architectural patterns for n8n workflows. Use when designing workflow structure, selecting architectural patterns, or building scalable automations.",
+      "source": "./skills/n8n-workflow-patterns",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-validation-expert",
+      "description": "Comprehensive n8n validation error reference and solutions. Use when workflows fail validation, interpreting error messages, or fixing configuration issues.",
+      "source": "./skills/n8n-validation-expert",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-node-configuration",
+      "description": "Node-specific configuration guidance for n8n. Use when setting up nodes, configuring properties, or resolving operation-specific issues.",
+      "source": "./skills/n8n-node-configuration",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-code-javascript",
+      "description": "JavaScript code implementation in n8n Code nodes. Use when writing JavaScript, accessing helpers, or transforming data with custom logic.",
+      "source": "./skills/n8n-code-javascript",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-code-python",
+      "description": "Python code implementation in n8n Code nodes. Use when writing Python, data processing, or custom algorithms with Python.",
+      "source": "./skills/n8n-code-python",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-workflow-debugging",
+      "description": "Expert guide for debugging and diagnosing n8n workflow failures. Use when workflows fail, behave unexpectedly, have performance issues, or require root cause analysis.",
+      "source": "./skills/n8n-workflow-debugging",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-advanced-patterns",
+      "description": "Advanced orchestration and error handling patterns for enterprise n8n workflows. Use when building complex multi-step workflows, implementing error handling, or designing resilient systems.",
+      "source": "./skills/n8n-advanced-patterns",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-performance-optimization",
+      "description": "Performance optimization framework for n8n workflows. Use when optimizing workflow speed, reducing resource usage, or improving throughput.",
+      "source": "./skills/n8n-performance-optimization",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-ai-agents",
+      "description": "AI agent architecture and implementation in n8n. Use when building intelligent agents, implementing multi-step reasoning, or creating autonomous workflows with LLM integration.",
+      "source": "./skills/n8n-ai-agents",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-webhook-advanced",
+      "description": "Production-grade webhook security and reliability patterns. Use when securing webhooks, implementing authentication, rate limiting, or preventing security vulnerabilities.",
+      "source": "./skills/n8n-webhook-advanced",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
     }
   ]
 }
