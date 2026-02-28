@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "n8n-mcp-skills",
-  "version": "2.0.0",
-  "description": "Comprehensive skills package for n8n workflow automation. 12 expert skills (7 core + 5 advanced) covering expression syntax, MCP tools, workflow patterns, validation, performance optimization, debugging, AI agents, and webhook security.",
+  "version": "3.0.0",
+  "description": "Comprehensive skills package for n8n workflow automation. 20 expert skills (7 core + 13 advanced) covering expressions, MCP tools, patterns, validation, debugging, performance, AI agents, webhooks, error handling, data transformation, databases, APIs, scheduling, testing, security, and monitoring.",
   "owner": {
     "name": "Romuald Członkowski",
     "email": "romuald@aiadvisors.pl",
@@ -22,6 +22,14 @@
     "performance",
     "ai-agents",
     "webhooks",
+    "error-handling",
+    "data-transformation",
+    "database",
+    "api",
+    "scheduling",
+    "testing",
+    "security",
+    "monitoring",
     "code",
     "javascript",
     "python",
@@ -154,6 +162,94 @@
       "name": "n8n-webhook-advanced",
       "description": "Production-grade webhook security and reliability patterns. Use when securing webhooks, implementing authentication, rate limiting, or preventing security vulnerabilities.",
       "source": "./skills/n8n-webhook-advanced",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-error-handling",
+      "description": "Comprehensive error handling and recovery strategies for n8n workflows. Use when implementing error handling, implementing recovery mechanisms, or building resilient workflows.",
+      "source": "./skills/n8n-error-handling",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-data-transformation",
+      "description": "Data mapping, transformation, and aggregation patterns in n8n. Use when mapping fields, transforming data structures, or aggregating from multiple sources.",
+      "source": "./skills/n8n-data-transformation",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-database-operations",
+      "description": "Database node configuration and SQL query patterns in n8n. Use when configuring database connections, writing queries, or performing CRUD operations.",
+      "source": "./skills/n8n-database-operations",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-api-integrations",
+      "description": "REST API integration patterns and HTTP authentication in n8n. Use when integrating APIs, configuring authentication, or troubleshooting API calls.",
+      "source": "./skills/n8n-api-integrations",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-scheduling-cron",
+      "description": "Workflow scheduling, cron expressions, and timing patterns in n8n. Use when scheduling workflows, setting up recurring jobs, or configuring timers.",
+      "source": "./skills/n8n-scheduling-cron",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-testing-validation",
+      "description": "Workflow testing strategies and validation best practices in n8n. Use when testing workflows, validating configurations, or ensuring quality.",
+      "source": "./skills/n8n-testing-validation",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-security-compliance",
+      "description": "Security hardening and compliance patterns for n8n. Use when implementing security measures, ensuring compliance, or protecting sensitive data.",
+      "source": "./skills/n8n-security-compliance",
+      "category": "automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Romuald Członkowski",
+        "url": "https://www.aiadvisors.pl/en"
+      }
+    },
+    {
+      "name": "n8n-monitoring-logging",
+      "description": "Monitoring, logging, and observability in n8n workflows. Use when setting up monitoring, analyzing logs, or troubleshooting performance.",
+      "source": "./skills/n8n-monitoring-logging",
       "category": "automation",
       "version": "1.0.0",
       "author": {

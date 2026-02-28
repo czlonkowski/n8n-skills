@@ -1,7 +1,7 @@
 {
   "name": "n8n-mcp-skills",
-  "version": "2.0.0",
-  "description": "Comprehensive skills package for n8n workflow automation. 12 expert skills covering expression syntax, MCP tools, workflow patterns, validation, debugging, advanced patterns, performance optimization, AI agents, and webhook security.",
+  "version": "3.0.0",
+  "description": "Comprehensive skills package for n8n workflow automation. 20 expert skills covering expression syntax, MCP tools, workflow patterns, validation, debugging, performance, AI agents, webhooks, error handling, data transformation, databases, APIs, scheduling, testing, security, and monitoring.",
   "author": {
     "name": "Romuald Członkowski",
     "email": "romuald@aiadvisors.pl",
@@ -19,14 +19,22 @@
     "performance",
     "ai-agents",
     "webhooks",
+    "error-handling",
+    "data-transformation",
+    "database",
+    "api",
+    "scheduling",
+    "testing",
+    "security",
+    "monitoring",
     "code",
     "javascript",
     "python",
     "patterns",
     "orchestration"
   ],
-  "repository": "https://github.com/czlonkowski/n8n-skills",
-  "homepage": "https://github.com/czlonkowski/n8n-skills",
+  "repository": "https://github.com/System25-20/n8n-skills",
+  "homepage": "https://github.com/System25-20/n8n-skills",
   "engines": {
     "claude-code": ">=1.0.0"
   }
