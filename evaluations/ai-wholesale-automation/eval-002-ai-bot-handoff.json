@@ -1,0 +1,15 @@
+{
+  "id": "wholesale-002",
+  "skills": ["ai-wholesale-automation"],
+  "query": "How does the Lily to Adriana handoff work in the AI bot system? I want to build a two-agent qualifier and closer for Facebook Messenger.",
+  "expected_behavior": [
+    "Explains Lily's role as qualifier: collects 6 data points one at a time",
+    "Lists the 6 data points: name, address, timeline, condition, motivation, price",
+    "Explains handoff trigger: all 6 points collected + handoff phrase",
+    "Describes Adriana's role as closer: anchors price, pushes for phone number",
+    "Details Adriana's state machine: intro → anchoring → phone_collected → closing",
+    "Mentions novation pivot when seller objects to cash price",
+    "References bilingual support and DNC detection",
+    "Mentions anti-repetition mechanism"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "wholesale-004",
+  "skills": ["ai-wholesale-automation"],
+  "query": "Explain the Rainmaker method for novation deals. How can I automate the Discovery, Anchor, and Delivery phases?",
+  "expected_behavior": [
+    "Describes 3 phases: Discovery, Anchor, Delivery",
+    "Phase 1 Discovery: position as information gatherer, collect motivation/timeline/condition",
+    "Phase 2 Anchor: set price expectations using bracket technique and comps",
+    "Phase 3 Delivery: white glove closing, DocuSign, property updates, MLS listing",
+    "Compares novation vs wholesale: profit ($15K-$50K+ vs $5K-$15K), timeline, buyer pool",
+    "Lists AI automation opportunities for each phase",
+    "Mentions when to use novation vs wholesale based on property/seller fit",
+    "Provides MAO calculation for both strategies"
+  ]
+}

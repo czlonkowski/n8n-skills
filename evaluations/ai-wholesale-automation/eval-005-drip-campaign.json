@@ -1,0 +1,15 @@
+{
+  "id": "wholesale-005",
+  "skills": ["ai-wholesale-automation"],
+  "query": "Build me a 90-day drip campaign for seller follow-ups. I want SMS, email, and phone call touches automated through n8n.",
+  "expected_behavior": [
+    "Provides complete 90-day touch schedule with specific day numbers",
+    "Maps each touch to channel: SMS, email, or phone call",
+    "Shows n8n workflow architecture: Schedule trigger → Query CRM → Determine touch → Execute → Log",
+    "Includes compliance checks before each outreach (DNC, hours, frequency)",
+    "Mentions speed-to-lead protocol for Day 0 (under 5 minutes)",
+    "References SMS and email templates from OUTREACH_SCRIPTS.md",
+    "Includes re-engagement escalation when seller responds",
+    "Shows touch schedule code for n8n implementation"
+  ]
+}

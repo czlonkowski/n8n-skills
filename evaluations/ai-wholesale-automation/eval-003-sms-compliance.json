@@ -1,0 +1,16 @@
+{
+  "id": "wholesale-003",
+  "skills": ["ai-wholesale-automation"],
+  "query": "What do I need to know about SMS compliance for my wholesale real estate outreach? I'm using RingCentral to send texts to sellers.",
+  "expected_behavior": [
+    "Emphasizes 10DLC registration is mandatory since Feb 2025",
+    "Explains brand registration and campaign registration process",
+    "Details TCPA Prior Express Written Consent requirements",
+    "Lists required opt-out keywords: STOP, CANCEL, UNSUBSCRIBE, END, QUIT",
+    "Specifies time restrictions: 8am-8pm recipient local time",
+    "Mentions frequency limits: max 3 per 24 hours best practice",
+    "Notes penalties: $500-$1,500 per violation",
+    "Provides required disclosure language template",
+    "Mentions state-specific mini-TCPA laws for AZ, TX, CA"
+  ]
+}

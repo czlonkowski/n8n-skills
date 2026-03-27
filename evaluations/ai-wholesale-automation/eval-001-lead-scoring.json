@@ -1,0 +1,14 @@
+{
+  "id": "wholesale-001",
+  "skills": ["ai-wholesale-automation"],
+  "query": "I need to build a lead scoring system for my wholesale real estate pipeline. How should I score motivated seller leads in n8n?",
+  "expected_behavior": [
+    "Describes rule-based scoring with weighted signals (0-100 scale)",
+    "Lists Tier 1 signals: equity, pre-foreclosure, tax delinquency, vacant",
+    "Lists Tier 2 signals: absentee owner, ownership duration, inherited/probate",
+    "Lists behavioral signals: response speed, timeline urgency, phone given",
+    "Provides ABCD grading framework (A=75+, B=50-74, C=25-49, D=0-24)",
+    "Shows n8n Code node implementation for scoring",
+    "Recommends routing by grade: A/B→immediate, C→drip, D→database"
+  ]
+}
