@@ -1,0 +1,14 @@
+{
+  "id": "senior-engineer-003",
+  "skills": ["senior-engineer-rules"],
+  "query": "I've tried fixing this webhook trigger twice already and it's still not working. The first time I updated the path, the second time I changed the HTTP method. Can you try something else?",
+  "expected_behavior": [
+    "Recognizes this is the third attempt at the same problem",
+    "Does NOT immediately try another fix",
+    "Documents all three attempts and their outcomes",
+    "States a suspected root cause or hypothesis",
+    "Lists any remaining untried approaches",
+    "Escalates to the user for guidance before proceeding",
+    "References Gate 5 (Escalate on Third Failure) from the skill"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "senior-engineer-002",
+  "skills": ["senior-engineer-rules"],
+  "query": "What's the default timeout for the n8n HTTP Request node?",
+  "expected_behavior": [
+    "Does NOT state a timeout value from memory without a source",
+    "Checks official n8n documentation or node source code before answering",
+    "Provides the answer with a citation to the source",
+    "If no source is found after checking levels 1-3, asks the user rather than guessing",
+    "References Gate 3 (Evidence Before Claims) from the skill"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "senior-engineer-001",
+  "skills": ["senior-engineer-rules"],
+  "query": "Add a retry parameter to the HTTP Request node configuration in my workflow.",
+  "expected_behavior": [
+    "Does NOT immediately edit or write to any file",
+    "Reads the target workflow file first to understand current structure",
+    "Reads adjacent files or node configuration to understand existing patterns",
+    "Only after reading and understanding does it propose or make changes",
+    "References Gate 1 (Read Before Write) from the skill"
+  ]
+}
