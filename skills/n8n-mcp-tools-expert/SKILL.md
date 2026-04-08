@@ -459,6 +459,12 @@ n8n_deploy_template({
 
 ## Data Table Management
 
+> **Two surfaces, don't confuse them:**
+> - **`n8n_manage_datatable` (below)** — MCP tool for managing tables and rows from *outside* a workflow (e.g. creating tables during workflow scaffolding, seeding data, or inspecting state from Claude). Covered here.
+> - **`nodes-base.dataTable` node** — the in-workflow node you drop into a workflow to read/write rows *during execution*. For its parameter shapes, operation values, filter syntax, and gotchas (e.g. the `deleteRows` reserved-word workaround, the `id isNotEmpty` trick for "all rows"), see [n8n-node-configuration → OPERATION_PATTERNS.md → Storage Nodes → Data Table](../n8n-node-configuration/OPERATION_PATTERNS.md#data-table-nodes-basedatatable).
+>
+> Rule of thumb: use the MCP tool to set up a table once and the workflow node to read/write rows on every execution.
+
 ### n8n_manage_datatable
 
 Unified tool for managing n8n data tables and rows. Supports CRUD operations on tables and rows with filtering, pagination, and dry-run support.
