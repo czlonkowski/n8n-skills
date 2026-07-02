@@ -17,11 +17,10 @@ n8n-mcp provides tools organized into categories:
 2. **Configuration Validation** → [VALIDATION_GUIDE.md](VALIDATION_GUIDE.md)
 3. **Workflow Management** → [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)
 4. **Template Library** - Search and deploy 2,700+ real workflows
-5. **Workflow Generation** - Natural-language → workflow with proposal review (`n8n_generate_workflow`, hosted-only)
-6. **Data Tables** - Manage n8n data tables and rows (`n8n_manage_datatable`)
-7. **Credential Management** - Full credential CRUD + schema discovery (`n8n_manage_credentials`)
-8. **Security & Audit** - Instance security auditing with custom deep scan (`n8n_audit_instance`)
-9. **Documentation & Guides** - Tool docs, AI agent guide, Code node guides
+5. **Data Tables** - Manage n8n data tables and rows (`n8n_manage_datatable`)
+6. **Credential Management** - Full credential CRUD + schema discovery (`n8n_manage_credentials`)
+7. **Security & Audit** - Instance security auditing with custom deep scan (`n8n_audit_instance`)
+8. **Documentation & Guides** - Tool docs, AI agent guide, Code node guides
 
 ---
 
@@ -38,7 +37,6 @@ n8n-mcp provides tools organized into categories:
 | `n8n_update_partial_workflow` | Editing workflows (MOST USED!) | 50-200ms |
 | `validate_workflow` | Checking complete workflow | 100-500ms |
 | `n8n_deploy_template` | Deploy template to n8n instance | 200-500ms |
-| `n8n_generate_workflow` | NL → workflow (proposals → deploy), hosted-only | 2-15s |
 | `n8n_manage_datatable` | Managing data tables and rows | 50-500ms |
 | `n8n_manage_credentials` | Credential CRUD + schema discovery | 50-500ms |
 | `n8n_audit_instance` | Security audit (built-in + custom scan) | 500-5000ms |
@@ -225,7 +223,7 @@ See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for:
 - Smart parameters (branch, case)
 - AI connection types (8 types)
 - Workflow activation (activateWorkflow/deactivateWorkflow)
-- n8n_deploy_template, n8n_generate_workflow
+- n8n_deploy_template
 - n8n_workflow_versions
 - n8n_manage_credentials (credential CRUD + schema discovery)
 - n8n_audit_instance (security auditing)
@@ -243,16 +241,6 @@ See [OPERATIONS_GUIDE.md](OPERATIONS_GUIDE.md) for:
 The 2,700+ template library has three tools: `search_templates` (modes `query`/`by_nodes`/`by_task`/`by_metadata`), `get_template` (modes `structure`/`full`), and `n8n_deploy_template` (deploys to your instance with `autoFix`/`autoUpgradeVersions`, returns workflow ID + required credentials + fixes applied).
 
 See [OPERATIONS_GUIDE.md](OPERATIONS_GUIDE.md) for full search/get/deploy examples.
-
----
-
-## Workflow Generation
-
-`n8n_generate_workflow` turns a natural-language description into a workflow via a review checkpoint. **Hosted-only** — self-hosted gets `{hosted_only: true}` with a redirect (fall back to `n8n_deploy_template` or `n8n_create_workflow`). Two paths: **Path A** (default) returns up to 5 proposals, then deploy one with `deploy_id`; **Path B** uses `skip_cache: true` for a fresh preview, then `confirm_deploy: true`. Deployed workflows are **inactive** (configure credentials in UI first); always `n8n_validate_workflow` after. More specific descriptions (trigger type, named services, logic/flow) yield better results.
-
-**When to use which:** `n8n_deploy_template` (curated library) · `n8n_generate_workflow` (plain English, hosted only) · `n8n_create_workflow` (node-by-node control).
-
-See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for both paths, parameters, and pitfalls in full.
 
 ---
 
