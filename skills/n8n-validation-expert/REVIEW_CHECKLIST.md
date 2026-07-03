@@ -52,7 +52,7 @@ Pull the workflow first, then walk the list top to bottom. For each item, inspec
 ### Connection bugs (valid but broken)
 - [ ] **Merge with 3+ sources but `numberOfInputs` still 2.** Third source silently drops. → **n8n-node-configuration** → NODE_FAMILY_GOTCHAS.md (Merge)
 - [ ] **Merge index off-by-one.** `parameters.useDataOfInput` is 1-indexed; the wire sits at `connections.<source>.main[N-1]`. Mismatch passes through the wrong source silently. Verify with `n8n_get_workflow`. → **n8n-node-configuration** → NODE_FAMILY_GOTCHAS.md (Merge)
-- [ ] **Error output enabled but unwired, or wired but not enabled.** If `parameters.onError` is `continueErrorOutput` but `connections.<node>.main[1]` is empty, the error path goes nowhere; if a node feeds an error branch but `onError` isn't set, the branch is unreachable and a failure halts the workflow. *(Dedicated error-handling guidance is in flight; for now treat this as a connection/config audit.)* → **n8n-validation-expert**
+- [ ] **Error output enabled but unwired, or wired but not enabled.** If `parameters.onError` is `continueErrorOutput` but the node's error output is empty, failed items are silently dropped; if a node feeds an error branch but `onError` isn't set, the branch is unreachable and a failure halts the workflow. `validate_workflow` now surfaces both as warnings (n8n-mcp ≥ 2.63.0), but neither flips `valid:false`, so this stays a review item. **Locate the error output by node type**: it is the *last* `main[]` slot after the node's natural outputs — `main[1]` on a single-output node like HTTP Request, but `main[2]` on an IF (whose `main[1]` is the normal false branch) and similarly on Switch/Split In Batches. Don't mistake a wired second branch on a multi-output node for an unwired error output. → **n8n-validation-expert**
 
 ### Switch
 - [ ] **No fallback output.** Without `parameters.options.fallbackOutput: "extra"`, unmatched items drop silently. → **n8n-node-configuration** → NODE_FAMILY_GOTCHAS.md (Switch)
@@ -99,7 +99,7 @@ Pull the workflow first, then walk the list top to bottom. For each item, inspec
 - [ ] **`responseMode` left at `onReceived` for a request/response API.** Caller never sees the computed result; use `responseNode`. → **n8n-node-configuration** → NODE_FAMILY_GOTCHAS.md (Webhook)
 - [ ] **Generic 500 for every failure.** Map status codes: 400 validation, 401/403 auth, 409 conflict, 429 rate limit. → **n8n-node-configuration**
 - [ ] **`respondWith: "json"` body built with `JSON.stringify(...)`.** Double-encodes. Pass the object literal in expression mode. → **n8n-node-configuration** → NODE_FAMILY_GOTCHAS.md (Webhook)
-- [ ] **Fallible nodes (HTTP/DB/API) on a webhook path with no error branch.** A failure halts the workflow and the caller gets n8n's generic error. *(Until a dedicated error-handling skill lands, wire `onError: "continueErrorOutput"` + a 5xx Respond, and validate the wiring.)* → **n8n-workflow-patterns** (webhook), **n8n-validation-expert**
+- [ ] **Fallible nodes (HTTP/DB/API) on a webhook path with no error branch.** A failure halts the workflow and the caller gets n8n's generic error. Wire `onError: "continueErrorOutput"` + a 5xx Respond, and validate the wiring. → **n8n-error-handling**, **n8n-workflow-patterns** (webhook)
 
 ### HTTP Request
 - [ ] **Auth header typed into `headerParameters` instead of a credential.** Use Bearer Auth / Header Auth credentials. → **n8n-node-configuration**, **n8n-mcp-tools-expert**
