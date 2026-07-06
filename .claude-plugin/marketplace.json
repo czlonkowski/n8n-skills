@@ -27,7 +27,7 @@
         "./skills/using-n8n-mcp-skills"
       ],
       "description": "Complete bundle: 14 expert skills for building flawless n8n workflows with the n8n-mcp MCP server — and deploying the self-hosted n8n that runs them (expression syntax, MCP tools usage, workflow patterns, validation, node configuration, JavaScript code, Python code, the AI-agent Custom Code Tool, production error handling, binary/file handling, reusable sub-workflows, AI agents, multi-instance targeting, and end-to-end self-hosted deployment), plus an always-on router skill and a hooks enforcement layer that surfaces the right skill at the moment of decision.",
-      "version": "1.22.0",
+      "version": "1.23.0",
       "author": {
         "name": "Romuald Członkowski",
         "url": "https://www.aiadvisors.pl/en"

@@ -88,6 +88,8 @@ ls ~/.claude/skills/
 Download the repository and navigate to `skills/` directory. You'll need to upload each skill individually.
 
 **Step 2**: Zip each skill
+
+Prebuilt zips for every skill are attached to the [latest GitHub release](https://github.com/czlonkowski/n8n-skills/releases/latest). To build them yourself instead:
 ```bash
 cd skills
 zip -r n8n-expression-syntax.zip n8n-expression-syntax/

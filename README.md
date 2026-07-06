@@ -259,7 +259,7 @@ cp -r n8n-skills/skills/* ~/.claude/skills/
 ### Claude.ai
 
 1. Download individual skill folders from `skills/`
-2. Zip each skill folder
+2. Zip each skill folder (or grab prebuilt zips from the [latest release](https://github.com/czlonkowski/n8n-skills/releases/latest))
 3. Upload via Settings → Capabilities → Skills
 
 ### API / SDK

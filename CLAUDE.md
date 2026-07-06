@@ -40,7 +40,7 @@ n8n-skills/
 ├── hooks/                 # Enforcement layer: hooks.json + SessionStart/PreToolUse/PostToolUse scripts
 ├── evaluations/           # Test scenarios for each skill
 ├── docs/                  # Documentation
-├── dist/                  # Distribution packages
+├── dist/                  # Build output (gitignored — zips ship as GitHub Release assets, never committed; committed zips broke Desktop/Cowork plugin installs)
 ├── NOTICES                # Attribution for Apache-2.0 material adapted from n8n-io/skills
 └── .claude-plugin/        # Claude Code plugin configuration
 ```
