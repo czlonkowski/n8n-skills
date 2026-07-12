@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const retired = ["get_node_essentials", "get_node_info"];
+const ignoredDirectories = new Set([".git", "node_modules"]);
 
 const scanRetired = (text) =>
   text
@@ -18,7 +19,8 @@ async function walk(directory, extensions) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...(await walk(path, extensions)));
+    if (entry.isDirectory() && !ignoredDirectories.has(entry.name))
+      files.push(...(await walk(path, extensions)));
     else if (extensions.has(entry.name.slice(entry.name.lastIndexOf(".")))) files.push(path);
   }
   return files;
@@ -38,11 +40,14 @@ async function selfTest() {
       { line: 3, name: "get_node_info" },
     ]);
     assert.deepEqual(scanRetired("use get_node only\n"), []);
+    assert.deepEqual(scanRetired(JSON.stringify(JSON.parse('{"call":"get_node_\\u0069nfo"}'))), [
+      { line: 1, name: "get_node_info" },
+    ]);
   } finally {
     if (!basename(directory).startsWith("n8n-f017-")) throw new Error(`unsafe self-test path: ${directory}`);
     await rm(directory, { recursive: true, force: true });
   }
-  console.log("F017_SELF_TEST_OK red=2 green=1");
+  console.log("F017_SELF_TEST_OK red=3 green=1");
 }
 
 await selfTest();
@@ -106,14 +111,14 @@ for (const path of evalFiles) {
       if (!skillNames.includes(reference)) errors.push(`${relative}: unknown skill ${reference}`);
     }
   }
+  for (const hit of scanRetired(JSON.stringify(evaluation)))
+    errors.push(`${relative}:${hit.line}: retired tool ${hit.name}`);
 }
 
-for (const directory of [join(root, "skills"), join(root, "evaluations")]) {
-  for (const path of await walk(directory, new Set([".md", ".json"]))) {
-    const relative = path.slice(root.length).replaceAll("\\", "/");
-    for (const hit of scanRetired(await readFile(path, "utf8")))
-      errors.push(`${relative}:${hit.line}: retired tool ${hit.name}`);
-  }
+for (const path of await walk(root, new Set([".md"]))) {
+  const relative = path.slice(root.length).replaceAll("\\", "/");
+  for (const hit of scanRetired(await readFile(path, "utf8")))
+    errors.push(`${relative}:${hit.line}: retired tool ${hit.name}`);
 }
 
 if (errors.length > 0) {
