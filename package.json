@@ -1,0 +1,8 @@
+{
+  "name": "n8n-skills-consistency",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/consistency.mjs"
+  }
+}
