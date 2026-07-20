@@ -1,0 +1,2 @@
+*.sh text eol=lf
+hooks/run-hook.cmd text eol=lf

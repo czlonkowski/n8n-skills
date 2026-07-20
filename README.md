@@ -268,7 +268,9 @@ codex plugin add n8n-mcp-skills@n8n-mcp-skills
 Codex reads `.codex-plugin/plugin.json`, loads skills progressively, and uses
 `hooks/hooks-codex.json`. The Codex hook configuration deliberately excludes
 `SessionStart` skill injection while retaining the tool-aware `PreToolUse` and
-`PostToolUse` safeguards.
+`PostToolUse` safeguards. Those Bash-based tool hooks run through
+`hooks/run-hook.cmd`, which locates Git Bash on Windows instead of asking the
+operating system to open a `.sh` file.
 
 ### Claude.ai
 

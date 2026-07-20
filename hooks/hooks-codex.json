@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/get-node.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/get-node.sh"
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/create-workflow.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/create-workflow.sh"
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/update-workflow.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/update-workflow.sh"
           }
         ]
       },
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/validate-workflow.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/validate-workflow.sh"
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/test-workflow.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/test-workflow.sh"
           }
         ]
       },
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/instances.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/instances.sh"
           }
         ]
       },
@@ -60,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/manage-credentials.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" pre-tool-use/manage-credentials.sh"
           }
         ]
       }
@@ -71,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${PLUGIN_ROOT}/hooks/post-tool-use/validate-workflow.sh"
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" post-tool-use/validate-workflow.sh"
           }
         ]
       }

@@ -38,7 +38,7 @@ n8n-skills/
 │   ├── n8n-multi-instance/
 │   ├── n8n-self-hosting/         # Deployment/ops skill (deploy n8n to a VM); not in the router/hooks flow
 │   └── using-n8n-mcp-skills/  # Router skill (SessionStart on Claude; native activation on Codex)
-├── hooks/                 # Platform hook configs + SessionStart/PreToolUse/PostToolUse scripts
+├── hooks/                 # Platform configs, cross-platform runner, and lifecycle hook scripts
 ├── evaluations/           # Test scenarios for each skill
 ├── tests/                 # Dependency-free configuration checks
 ├── docs/                  # Documentation
@@ -47,7 +47,7 @@ n8n-skills/
 └── .claude-plugin/        # Claude Code plugin configuration
 ```
 
-**Enforcement layer (hooks/):** the plugin ships hooks that surface the right skill at the moment of decision. Claude Code uses `hooks/hooks.json`, where `session-start.sh` injects the `using-n8n-mcp-skills` router every session. Codex uses `hooks/hooks-codex.json`, which intentionally omits `SessionStart` because Codex natively discovers and loads matching skills; injecting the complete router as well would duplicate it in context. Both platforms retain the tool-aware hooks: PreToolUse hooks fire node-specific reminders on `get_node`, one-shot reminders on create/update/validate/test, and one-shot multi-instance/credential reminders on `n8n_instances`/`n8n_manage_credentials`; the PostToolUse hook parses `validate_workflow`'s node JSON and routes to the relevant skills. Hooks run only in plugin installs (not Claude.ai zip uploads), fail open, and never block a tool call. Attribution for the adapted scripts lives in `NOTICES` and the script headers — never inside agent-facing SKILL.md content.
+**Enforcement layer (hooks/):** the plugin ships hooks that surface the right skill at the moment of decision. Claude Code uses `hooks/hooks.json`, where `session-start.sh` injects the `using-n8n-mcp-skills` router every session. Codex uses `hooks/hooks-codex.json`, which intentionally omits `SessionStart` because Codex natively discovers and loads matching skills; injecting the complete router as well would duplicate it in context. Both platforms retain the tool-aware hooks: PreToolUse hooks fire node-specific reminders on `get_node`, one-shot reminders on create/update/validate/test, and one-shot multi-instance/credential reminders on `n8n_instances`/`n8n_manage_credentials`; the PostToolUse hook parses `validate_workflow`'s node JSON and routes to the relevant skills. Codex runs those Bash scripts through `hooks/run-hook.cmd` so Windows uses Git Bash rather than opening `.sh` files through file association. Hooks run only in plugin installs (not Claude.ai zip uploads), fail open, and never block a tool call. Attribution for the adapted scripts lives in `NOTICES` and the script headers — never inside agent-facing SKILL.md content.
 
 ## The 14 Skills
 
