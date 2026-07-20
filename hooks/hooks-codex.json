@@ -1,0 +1,80 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^mcp__.*__get_node$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/get-node.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__n8n_create_workflow$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/create-workflow.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__(n8n_update_partial_workflow|n8n_update_full_workflow)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/update-workflow.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__(validate_workflow|n8n_validate_workflow)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/validate-workflow.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__n8n_test_workflow$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/test-workflow.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__n8n_instances$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/instances.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.*__n8n_manage_credentials$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/pre-tool-use/manage-credentials.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^mcp__.*__validate_workflow$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/post-tool-use/validate-workflow.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -210,11 +210,11 @@ Deploy a production self-hosted n8n end-to-end to a fresh Linux VM.
 
 Beyond the capability skills, the plugin ships an **always-on enforcement layer** so the right guidance surfaces at the moment of decision — not only when a query happens to match a skill description.
 
-- **Router skill (`using-n8n-mcp-skills`)** — loaded into every session by a `SessionStart` hook. It routes you to the right skill, summarizes every n8n-mcp tool, and states the cross-cutting rules. It re-fires on resume/clear/compact so it survives context compaction.
+- **Router skill (`using-n8n-mcp-skills`)** — loaded into every Claude Code session by a `SessionStart` hook. It routes you to the right skill, summarizes every n8n-mcp tool, and states the cross-cutting rules. It re-fires on resume/clear/compact so it survives context compaction. Codex discovers and loads this skill natively, so its platform-specific hook configuration intentionally omits `SessionStart` to avoid injecting the full router twice.
 - **PreToolUse hooks** — before high-impact n8n-mcp calls, a short reminder points at the relevant skill. Looking up a Set, Code, Merge, Loop Over Items, DateTime, Data Table, or AI Agent node via `get_node` fires a node-specific reminder (and re-fires each time, because a re-lookup usually means you're reconsidering the same decision). Calls to `n8n_instances` and `n8n_manage_credentials` fire one-shot reminders pointing at the multi-instance and credential-discipline skills.
 - **PostToolUse hook** — after `validate_workflow`, it inspects the workflow's node types and routes you to the skills that own the remaining risks, with the reminder that *validation passing is necessary, not sufficient*.
 
-Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (individual skill uploads) the skills still activate by description — the pack degrades gracefully, just without the proactive nudges. Every hook fails open and never blocks a tool call.
+Hooks run only in the **Claude Code / Codex plugin** install. Claude Code uses `hooks/hooks.json`, including the router-injection hook. Codex uses `hooks/hooks-codex.json`: it keeps the tool-aware `PreToolUse` and `PostToolUse` guards but omits the redundant skill-injection hook. On Claude.ai (individual skill uploads) the skills still activate by description — the pack degrades gracefully, just without the proactive nudges. Every hook fails open and never blocks a tool call.
 
 ---
 
@@ -223,7 +223,7 @@ Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (indi
 ### Prerequisites
 
 1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
-2. **Claude Code**, Claude.ai, or Claude API access
+2. **Claude Code**, Codex, Claude.ai, or Claude API access
 3. `.mcp.json` configured with n8n-mcp server
 
 ### Claude Code
@@ -255,6 +255,20 @@ cp -r n8n-skills/skills/* ~/.claude/skills/
 # 3. Reload Claude Code
 # Skills will activate automatically
 ```
+
+### Codex
+
+Install the repository as a Codex marketplace and then install the plugin:
+
+```bash
+codex plugin marketplace add czlonkowski/n8n-skills --ref main
+codex plugin add n8n-mcp-skills@n8n-mcp-skills
+```
+
+Codex reads `.codex-plugin/plugin.json`, loads skills progressively, and uses
+`hooks/hooks-codex.json`. The Codex hook configuration deliberately excludes
+`SessionStart` skill injection while retaining the tool-aware `PreToolUse` and
+`PostToolUse` safeguards.
 
 ### Claude.ai
 

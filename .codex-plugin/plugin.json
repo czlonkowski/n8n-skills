@@ -1,0 +1,41 @@
+{
+  "name": "n8n-mcp-skills",
+  "version": "1.25.0",
+  "description": "Expert skills for building n8n workflows with n8n-mcp, with tool-aware hooks for Codex",
+  "author": {
+    "name": "Romuald Członkowski",
+    "url": "https://www.aiadvisors.pl/en"
+  },
+  "homepage": "https://github.com/czlonkowski/n8n-skills",
+  "repository": "https://github.com/czlonkowski/n8n-skills",
+  "license": "MIT",
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "mcp",
+    "validation",
+    "expressions",
+    "code",
+    "javascript",
+    "python"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks-codex.json",
+  "interface": {
+    "displayName": "n8n MCP Skills",
+    "shortDescription": "Build reliable n8n workflows with n8n-mcp",
+    "longDescription": "Expert workflow, node configuration, validation, code, AI agent, error handling, and self-hosting guidance for n8n-mcp.",
+    "developerName": "Romuald Członkowski",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/czlonkowski/n8n-skills",
+    "defaultPrompt": [
+      "Build and validate an n8n workflow.",
+      "Help me configure an n8n node correctly."
+    ]
+  }
+}

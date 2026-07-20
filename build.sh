@@ -43,10 +43,11 @@ for skill in "${SKILLS[@]}"; do
     (cd skills && zip -rq "../$DIST_DIR/${skill}-v${VERSION}.zip" "${skill}/" -x "*.DS_Store")
 done
 
-# Build complete bundle (for Claude Code)
-echo "📦 Building complete bundle for Claude Code..."
+# Build complete plugin bundle (for Claude Code and Codex)
+echo "📦 Building complete plugin bundle for Claude Code and Codex..."
 zip -rq "$DIST_DIR/n8n-mcp-skills-v${VERSION}.zip" \
     .claude-plugin/ \
+    .codex-plugin/ \
     hooks/ \
     README.md \
     LICENSE \
