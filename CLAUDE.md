@@ -125,7 +125,7 @@ The n8n-mcp server provides these unified tools:
 
 ### Workflow Management
 - `n8n_create_workflow` - Create new workflows
-- `n8n_update_partial_workflow` - Incremental updates (19 operation types including `patchNodeField`, `activateWorkflow`, `transferWorkflow`)
+- `n8n_update_partial_workflow` - Incremental updates (20 operation types including `patchNodeField`, `activateWorkflow`, `transferWorkflow`)
 - `n8n_validate_workflow` - Validate by ID
 - `n8n_autofix_workflow` - Auto-fix common issues
 - `n8n_deploy_template` - Deploy template to n8n instance
