@@ -5,9 +5,34 @@
 set -e
 
 DIST_DIR="dist"
-VERSION="1.26.0"
 
-echo "🔨 Building n8n-skills distribution packages..."
+# Read the version from the manifests rather than hardcoding it here — a stale
+# constant silently mislabels every zip.
+read_version() {
+    grep -m1 '"version"' "$1" | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/'
+}
+
+VERSION=$(read_version .claude-plugin/plugin.json)
+AGENT_PLUGIN_VERSION=$(read_version plugin.json)
+
+if [ -z "$VERSION" ]; then
+    echo "❌ Could not read version from .claude-plugin/plugin.json"
+    exit 1
+fi
+
+if [ -z "$AGENT_PLUGIN_VERSION" ]; then
+    echo "❌ Could not read version from plugin.json"
+    exit 1
+fi
+
+# The pack carries two manifests for two ecosystems. They describe the same
+# artifact, so they must never disagree.
+if [ "$VERSION" != "$AGENT_PLUGIN_VERSION" ]; then
+    echo "❌ Version mismatch: .claude-plugin/plugin.json is $VERSION, plugin.json is $AGENT_PLUGIN_VERSION"
+    exit 1
+fi
+
+echo "🔨 Building n8n-skills distribution packages (v${VERSION})..."
 
 # Create dist directory if it doesn't exist
 mkdir -p "$DIST_DIR"
@@ -20,23 +45,23 @@ rm -f "$DIST_DIR"/*.zip
 # Structure: skill-name/SKILL.md at zip root (not nested under skills/)
 echo "📦 Building individual skill zips for Claude.ai..."
 
-SKILLS=(
-    "n8n-expression-syntax"
-    "n8n-mcp-tools-expert"
-    "n8n-workflow-patterns"
-    "n8n-validation-expert"
-    "n8n-node-configuration"
-    "n8n-code-javascript"
-    "n8n-code-python"
-    "n8n-code-tool"
-    "n8n-error-handling"
-    "n8n-binary-and-data"
-    "n8n-subworkflows"
-    "n8n-agents"
-    "n8n-multi-instance"
-    "n8n-self-hosting"
-    "using-n8n-mcp-skills"
-)
+# Derive the skill list from the tree so a newly added skill cannot be silently
+# left out of a release. The rule matches Agent Plugins discovery: an immediate
+# child of skills/ holding a SKILL.md is one skill.
+SKILLS=()
+for dir in skills/*/; do
+    name=$(basename "$dir")
+    case "$name" in
+        *-workspace) continue ;;
+    esac
+    [ -f "${dir}SKILL.md" ] || continue
+    SKILLS+=("$name")
+done
+
+if [ ${#SKILLS[@]} -eq 0 ]; then
+    echo "❌ No skills found under skills/"
+    exit 1
+fi
 
 for skill in "${SKILLS[@]}"; do
     echo "   - $skill"
@@ -47,6 +72,8 @@ done
 echo "📦 Building complete bundle for Claude Code..."
 zip -rq "$DIST_DIR/n8n-mcp-skills-v${VERSION}.zip" \
     .claude-plugin/ \
+    plugin.json \
+    mcp.json \
     hooks/ \
     README.md \
     LICENSE \

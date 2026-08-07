@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "n8n-mcp": {
+      "type": "streamable-http",
+      "url": "https://api.n8n-mcp.com/mcp"
+    }
+  }
+}
