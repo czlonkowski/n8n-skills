@@ -1,11 +1,14 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "n8n-mcp-skills",
   "version": "1.29.0",
-  "description": "Expert skills for building n8n workflows with n8n-mcp, with a hooks enforcement layer",
+  "description": "Expert skills for building n8n workflows with the n8n-mcp MCP server",
   "author": {
     "name": "Romuald Członkowski",
     "url": "https://www.aiadvisors.pl/en"
   },
+  "homepage": "https://github.com/czlonkowski/n8n-skills",
+  "repository": "https://github.com/czlonkowski/n8n-skills",
   "license": "MIT",
   "keywords": [
     "n8n",
@@ -17,7 +20,5 @@
     "code",
     "javascript",
     "python"
-  ],
-  "repository": "https://github.com/czlonkowski/n8n-skills",
-  "homepage": "https://github.com/czlonkowski/n8n-skills"
+  ]
 }

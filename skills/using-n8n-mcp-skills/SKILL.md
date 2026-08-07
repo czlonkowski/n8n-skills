@@ -22,9 +22,12 @@ but breaks in production.
 
 1. **Invoke the relevant skill before any n8n action** — not just before MCP calls.
    Before writing an expression, configuring a node, designing a workflow, wiring a
-   connection, or writing Code, invoke the matching skill. The PreToolUse hooks remind
-   you on the highest-impact tool calls *only when the plugin bundle is installed*; on
-   Claude.ai (plain skill uploads, no hooks) the responsibility is entirely yours.
+   connection, or writing Code, invoke the matching skill. PreToolUse hooks remind you on
+   the highest-impact tool calls, but they exist **only in the Claude Code plugin
+   install**. Everywhere else — Claude.ai skill uploads, and any client that loads this
+   pack as an Agent Plugin (Codex, Cursor, Copilot and the rest) — nothing nudges you and
+   the responsibility is entirely yours. Assume you are un-hooked unless you have seen a
+   hook fire this session.
 2. **Validate AND verify before activating.** Run `validate_workflow` (or
    `n8n_validate_workflow` by id) before you activate, and call `n8n_get_workflow` after
    every create or update to inspect the `connections` object. Validation alone misses
@@ -103,6 +106,14 @@ If you catch yourself thinking any of these, stop and invoke the named skill fir
 
 Qualified names look like `mcp__<server>__<tool>` (`<server>` is usually `n8n-mcp`). This
 closes the gap where a tool's full description isn't loaded until first use.
+
+**Two tiers, and how to tell which one you have.** The documentation and validation tools
+below work offline and are always present. The `n8n_*` management tools talk to a live
+instance and appear **only when the server has `N8N_API_URL` and `N8N_API_KEY` in its
+environment** — exported before the client starts, because a plugin manifest cannot carry
+secrets. So if the `n8n_*` tools are absent, nothing is broken and there is nothing to
+retry: say so plainly and point the user at those two variables. `n8n_health_check`
+confirms a working connection and returns the resolved instance.
 
 **Discovery & docs**
 - `tools_documentation` — meta-docs for every tool; `{topic:"ai_agents_guide", depth:"full"}` for the agent guide.
