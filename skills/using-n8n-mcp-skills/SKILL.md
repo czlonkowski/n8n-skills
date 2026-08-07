@@ -108,12 +108,18 @@ Qualified names look like `mcp__<server>__<tool>` (`<server>` is usually `n8n-mc
 closes the gap where a tool's full description isn't loaded until first use.
 
 **Two tiers, and how to tell which one you have.** The documentation and validation tools
-below work offline and are always present. The `n8n_*` management tools talk to a live
-instance and appear **only when the server has `N8N_API_URL` and `N8N_API_KEY` in its
-environment** — exported before the client starts, because a plugin manifest cannot carry
-secrets. So if the `n8n_*` tools are absent, nothing is broken and there is nothing to
-retry: say so plainly and point the user at those two variables. `n8n_health_check`
-confirms a working connection and returns the resolved instance.
+below work offline and are always present. The `n8n_*` management tools talk to a live n8n
+instance and appear **only once one is connected**. If they are absent, nothing is broken
+and there is nothing to retry — say so plainly and point the user at the right fix for
+their install:
+
+- **Hosted (`https://api.n8n-mcp.com/mcp`)** — sign in through the OAuth prompt the client
+  shows on first use, then connect the n8n instance in the dashboard. No environment
+  variables, and no API key pasted into a config file.
+- **Self-hosted (`npx n8n-mcp`, Docker)** — the server needs `N8N_API_URL` and
+  `N8N_API_KEY` in its environment, exported before the client starts.
+
+`n8n_health_check` confirms a working connection and returns the resolved instance.
 
 **Discovery & docs**
 - `tools_documentation` — meta-docs for every tool; `{topic:"ai_agents_guide", depth:"full"}` for the agent guide.

@@ -20,6 +20,11 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
+if [ -z "$AGENT_PLUGIN_VERSION" ]; then
+    echo "❌ Could not read version from plugin.json"
+    exit 1
+fi
+
 # The pack carries two manifests for two ecosystems. They describe the same
 # artifact, so they must never disagree.
 if [ "$VERSION" != "$AGENT_PLUGIN_VERSION" ]; then
