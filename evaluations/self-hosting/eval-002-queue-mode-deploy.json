@@ -1,17 +1,20 @@
 {
   "id": "self-hosting-002",
-  "skills": ["n8n-self-hosting"],
+  "skills": [
+    "n8n-self-hosting"
+  ],
   "query": "Deploy n8n in queue mode on my server (root@203.0.113.10) at automation.acme.io — we run a lot of executions and need workers. Timezone Europe/Warsaw.",
   "expected_behavior": [
     "Activate n8n-self-hosting and proceed in queue mode (user explicitly asked)",
     "Use the queue template (docker-compose.queue.yml): caddy + postgres + redis + n8n main + n8n-worker replicas",
     "Explain queue architecture: main enqueues, workers execute; Redis = queue; Postgres = shared DB (required — SQLite not supported in queue mode)",
     "Stress that the SAME N8N_ENCRYPTION_KEY must reach main AND every worker (the x-n8n anchor handles it), or workers can't decrypt credentials",
+    "State the env-parity rule: only the public-URL/proxy vars are main-only; every behavioural var (DB, queue, modules, binary-data mode) belongs in the shared x-n8n-env anchor so workers inherit it",
     "Generate fresh secrets ON the box: N8N_ENCRYPTION_KEY plus POSTGRES_PASSWORD and POSTGRES_NON_ROOT_PASSWORD (openssl rand), written only into .env (chmod 600)",
     "Keep internal services private: do not publish 5678 / 5432 / 6379 to the host; only Caddy is public",
     "Preflight DNS A record for automation.acme.io → 203.0.113.10 and ports 80/443 before launch",
     "Note queue RAM needs (~4 GB floor, ~1–2 GB per worker) and how to scale workers (replicas / --scale)",
-    "Verify: postgres+redis healthy, main+workers Up, cert obtained, https://.../healthz ok, a worker logs an executed job"
+    "Verify: postgres+redis healthy, main+workers Up, cert obtained, https://.../healthz ok, a worker logs an executed job, and diff the main's env against a worker's (only public-URL vars should differ)"
   ],
   "expected_content": [
     "EXECUTIONS_MODE=queue",
