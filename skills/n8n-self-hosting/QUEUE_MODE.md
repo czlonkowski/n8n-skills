@@ -87,6 +87,15 @@ break on any upgrade, and the agent knowledge base additionally needs the sandbo
 (`N8N_AGENTS_AI_SANDBOX_*`, `DAYTONA_*`) on the workers too. If the user's main use of n8n is
 agents, single/regular mode is the honest recommendation.
 
+## Instance-wide OAuth apps (credential overwrites)
+
+If you register a shared OAuth app with `CREDENTIALS_OVERWRITE_*`, only the **main** serves the
+registration endpoint, but `CREDENTIALS_OVERWRITE_PERSISTENCE=true` belongs on the workers too:
+a save is broadcast over pubsub so running workers reload immediately, yet a worker that
+**cold-starts** without the flag never reads the stored row and silently loses the overwrite.
+That is the classic parity failure from the section above — fine in the editor, broken in
+execution. See `CREDENTIAL_OVERWRITES.md`.
+
 ## Scaling the workers
 
 - Each worker runs `worker --concurrency=5` (5 simultaneous executions per worker; the flag's
