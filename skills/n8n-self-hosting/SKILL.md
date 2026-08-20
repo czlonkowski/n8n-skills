@@ -1,6 +1,6 @@
 ---
 name: n8n-self-hosting
-description: Deploy a production self-hosted n8n end-to-end to a fresh Linux VM over SSH, using Docker Compose behind a Caddy reverse proxy with automatic HTTPS. Use whenever the user wants to self-host, install, set up, provision, or deploy n8n on their own server/VPS/box (Hetzner, DigitalOcean, AWS EC2, bare metal, etc.) — in either single/regular mode or queue mode with workers — or to update, back up, restore, or harden such an instance. This is for SELF-HOSTED n8n (Docker), not n8n Cloud and not building workflows. The skill makes the agent ask single-vs-queue first, collect the domain/SSH/timezone inputs, generate fresh secrets on the box, and bring the stack up with TLS. Trigger on "deploy n8n", "self-host n8n", "install n8n on my server", "n8n docker compose", "n8n queue mode / workers / scaling", "n8n reverse proxy / SSL", or "back up / update my n8n".
+description: Deploy a production self-hosted n8n end-to-end to a fresh Linux VM over SSH, using Docker Compose behind a Caddy reverse proxy with automatic HTTPS. Use whenever the user wants to self-host, install, set up, provision, or deploy n8n on their own server/VPS/box (Hetzner, DigitalOcean, AWS EC2, bare metal, etc.) — in either single/regular mode or queue mode with workers — or to update, back up, restore, or harden such an instance. This is for SELF-HOSTED n8n (Docker), not n8n Cloud and not building workflows. The skill makes the agent ask single-vs-queue first, collect the domain/SSH/timezone inputs, generate fresh secrets on the box, and bring the stack up with TLS. Trigger on "deploy n8n", "self-host n8n", "install n8n on my server", "n8n docker compose", "n8n queue mode / workers / scaling", "n8n reverse proxy / SSL", "back up / update my n8n", or "we don't want to give every user the OAuth client secret" / "enable the Sign in with Google button" (credential overwrites).
 ---
 
 # Deploying self-hosted n8n
@@ -159,6 +159,9 @@ detail; `SECURITY.md` covers secret generation and hardening; `DAY2.md` covers u
 - **`SINGLE_MODE.md`** — single-instance specifics, SQLite vs Postgres, when to graduate to queue.
 - **`QUEUE_MODE.md`** — queue architecture, workers/concurrency/scaling, shared encryption key, the main-vs-worker **env-parity rule**, optional backend modules (`N8N_ENABLED_MODULES`, e.g. Agents), binary data (`database` mode — filesystem is unsupported in queue mode; S3/Azure = Enterprise), webhook processors, multi-main licensing.
 - **`SECURITY.md`** — generating secrets, the encryption-key rules, the full hardening checklist (telemetry off, env-access block, public API, firewall, secure cookies).
+- **`CREDENTIAL_OVERWRITES.md`** — managed OAuth: register one OAuth app instance-wide so users
+  never see a client ID/secret ("Sign in with Google" on self-hosted). The endpoint-vs-env choice,
+  the **mandatory** endpoint auth token, parent-type inheritance, persistence and worker reload.
 - **`DAY2.md`** — changing a setting (env var) safely, updating the image, backing up (encryption key + volume + Postgres), and restoring.
 - **`assets/`** — the templates: `docker-compose.single.yml`, `docker-compose.queue.yml`, `Caddyfile`, `.env.single.example`, `.env.queue.example`, `init-data.sh`.
 
