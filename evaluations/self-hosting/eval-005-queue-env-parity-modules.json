@@ -1,0 +1,23 @@
+{
+  "id": "self-hosting-005",
+  "skills": ["n8n-self-hosting"],
+  "query": "We run n8n in queue mode (1 main + 3 workers, Docker Compose, Caddy) on root@203.0.113.10. I want to turn on the new Agents feature. What do I need to change?",
+  "expected_behavior": [
+    "Activate n8n-self-hosting and read QUEUE_MODE.md before answering — modules + env parity live there",
+    "Identify N8N_ENABLED_MODULES=agents as the flag (a comma-separated opt-in list; agents is NOT on by default)",
+    "Insist the flag reaches the WORKERS as well as the main — in the template that means the shared x-n8n-env anchor, not the main service's own environment block",
+    "Explain WHY: the main serves the UI/REST so the feature looks configured there, but workers execute the workflows; with OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true even a manual test run goes to a worker",
+    "Name the characteristic symptom of getting it wrong: a TypeORM EntityMetadataNotFoundError (e.g. No metadata for \"Agent\" was found) at runtime, not at boot",
+    "Apply the change with docker compose up -d (recreating main AND workers), not via a wrapper script that runs docker compose pull — that would bundle an unplanned n8n upgrade into a settings change",
+    "Verify with an env-parity diff between main and worker containers, expecting only the public-URL/proxy vars to differ",
+    "Be honest that the docs mark queue mode as unsupported for agents, that this is unsupported territory which an upgrade can break, and that agent knowledge base additionally needs the sandbox/Daytona vars on workers"
+  ],
+  "expected_content": [
+    "N8N_ENABLED_MODULES",
+    "worker",
+    "x-n8n-env",
+    "diff"
+  ],
+  "priority": "high",
+  "notes": "Regression guard for a real production failure: the module flag was added to the main service only, the agent picker still populated from the main, and every execution of the Message an Agent node died on a worker with EntityMetadataNotFoundError. The skill must teach env parity as a rule, not just this one flag."
+}
