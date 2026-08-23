@@ -85,12 +85,13 @@ Teaches architectural patterns for building n8n workflows. Provides structure, b
 
 ## Evaluations
 
-5 scenarios (100% coverage expected):
+6 scenarios (100% coverage expected):
 1. **eval-001**: Webhook workflow structure
 2. **eval-002**: HTTP API integration pattern
 3. **eval-003**: Database sync pattern
 4. **eval-004**: AI agent workflow with tools
 5. **eval-005**: Scheduled report generation
+6. **eval-006**: Bounded Xquik public-search workflow
 
 ## Key Features
 
@@ -158,7 +159,7 @@ Common workflow composition:
 - Authentication via credentials (never hardcode!)
 - Pagination essential for large datasets
 - Rate limiting prevents API bans
-- continueOnFail: true for error handling
+- Separate `onError` output with bounded retries
 
 **Database Operations**:
 - Always use parameterized queries (SQL injection prevention)
@@ -243,7 +244,7 @@ Use `search_templates` to find examples for your use case!
 
 ## Last Updated
 
-2025-10-20
+2026-08-23
 
 ---
 

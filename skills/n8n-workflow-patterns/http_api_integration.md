@@ -1,734 +1,199 @@
-# HTTP API Integration Pattern
+# HTTP API integration pattern
 
-**Use Case**: Fetch data from REST APIs, transform it, and use it in workflows.
+Use this pattern to read a REST API, normalize its response, and send the result to another service.
 
----
-
-## Pattern Structure
-
-```
-Trigger → HTTP Request → [Transform] → [Action] → [Error Handler]
+```text
+Trigger → HTTP Request → Normalize → Action
+                    └─ error output → Handle error
 ```
 
-**Key Characteristic**: External data fetching with error handling
+Keep retrieval, transformation, and writes separate to expose validation, retries, and approval boundaries.
 
----
+## Inspect the current node first
 
-## Core Components
+Do not copy an old HTTP Request configuration. Resolve the current schema:
 
-### 1. Trigger
-**Options**:
-- **Schedule** - Periodic fetching (most common)
-- **Webhook** - Triggered by external event
-- **Manual** - On-demand execution
-
-### 2. HTTP Request Node
-**Purpose**: Call external REST APIs
-
-**Configuration**:
 ```javascript
+get_node({ nodeType: "nodes-base.httpRequest" })
+get_node({
+  nodeType: "nodes-base.httpRequest",
+  mode: "search_properties",
+  propertyQuery: "authentication"
+})
+```
+
+Repeat the property search for `query`, `pagination`, `response`, and `redirect`.
+
+Use `n8n-nodes-base.httpRequest` inside workflow JSON. On n8n-mcp 2.73.0,
+`get_node` reports HTTP Request type version 4.5. Recheck before creating a
+node because this value changes with n8n.
+
+## Configure credentials outside parameters
+
+Use an n8n credential for every secret. Never put a token into headers,
+expressions, Code nodes, workflow static data, or exported workflow JSON.
+Use `authentication: "none"` only for public APIs. Map API keys and bearer
+tokens to Header Auth, Basic auth to Basic Auth, and OAuth to OAuth2.
+
+For a header API key, create a **Header Auth** credential and select it on the
+node. Use `genericCredentialType` with `httpHeaderAuth` in its parameters.
+
+Do not invent a credential ID. Omit the `credentials` block until the real
+credential exists. With multiple n8n instances, verify the current instance
+before creating or selecting any credential.
+
+## Real example: bounded public X search
+
+This example uses Xquik's published read-only search route. It retrieves at
+most 5 pages of 20 public posts. It never writes to X.
+Xquik is an independent third-party service. Not affiliated with X Corp.
+
+Create a Header Auth credential named for Xquik. Set its header name to
+`x-api-key`. Enter the key only in the credential value field.
+
+Use these HTTP Request parameters:
+
+```json
 {
-  method: "GET",                    // GET, POST, PUT, DELETE, PATCH
-  url: "https://api.example.com/users",
-  authentication: "predefinedCredentialType",
-  sendQuery: true,
-  queryParameters: {
-    "page": "={{$json.page}}",
-    "limit": "100"
-  },
-  sendHeaders: true,
-  headerParameters: {
-    "Accept": "application/json",
-    "X-API-Version": "v1"
-  }
-}
-```
-
-### 3. Response Processing
-**Purpose**: Extract and transform API response data
-
-**Typical flow**:
-```
-HTTP Request → Code (parse) → Set (map fields) → Action
-```
-
-### 4. Action
-**Common actions**:
-- Store in database
-- Send to another API
-- Create notifications
-- Update spreadsheet
-
-### 5. Error Handler
-**Purpose**: Handle API failures gracefully
-
-**Error Trigger Workflow**:
-```
-Error Trigger → Log Error → Notify Admin → Retry Logic (optional)
-```
-
----
-
-## Common Use Cases
-
-### 1. Data Fetching & Storage
-**Flow**: Schedule → HTTP Request → Transform → Database
-
-**Example** (Fetch GitHub issues):
-```
-1. Schedule (every hour)
-2. HTTP Request
-   - Method: GET
-   - URL: https://api.github.com/repos/owner/repo/issues
-   - Auth: Bearer Token
-   - Query: state=open
-3. Code (filter by labels)
-4. Set (map to database schema)
-5. Postgres (upsert issues)
-```
-
-**Response Handling**:
-```javascript
-// Code node - filter issues
-const issues = $input.all();
-return issues
-  .filter(item => item.json.labels.some(l => l.name === 'bug'))
-  .map(item => ({
-    json: {
-      id: item.json.id,
-      title: item.json.title,
-      created_at: item.json.created_at
-    }
-  }));
-```
-
-### 2. API to API Integration
-**Flow**: Trigger → Fetch from API A → Transform → Send to API B
-
-**Example** (Jira to Slack):
-```
-1. Schedule (every 15 minutes)
-2. HTTP Request (GET Jira tickets updated today)
-3. IF (check if tickets exist)
-4. Set (format for Slack)
-5. HTTP Request (POST to Slack webhook)
-```
-
-### 3. Data Enrichment
-**Flow**: Trigger → Fetch base data → Call enrichment API → Combine → Store
-
-**Example** (Enrich contacts with company data):
-```
-1. Postgres (SELECT new contacts)
-2. Code (extract company domains)
-3. HTTP Request (call Clearbit API for each domain)
-4. Set (combine contact + company data)
-5. Postgres (UPDATE contacts with enrichment)
-```
-
-### 4. Monitoring & Alerting
-**Flow**: Schedule → Check API health → IF unhealthy → Alert
-
-**Example** (API health check):
-```
-1. Schedule (every 5 minutes)
-2. HTTP Request (GET /health endpoint)
-3. IF (status !== 200 OR response time > 2000ms)
-4. Slack (alert #ops-team)
-5. PagerDuty (create incident)
-```
-
-### 5. Batch Processing
-**Flow**: Trigger → Fetch large dataset → Split in Batches → Process → Loop
-
-**Example** (Process all users):
-```
-1. Manual Trigger
-2. HTTP Request (GET /api/users?limit=1000)
-3. Split In Batches (100 items per batch)
-4. HTTP Request (POST /api/process for each batch)
-5. Wait (2 seconds between batches - rate limiting)
-6. Loop (back to step 4 until all processed)
-```
-
----
-
-## Authentication Methods
-
-### 1. None (Public APIs)
-```javascript
-{
-  authentication: "none"
-}
-```
-
-### 2. Bearer Token (Most Common)
-**Setup**: Create credential
-```javascript
-{
-  authentication: "predefinedCredentialType",
-  nodeCredentialType: "httpHeaderAuth",
-  headerAuth: {
-    name: "Authorization",
-    value: "Bearer YOUR_TOKEN"
-  }
-}
-```
-
-**Access in workflow**:
-```javascript
-{
-  authentication: "predefinedCredentialType",
-  nodeCredentialType: "httpHeaderAuth"
-}
-```
-
-### 3. API Key (Header or Query)
-**Header auth**:
-```javascript
-{
-  sendHeaders: true,
-  headerParameters: {
-    "X-API-Key": "={{$credentials.apiKey}}"
-  }
-}
-```
-
-**Query auth**:
-```javascript
-{
-  sendQuery: true,
-  queryParameters: {
-    "api_key": "={{$credentials.apiKey}}"
-  }
-}
-```
-
-### 4. Basic Auth
-**Setup**: Create "Basic Auth" credential
-```javascript
-{
-  authentication: "predefinedCredentialType",
-  nodeCredentialType: "httpBasicAuth"
-}
-```
-
-### 5. OAuth2
-**Setup**: Create OAuth2 credential with:
-- Authorization URL
-- Token URL
-- Client ID
-- Client Secret
-- Scopes
-
-```javascript
-{
-  authentication: "predefinedCredentialType",
-  nodeCredentialType: "oAuth2Api"
-}
-```
-
----
-
-## Handling API Responses
-
-### Success Response (200-299)
-**Default**: Data flows to next node
-
-**Access response**:
-```javascript
-// Entire response
-{{$json}}
-
-// Specific fields
-{{$json.data.id}}
-{{$json.results[0].name}}
-```
-
-### Pagination
-
-#### Pattern 1: Offset-based
-```
-1. Set (initialize: page=1, has_more=true)
-2. HTTP Request (GET /api/items?page={{$json.page}})
-3. Code (check if more pages)
-4. IF (has_more === true)
-   └→ Set (increment page) → Loop to step 2
-```
-
-**Code node** (check pagination):
-```javascript
-const items = $input.first().json;
-const currentPage = $json.page || 1;
-
-return [{
-  json: {
-    items: items.results,
-    page: currentPage + 1,
-    has_more: items.next !== null
-  }
-}];
-```
-
-#### Pattern 2: Cursor-based
-```
-1. HTTP Request (GET /api/items)
-2. Code (extract next_cursor)
-3. IF (next_cursor exists)
-   └→ Set (cursor={{$json.next_cursor}}) → Loop to step 1
-```
-
-#### Pattern 3: Link Header
-```javascript
-// Code node - parse Link header
-const linkHeader = $input.first().json.headers['link'];
-const hasNext = linkHeader && linkHeader.includes('rel="next"');
-
-return [{
-  json: {
-    items: $input.first().json.body,
-    has_next: hasNext,
-    next_url: hasNext ? parseNextUrl(linkHeader) : null
-  }
-}];
-```
-
-### Error Responses (400-599)
-
-**Configure HTTP Request**:
-```javascript
-{
-  continueOnFail: true,  // Don't stop workflow on error
-  ignoreResponseCode: true  // Get response even on error
-}
-```
-
-**Handle errors**:
-```
-HTTP Request (continueOnFail: true)
-  → IF (check error)
-    ├─ [Success Path]
-    └─ [Error Path] → Log → Retry or Alert
-```
-
-**IF condition**:
-```javascript
-{{$json.error}} is empty
-// OR
-{{$json.statusCode}} < 400
-```
-
----
-
-## Rate Limiting
-
-### Pattern 1: Wait Between Requests
-```
-Split In Batches (1 item per batch)
-  → HTTP Request
-  → Wait (1 second)
-  → Loop
-```
-
-### Pattern 2: Exponential Backoff
-```javascript
-// Code node
-const maxRetries = 3;
-let retryCount = $json.retryCount || 0;
-
-if ($json.error && retryCount < maxRetries) {
-  const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
-
-  return [{
-    json: {
-      ...$json,
-      retryCount: retryCount + 1,
-      waitTime: delay
-    }
-  }];
-}
-```
-
-### Pattern 3: Respect Rate Limit Headers
-```javascript
-// Code node - check rate limit
-const headers = $input.first().json.headers;
-const remaining = parseInt(headers['x-ratelimit-remaining'] || '999');
-const resetTime = parseInt(headers['x-ratelimit-reset'] || '0');
-
-if (remaining < 10) {
-  const now = Math.floor(Date.now() / 1000);
-  const waitSeconds = resetTime - now;
-
-  return [{
-    json: {
-      shouldWait: true,
-      waitSeconds: Math.max(waitSeconds, 0)
-    }
-  }];
-}
-
-return [{ json: { shouldWait: false } }];
-```
-
----
-
-## Request Configuration
-
-### GET Request
-```javascript
-{
-  method: "GET",
-  url: "https://api.example.com/users",
-  sendQuery: true,
-  queryParameters: {
-    "page": "1",
-    "limit": "100",
-    "filter": "active"
-  }
-}
-```
-
-### POST Request (JSON Body)
-```javascript
-{
-  method: "POST",
-  url: "https://api.example.com/users",
-  sendBody: true,
-  bodyParametersJson: JSON.stringify({
-    name: "={{$json.name}}",
-    email: "={{$json.email}}",
-    role: "user"
-  })
-}
-```
-
-### POST Request (Form Data)
-```javascript
-{
-  method: "POST",
-  url: "https://api.example.com/upload",
-  sendBody: true,
-  bodyParametersUi: {
-    parameter: [
-      { name: "file", value: "={{$json.fileData}}" },
-      { name: "filename", value: "={{$json.filename}}" }
+  "method": "GET",
+  "url": "https://xquik.com/api/v1/x/tweets/search",
+  "authentication": "genericCredentialType",
+  "genericAuthType": "httpHeaderAuth",
+  "sendQuery": true,
+  "specifyQuery": "keypair",
+  "queryParameters": {
+    "parameters": [
+      { "name": "q", "value": "n8n automation" },
+      { "name": "queryType", "value": "Latest" },
+      { "name": "mode", "value": "standard" },
+      { "name": "limit", "value": "20" }
     ]
   },
-  sendHeaders: true,
-  headerParameters: {
-    "Content-Type": "multipart/form-data"
-  }
-}
-```
-
-### PUT/PATCH Request (Update)
-```javascript
-{
-  method: "PATCH",
-  url: "https://api.example.com/users/={{$json.userId}}",
-  sendBody: true,
-  bodyParametersJson: JSON.stringify({
-    status: "active",
-    last_updated: "={{$now}}"
-  })
-}
-```
-
-### DELETE Request
-```javascript
-{
-  method: "DELETE",
-  url: "https://api.example.com/users/={{$json.userId}}"
-}
-```
-
----
-
-## Error Handling Patterns
-
-### Pattern 1: Retry on Failure
-```
-HTTP Request (continueOnFail: true)
-  → IF (error occurred)
-    └→ Wait (5 seconds)
-    └→ HTTP Request (retry)
-```
-
-### Pattern 2: Fallback API
-```
-HTTP Request (Primary API, continueOnFail: true)
-  → IF (failed)
-    └→ HTTP Request (Fallback API)
-```
-
-### Pattern 3: Error Trigger Workflow
-**Main Workflow**:
-```
-HTTP Request → Process Data
-```
-
-**Error Workflow**:
-```
-Error Trigger
-  → Set (extract error details)
-  → Slack (alert team)
-  → Database (log error for analysis)
-```
-
-### Pattern 4: Circuit Breaker
-```javascript
-// Code node - circuit breaker logic
-const failures = $json.recentFailures || 0;
-const threshold = 5;
-
-if (failures >= threshold) {
-  throw new Error('Circuit breaker open - too many failures');
-}
-
-return [{ json: { canProceed: true } }];
-```
-
----
-
-## Response Transformation
-
-### Extract Nested Data
-```javascript
-// Code node
-const response = $input.first().json;
-
-return response.data.items.map(item => ({
-  json: {
-    id: item.id,
-    name: item.attributes.name,
-    email: item.attributes.contact.email
-  }
-}));
-```
-
-### Flatten Arrays
-```javascript
-// Code node - flatten nested array
-const items = $input.all();
-const flattened = items.flatMap(item =>
-  item.json.results.map(result => ({
-    json: {
-      parent_id: item.json.id,
-      ...result
+  "options": {
+    "timeout": 20000,
+    "redirect": { "redirect": { "followRedirects": false } },
+    "sendCredentialsOnCrossOriginRedirect": false,
+    "response": { "response": { "responseFormat": "json" } },
+    "pagination": {
+      "pagination": {
+        "paginationMode": "updateAParameterInEachRequest",
+        "parameters": {
+          "parameters": [
+            {
+              "type": "qs",
+              "name": "cursor",
+              "value": "={{ $response.body.next_cursor }}"
+            }
+          ]
+        },
+        "paginationCompleteWhen": "other",
+        "completeExpression": "={{ !$response.body.has_next_page || !$response.body.next_cursor }}",
+        "limitPagesFetched": true,
+        "maxRequests": 5,
+        "requestInterval": 250
+      }
     }
-  }))
-);
-
-return flattened;
-```
-
-### Combine Multiple API Responses
-```
-HTTP Request 1 (users)
-  → Set (store users)
-  → HTTP Request 2 (orders for each user)
-  → Merge (combine users + orders)
-```
-
----
-
-## Testing & Debugging
-
-### 1. Test with Manual Trigger
-Replace Schedule with Manual Trigger for testing
-
-### 2. Use Postman/Insomnia First
-- Test API outside n8n
-- Understand response structure
-- Verify authentication
-
-### 3. Log Responses
-```javascript
-// Code node - log for debugging
-console.log('API Response:', JSON.stringify($input.first().json, null, 2));
-return $input.all();
-```
-
-### 4. Check Execution Data
-- View node output in n8n UI
-- Check headers, body, status code
-- Verify data structure
-
-### 5. Use Binary Data Properly
-For file downloads:
-```javascript
-{
-  method: "GET",
-  url: "https://api.example.com/download/file.pdf",
-  responseFormat: "file",  // Important for binary data
-  outputPropertyName: "data"
+  }
 }
 ```
 
----
+Keep `mode=standard` when using the returned cursor. Choose `limit` and
+`maxRequests` whose product does not exceed the user's bound. Do not paginate
+when one page is enough. The API may return fewer items than requested.
+For offset APIs, update the page or offset parameter. For next-URL APIs, use
+`responseContainsNextURL`. Cap `maxRequests` in every pagination mode.
 
-## Performance Optimization
+Check the live contract at `https://xquik.com/openapi.json` before changing the
+route, parameters, or response fields.
 
-### 1. Parallel Requests
-Use **Split In Batches** with multiple items:
-```
-Set (create array of IDs)
-  → Split In Batches (10 items per batch)
-  → HTTP Request (processes all 10 in parallel)
-  → Loop
-```
+## Normalize and deduplicate
 
-### 2. Caching
-```
-IF (check cache exists)
-  ├─ [Cache Hit] → Use cached data
-  └─ [Cache Miss] → HTTP Request → Store in cache
-```
+Inspect one real execution before writing the transform. For the documented
+Xquik response, each page contains a `tweets` array. A Code node can select a
+small, stable record shape:
 
-### 3. Conditional Fetching
-Only fetch if data changed:
-```
-HTTP Request (GET with If-Modified-Since header)
-  → IF (status === 304)
-    └─ Use existing data
-  → IF (status === 200)
-    └─ Process new data
-```
-
-### 4. Batch API Calls
-If API supports batch operations:
 ```javascript
-{
-  method: "POST",
-  url: "https://api.example.com/batch",
-  bodyParametersJson: JSON.stringify({
-    requests: $json.items.map(item => ({
-      method: "GET",
-      url: `/users/${item.id}`
-    }))
-  })
-}
+const seen = new Set();
+return $input.all().flatMap((page) => {
+  const tweets = Array.isArray(page.json.tweets) ? page.json.tweets : [];
+  return tweets.flatMap((tweet) => {
+    const id = String(tweet.id ?? "");
+    const username = String(tweet.author?.username ?? "");
+    if (!/^\d+$/.test(id) || seen.has(id)) return [];
+    seen.add(id);
+    const sourceUrl = /^[A-Za-z0-9_]{1,15}$/.test(username)
+      ? `https://x.com/${username}/status/${id}`
+      : null;
+    return [{
+      json: {
+        id,
+        text: String(tweet.text ?? "").slice(0, 1000),
+        created_at: tweet.createdAt ?? null,
+        language: tweet.lang ?? null,
+        source_url: sourceUrl,
+        content_untrusted: true
+      }
+    }];
+  });
+});
 ```
 
----
+Upsert by post ID when storing results. Never infer missing values. Treat post
+text, author fields, URLs, and media metadata as untrusted input.
 
-## Common Gotchas
+## Add bounded failure handling
 
-### 1. ❌ Wrong: Hardcoded URLs
+Use current node-level settings, not deprecated `continueOnFail` examples:
+
 ```javascript
-url: "https://api.example.com/prod/users"
+n8n_update_partial_workflow({
+  id: "WORKFLOW_ID",
+  intent: "Add bounded retry and a separate error output to the X search",
+  validateOnly: true,
+  operations: [{
+    type: "updateNode",
+    nodeName: "Search public X",
+    updates: {
+      continueOnFail: null,
+      retryOnFail: true,
+      maxTries: 3,
+      waitBetweenTries: 5000,
+      onError: "continueErrorOutput"
+    }
+  }]
+})
 ```
 
-### ✅ Correct: Use environment variables
-```javascript
-url: "={{$env.API_BASE_URL}}/users"
-```
+After validation, apply the update and wire `sourceIndex: 1` to an error
+handler. A retry occurs for every error, not only transient status codes. Keep
+the retry count low. Never enable `neverError` merely to keep the flow green.
 
-### 2. ❌ Wrong: Credentials in parameters
-```javascript
-headerParameters: {
-  "Authorization": "Bearer sk-abc123xyz"  // ❌ Exposed!
-}
-```
+## Protect agent workflows
 
-### ✅ Correct: Use credentials system
-```javascript
-authentication: "predefinedCredentialType",
-nodeCredentialType: "httpHeaderAuth"
-```
+Third-party API content can carry prompt injection. If results enter an AI
+Agent, expose only the normalized fields the agent needs. Keep read tools
+separate from write tools. Require human review before any post, deletion,
+message, payment, or other irreversible action.
 
-### 3. ❌ Wrong: No error handling
-```javascript
-HTTP Request → Process (fails if API down)
-```
+## Validate before execution
 
-### ✅ Correct: Handle errors
-```javascript
-HTTP Request (continueOnFail: true) → IF (error) → Handle
-```
+1. Run `validate_node` on the exact HTTP Request parameters.
+2. Run `validate_workflow` on the complete graph.
+3. Preview updates with `validateOnly: true`.
+4. Confirm the page bound, expected cost, and safe test query with the user.
+5. Run `n8n_test_workflow` only after that confirmation.
+6. Inspect the output shape, duplicates, pagination stop, and error route.
+7. Verify no write node can run during the read test.
 
-### 4. ❌ Wrong: Blocking on large responses
-Processing 10,000 items synchronously
+## Common failures
 
-### ✅ Correct: Use batching
-```
-Split In Batches (100 items) → Process → Loop
-```
+| Failure | Fix |
+|---|---|
+| Secret embedded in node JSON | Move it to an n8n credential. |
+| Unbounded cursor loop | Set `limitPagesFetched` and `maxRequests`. |
+| Redirect forwards a custom header | Disable redirects and cross-origin credential forwarding. |
+| HTTP errors treated as data | Use `onError: "continueErrorOutput"` and wire `main[1]`. |
 
----
-
-## Real Template Examples
-
-From n8n template library (892 API integration templates):
-
-**GitHub to Notion**:
-```
-Schedule → HTTP Request (GitHub API) → Transform → HTTP Request (Notion API)
-```
-
-**Weather to Slack**:
-```
-Schedule → HTTP Request (Weather API) → Set (format) → Slack
-```
-
-**CRM Sync**:
-```
-Schedule → HTTP Request (CRM A) → Transform → HTTP Request (CRM B)
-```
-
-Use `search_templates({query: "http api"})` to find more!
-
----
-
-## Checklist for API Integration
-
-### Planning
-- [ ] Test API with Postman/curl first
-- [ ] Understand response structure
-- [ ] Check rate limits
-- [ ] Review authentication method
-- [ ] Plan error handling
-
-### Implementation
-- [ ] Use credentials (never hardcode)
-- [ ] Configure proper HTTP method
-- [ ] Set correct headers (Content-Type, Accept)
-- [ ] Handle pagination if needed
-- [ ] Add query parameters properly
-
-### Error Handling
-- [ ] Set continueOnFail: true if needed
-- [ ] Check response status codes
-- [ ] Implement retry logic
-- [ ] Add Error Trigger workflow
-- [ ] Alert on failures
-
-### Performance
-- [ ] Use batching for large datasets
-- [ ] Add rate limiting if needed
-- [ ] Consider caching
-- [ ] Test with production load
-
-### Security
-- [ ] Use HTTPS only
-- [ ] Store secrets in credentials
-- [ ] Validate API responses
-- [ ] Use environment variables
-
----
-
-## Summary
-
-**Key Points**:
-1. **Authentication** via credentials system (never hardcode)
-2. **Error handling** is critical (continueOnFail + IF checks)
-3. **Pagination** for large datasets
-4. **Rate limiting** to respect API limits
-5. **Transform responses** to match your needs
-
-**Pattern**: Trigger → HTTP Request → Transform → Action → Error Handler
-
-**Related**:
-- [webhook_processing.md](webhook_processing.md) - Receiving HTTP requests
-- [database_operations.md](database_operations.md) - Storing API data
+Use [n8n-error-handling](../n8n-error-handling/SKILL.md) for error wiring and
+[n8n-node-configuration](../n8n-node-configuration/SKILL.md) for property
+discovery and credential rules.

@@ -7,8 +7,11 @@
     "References the http_api_integration.md pattern file",
     "Explains the structure: Trigger → HTTP Request → Transform → Database → Error Handler",
     "Discusses authentication handling (credentials)",
+    "Uses the current HTTP Request collection shapes or verifies them with get_node",
     "Mentions pagination for large datasets",
+    "Bounds pagination with a maximum page count",
     "Suggests retry logic for API failures",
+    "Uses onError and a wired error output instead of deprecated continueOnFail guidance",
     "Provides guidance on response parsing and data mapping"
   ]
 }
