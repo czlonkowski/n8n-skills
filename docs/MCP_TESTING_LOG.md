@@ -54,6 +54,33 @@ This log contains real responses from n8n-mcp tools to inform accurate skill con
 
 ## Search Tool Testing
 
+### HTTP Request verification (2026-08-23)
+
+Tested locally with `n8n-mcp` 2.73.0. `get_node` reported HTTP Request 4.5.
+
+The prior guide example failed strict `validate_node` with one error:
+
+```text
+Required property 'Credential Type' cannot be empty
+```
+
+The guide also used flat query and header maps. The current node schema requires
+`queryParameters.parameters` and `headerParameters.parameters` collections.
+
+Verified a bounded Xquik public-search configuration with:
+
+- `genericCredentialType` plus `httpHeaderAuth`
+- key-pair query parameters
+- JSON response mode and a 20-second timeout
+- disabled redirects and cross-origin credential forwarding
+- opaque cursor pagination capped at 5 pages
+- a completion expression using `has_next_page` and `next_cursor`
+
+Strict validation returned `valid: true`, with 0 errors and 0 warnings. The same
+result held with and without cursor pagination. The published Xquik OpenAPI
+contract confirmed the route, query, mode, limit, cursor, and response fields.
+No protected API request or credential was used.
+
 ### search_nodes - Common Queries
 
 **Query: "webhook"** → Returns Webhook (trigger), Respond to Webhook (transform)

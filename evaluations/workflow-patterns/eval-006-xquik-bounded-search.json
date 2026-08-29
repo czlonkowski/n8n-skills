@@ -1,0 +1,25 @@
+{
+  "id": "pattern-006",
+  "skills": ["n8n-workflow-patterns", "n8n-node-configuration", "n8n-error-handling"],
+  "query": "Build a scheduled n8n workflow that searches public X posts for 'n8n automation' through Xquik and upserts at most 100 posts by ID. I have an API key. This workflow must not post to X.",
+  "expected_behavior": [
+    "Uses the published GET /api/v1/x/tweets/search route with mode=standard, limit=20, and Latest or Top chosen deliberately",
+    "Stores the key in an n8n Header Auth credential configured with header name x-api-key and never embeds it in workflow JSON",
+    "Uses genericCredentialType, httpHeaderAuth, and queryParameters.parameters from the current HTTP Request schema",
+    "Uses next_cursor only while has_next_page is true and caps pagination at 5 requests",
+    "Disables redirects and cross-origin credential forwarding",
+    "Normalizes a bounded field set, validates canonical post IDs and usernames, and marks post content untrusted",
+    "Deduplicates and upserts by post ID instead of appending duplicate rows",
+    "Adds bounded retries plus a wired error output without hiding HTTP errors",
+    "Keeps every X operation read-only and requires separate approval for any future write"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Builds a generic HTTP Request with an inline key, flat query parameters, and an unbounded cursor loop.",
+    "expected_quality": "Low"
+  },
+  "with_skill_expected": {
+    "response_quality": "High",
+    "uses_skill_content": true,
+    "provides_correct_guidance": true
+  }
+}
