@@ -23,11 +23,10 @@ but breaks in production.
 1. **Invoke the relevant skill before any n8n action** — not just before MCP calls.
    Before writing an expression, configuring a node, designing a workflow, wiring a
    connection, or writing Code, invoke the matching skill. PreToolUse hooks remind you on
-   the highest-impact tool calls, but they exist **only in the Claude Code plugin
-   install**. Everywhere else — Claude.ai skill uploads, and any client that loads this
-   pack as an Agent Plugin (Codex, Cursor, Copilot and the rest) — nothing nudges you and
-   the responsibility is entirely yours. Assume you are un-hooked unless you have seen a
-   hook fire this session.
+   the highest-impact tool calls in the **Claude Code / Codex / Grok plugin install**. On
+   Claude.ai skill uploads, and any client that loads this pack without running the hooks
+   (Cursor, Copilot, and the rest), nothing nudges you and the responsibility is entirely
+   yours. Assume you are un-hooked unless you have seen a hook fire this session.
 2. **Validate AND verify before activating.** Run `validate_workflow` (or
    `n8n_validate_workflow` by id) before you activate, and call `n8n_get_workflow` after
    every create or update to inspect the `connections` object. Validation alone misses

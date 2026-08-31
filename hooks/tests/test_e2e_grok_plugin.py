@@ -52,10 +52,24 @@ class GrokPluginE2E(unittest.TestCase):
         self.assertIn("n8n-mcp-skills", plugins)
         self.assertTrue(plugins["n8n-mcp-skills"].get("enabled"))
 
+    def test_plugin_provides_hooks(self) -> None:
+        plugins = {p.get("name"): p for p in self.report.get("plugins") or []}
+        provides = (plugins.get("n8n-mcp-skills") or {}).get("provides") or {}
+        self.assertTrue(provides.get("hooks"), "n8n-mcp-skills plugin did not advertise hooks")
+        sourced = {
+            (h.get("source") or {}).get("plugin_name")
+            for h in (self.report.get("hooks") or [])
+        }
+        self.assertIn(
+            "n8n-mcp-skills",
+            sourced,
+            "grok inspect listed no hooks sourced from n8n-mcp-skills",
+        )
+
     def test_fifteen_skills_are_in_the_catalog(self) -> None:
         names = {s.get("name") for s in self.report.get("skills") or []}
         missing = REQUIRED_SKILLS - names
-        self.assertFalse(missing, f"skills discovered by the plugin but not in catalog: {sorted(missing)}")
+        self.assertFalse(missing, f"required skills missing from catalog: {sorted(missing)}")
 
     def test_skills_are_attributed_to_the_plugin(self) -> None:
         attributed = {
@@ -65,7 +79,7 @@ class GrokPluginE2E(unittest.TestCase):
             or (s.get("source") or {}).get("plugin_name") == "n8n-mcp-skills"
         }
         missing = REQUIRED_SKILLS - attributed
-        self.assertFalse(missing, f"skills present but not sourced from n8n-mcp-skills: {sorted(missing)}")
+        self.assertFalse(missing, f"required skills not sourced from n8n-mcp-skills: {sorted(missing)}")
 
 
 if __name__ == "__main__":
