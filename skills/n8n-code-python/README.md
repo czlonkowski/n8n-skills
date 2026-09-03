@@ -378,7 +378,7 @@ Use JavaScript instead when:
 Part of the n8n-skills project.
 
 **Conceived by Romuald Członkowski**
-- Website: [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
+- Website: [aiadvisors.pl/en](https://aiadvisors.pl/en)
 - Part of [n8n-mcp project](https://github.com/czlonkowski/n8n-mcp)
 
 ---

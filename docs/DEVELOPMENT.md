@@ -630,4 +630,4 @@ All contributions must be compatible with MIT License.
 
 ---
 
-Conceived by Romuald Członkowski - [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
+Conceived by Romuald Członkowski - [aiadvisors.pl/en](https://aiadvisors.pl/en)
