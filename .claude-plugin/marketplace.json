@@ -3,7 +3,7 @@
   "description": "Expert skills for building n8n workflows",
   "owner": {
     "name": "Romuald Członkowski",
-    "url": "https://www.aiadvisors.pl/en"
+    "url": "https://aiadvisors.pl/en"
   },
   "plugins": [
     {
@@ -30,7 +30,7 @@
       "version": "1.34.0",
       "author": {
         "name": "Romuald Członkowski",
-        "url": "https://www.aiadvisors.pl/en"
+        "url": "https://aiadvisors.pl/en"
       },
       "category": "automation",
       "keywords": [

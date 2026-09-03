@@ -11,6 +11,8 @@
 
 [![n8n Skills Introduction](skills.png)](https://youtu.be/e6VvRqmUY2Y?si=6Igply3cadjO6Xx0)
 
+> 💼 **Need it built for you?** Work with [AiAdvisors — n8n automation audits, builds, and operations](https://aiadvisors.pl/en), run by the author of n8n-mcp and n8n-skills.
+
 ---
 
 ## 🎯 What is this?
@@ -360,7 +362,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🙏 Credits
 
 **Conceived by Romuald Członkowski**
-- Website: [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
+- Website: [aiadvisors.pl/en](https://aiadvisors.pl/en)
 - Part of the [n8n-mcp project](https://github.com/czlonkowski/n8n-mcp)
 
 The hooks enforcement layer adapts patterns from the official [n8n Skills](https://github.com/n8n-io/skills) project (Apache-2.0), retargeted for n8n-mcp and rewritten in our own voice. See [NOTICES](NOTICES).
@@ -390,4 +392,4 @@ The hooks enforcement layer adapts patterns from the official [n8n Skills](https
 
 ## 💼 Need it built for you?
 
-Work with **[AiAdvisors](https://www.aiadvisors.pl/en)** — automation audits, builds, and operations by the team behind n8n-mcp and n8n-skills.
+Work with **[AiAdvisors — n8n automation audits, builds, and operations](https://aiadvisors.pl/en)**, run by the author of n8n-mcp and n8n-skills.

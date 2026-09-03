@@ -345,6 +345,6 @@ Each evaluation tests skill activation, correct guidance, and reference to appro
 
 ## Author
 
-Conceived by Romuald Członkowski - [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
+Conceived by Romuald Członkowski - [aiadvisors.pl/en](https://aiadvisors.pl/en)
 
 Part of the n8n-skills collection.
