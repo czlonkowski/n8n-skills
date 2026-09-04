@@ -216,7 +216,9 @@ Beyond the capability skills, the plugin ships an **always-on enforcement layer*
 - **PreToolUse hooks** — before high-impact n8n-mcp calls, a short reminder points at the relevant skill. Looking up a Set, Code, Merge, Loop Over Items, DateTime, Data Table, or AI Agent node via `get_node` fires a node-specific reminder (and re-fires each time, because a re-lookup usually means you're reconsidering the same decision). Calls to `n8n_instances` and `n8n_manage_credentials` fire one-shot reminders pointing at the multi-instance and credential-discipline skills.
 - **PostToolUse hook** — after `validate_workflow`, it inspects the workflow's node types and routes you to the skills that own the remaining risks, with the reminder that *validation passing is necessary, not sufficient*.
 
-Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (individual skill uploads) the skills still activate by description — the pack degrades gracefully, just without the proactive nudges. Every hook fails open and never blocks a tool call.
+Hooks run in the **Claude Code / Codex / Grok** plugin install. On Claude.ai (individual skill uploads) the skills still activate by description — the pack degrades gracefully, just without the proactive nudges. Every hook fails open and never blocks a tool call.
+
+Matchers accept both Claude Code's `mcp__<server>__<tool>` names and Grok's `<server>__<tool>` names. Hook scripts read Claude's `session_id` / `tool_input` and Grok's `sessionId` / `toolInput`.
 
 ---
 
@@ -225,7 +227,7 @@ Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (indi
 ### Prerequisites
 
 1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
-2. **Claude Code**, Claude.ai, or Claude API access
+2. **Claude Code**, Claude.ai, Claude API, or [Grok](https://grok.x.ai) access
 3. `.mcp.json` configured with n8n-mcp server
 
 ### Claude Code
@@ -257,6 +259,15 @@ cp -r n8n-skills/skills/* ~/.claude/skills/
 # 3. Reload Claude Code
 # Skills will activate automatically
 ```
+
+### Grok
+
+```bash
+grok plugin marketplace add czlonkowski/n8n-skills
+grok plugin install n8n-mcp-skills --trust
+```
+
+Install from a local checkout with `grok plugin install /path/to/n8n-skills --trust`. Start a new session afterward; `grok inspect` should list the 15 skills as `plugin: n8n-mcp-skills`.
 
 ### Claude.ai
 

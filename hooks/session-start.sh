@@ -32,7 +32,7 @@ INPUT="$(cat)"
 
 if command -v jq >/dev/null 2>&1; then
   SOURCE="$(echo "${INPUT}" | jq -r '.source // empty' 2>/dev/null)"
-  SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // empty' 2>/dev/null)"
+  SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // .sessionId // empty' 2>/dev/null)"
 
   if [[ "${SOURCE}" == "clear" || "${SOURCE}" == "compact" ]] && [[ -n "${SESSION_ID}" ]]; then
     STATE_DIR="${TMPDIR:-/tmp}/n8n-mcp-skills-state"
