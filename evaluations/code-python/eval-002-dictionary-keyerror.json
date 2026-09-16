@@ -2,25 +2,22 @@
   "id": "code-python-002",
   "skill": "n8n-code-python",
   "name": "Dictionary KeyError - Use .get() Instead",
-  "description": "Tests understanding of safe dictionary access with .get()",
-  "query": "My Python Code node is failing with this error:\n\n```\nKeyError: 'email'\n```\n\nHere's my code:\n\n```python\nitem = _input.first()[\"json\"]\n\nname = item[\"name\"]\nemail = item[\"email\"]\nage = item[\"age\"]\n\nreturn [{\n    \"json\": {\n        \"name\": name,\n        \"email\": email,\n        \"age\": age\n    }\n}]\n```\n\nHow do I fix this?",
+  "description": "Tests safe dictionary access with .get() in native Python",
+  "query": "My Python Code node is failing with this error:\n\n```\nKeyError: 'email'\n```\n\nHere's my code:\n\n```python\nitem = _items[0][\"json\"]\n\nname = item[\"name\"]\nemail = item[\"email\"]\nage = item[\"age\"]\n\nreturn [{\n    \"json\": {\n        \"name\": name,\n        \"email\": email,\n        \"age\": age\n    }\n}]\n```\n\nHow do I fix this?",
   "expected_behavior": [
-    "Identify KeyError is from direct dictionary key access",
-    "Explain that some items may not have 'email' field",
-    "Recommend using .get() method with default values",
-    "Show corrected code with .get()",
-    "Mention this is Error #3 in ERROR_PATTERNS.md",
-    "Explain difference between item['key'] and item.get('key', default)"
+    "Identify the KeyError comes from direct key access on a missing field",
+    "Recommend .get() with a default",
+    "Guard against empty input (if _items) before indexing _items[0]",
+    "Show corrected code that still uses _items (not _input)"
   ],
   "expected_output_includes": [
     "KeyError",
-    ".get()",
-    "default value",
-    "item.get(\"email\", \"default\")"
+    ".get(",
+    "_items"
   ],
   "should_not_include": [
-    "try/except KeyError",
-    "if 'email' in item"
+    "_input",
+    "_json"
   ],
-  "correct_code_pattern": "item.get(\"email\", "
+  "correct_code_pattern": "item.get(\"email\""
 }

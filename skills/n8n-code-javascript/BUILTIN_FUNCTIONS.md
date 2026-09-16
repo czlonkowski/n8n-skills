@@ -468,6 +468,28 @@ return [{
 
 Query and transform JSON structures using JMESPath syntax.
 
+> **Consider an expression first.** `$jmespath` works the same inside `{{ }}`, so a query that only
+> feeds one field rarely needs a Code node. See **n8n-expression-syntax** → `$jmespath()`.
+
+### Rules that bite (verified on n8n 2.38)
+
+- **Argument order is `$jmespath(object, query)`**, the reverse of JMESPath's own docs
+  (`search(query, data)`). Reversed, or given a string/`undefined` as the object, it throws
+  `expected two arguments (Object, string) for this function`.
+- **String literals take single quotes** (`tier == 'premium'`), so wrap the query in a JS
+  **double-quoted** string. `"premium"` in double quotes inside the query is a *field name* and
+  silently returns `[]`.
+- **Numbers and booleans take backticks** (`` age >= `18` ``, `` inStock == `true` ``). A bare
+  `18` is a parse error.
+- Use `&&` `||` `!` `==`, not `and` / `or` / `=`.
+- **Over `$input.all()` items**, include the wrapper (`[?json.age >= \`18\`].json.name`) or map
+  first: `$jmespath($input.all().map(i => i.json), '[?age >= \`18\`].name')`.
+- **Parse errors throw in a Code node**, but the message comes out garbled by the task runner:
+  `Cannot assign to read only property 'name' of object 'Error: Invalid token (Number): "18"'`.
+  If you see that, check the query's literals first. (Inside `{{ }}` the same error silently
+  yields `null` instead.)
+- Missing path → `null`; filter with no match → `[]`.
+
 ### Basic Queries
 
 ```javascript
@@ -500,7 +522,7 @@ const emails = $jmespath(data, 'users[*].contact.email');
 const simplified = $jmespath(data, 'users[*].{name: name, email: contact.email}');
 
 // Conditional filtering
-const premium = $jmespath(data, 'users[?subscription.tier == `premium`]');
+const premium = $jmespath(data, "users[?subscription.tier == 'premium']");
 
 return [{json: {top5, emails, simplified, premium}}];
 ```

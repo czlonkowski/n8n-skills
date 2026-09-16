@@ -1,0 +1,22 @@
+{
+  "id": "expr-006",
+  "skills": [
+    "n8n-expression-syntax"
+  ],
+  "query": "My Filter node condition is {{ JSON.parse($json.payload).status === 'active' }}. The execution is green, no errors anywhere, but the Filter drops every single item, even ones where status is active. Validation passes too. How can that be?",
+  "expected_behavior": [
+    "Explains that at runtime n8n swallows JavaScript errors inside {{ }} (only its own ExpressionErrors fail the node), so a JSON.parse failure on some payloads resolves to null and the condition is false",
+    "Suggests checking the expression editor preview, which shows the real error",
+    "Suggests temporarily wrapping the expression in an IIFE try/catch returning 'ERROR: ' + e.message to see the message",
+    "Suggests guarding the parse (payload may already be an object, or be missing) and re-testing with real items",
+    "Does not claim that validation or a green execution proves the expression works"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Assumes the Filter operator or data is misconfigured; unaware that runtime expression errors become null",
+    "expected_quality": "Low"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - names the silent-null behaviour and gives a way to surface the real error",
+    "uses_skill_content": "SKILL.md Debugging Expressions, COMMON_MISTAKES.md #17"
+  }
+}

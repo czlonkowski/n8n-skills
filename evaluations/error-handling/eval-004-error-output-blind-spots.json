@@ -1,0 +1,22 @@
+{
+  "id": "error-handling-004",
+  "skills": [
+    "n8n-error-handling",
+    "n8n-code-python"
+  ],
+  "query": "I set onError to continueErrorOutput on my Python Code node and wired main[1] to a Slack alert. The code has `import json` at the top. The execution shows success, Slack never fired, but the next node got the original unprocessed items. What happened?",
+  "expected_behavior": [
+    "Explains that the import was rejected before the code ran (imports are blocked unless the instance allowlists them)",
+    "Explains that such pre-execution rejections (and bad return shapes) do not route to the error output: the node is marked failed but the unchanged input items leave through the success output",
+    "Contrasts with exceptions raised while the code runs, which do reach main[1]",
+    "Recommends removing the import (or confirming the allowlist), guarding downstream on the expected output field, and checking node status/output after a test run"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Assumes the error output is mis-wired",
+    "expected_quality": "Low"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - explains the passthrough and the guard",
+    "uses_skill_content": "n8n-error-handling SKILL.md 'Failures the error output never sees', n8n-code-python Errors and onError"
+  }
+}

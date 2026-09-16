@@ -1,0 +1,22 @@
+{
+  "id": "code-python-006",
+  "skill": "n8n-code-python",
+  "name": "Sandbox Limits - class, type(), global",
+  "description": "Tests knowledge of denied builtins, missing class support, and nonlocal instead of global",
+  "query": "My Python Code node fails with \"__build_class__ not found\":\n\n```python\nclass Stats:\n    def __init__(self):\n        self.total = 0\n\ncount = 0\ndef bump():\n    global count\n    count += 1\n\ns = Stats()\nfor it in _items:\n    if type(it[\"json\"].get(\"amount\")) == int:\n        s.total += it[\"json\"][\"amount\"]\n        bump()\nreturn [{\"json\": {\"total\": s.total, \"count\": count}}]\n```\n\nWhat's going on?",
+  "expected_behavior": [
+    "Explain class definitions are not supported in the native Python sandbox (__build_class__ is removed)",
+    "Explain type() is a denied builtin; use isinstance()",
+    "Explain global fails because user code runs inside a wrapper function; use nonlocal (or avoid the helper)",
+    "Rewrite with plain variables/dicts, isinstance, and nonlocal or inline counting"
+  ],
+  "expected_output_includes": [
+    "isinstance",
+    "nonlocal",
+    "class"
+  ],
+  "should_not_include": [
+    "type(it",
+    "global count"
+  ]
+}

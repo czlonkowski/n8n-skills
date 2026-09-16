@@ -103,6 +103,8 @@ All patterns share these building blocks:
 - **IF/Switch** - Conditional routing
 - **Merge** - Combine data streams
 
+Reading a filtered/projected slice of a nested API response for one field or payload? A single `{{ $jmespath($json, "…") }}` replaces a Split Out → Filter → Aggregate chain (quoting rules in n8n-expression-syntax).
+
 ### 4. Outputs
 - **HTTP Request** - Call APIs
 - **Database** - Write data

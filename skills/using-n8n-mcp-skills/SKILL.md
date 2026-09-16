@@ -33,7 +33,9 @@ but breaks in production.
    every create or update to inspect the `connections` object. Validation alone misses
    silently dropped wires, Merge index off-by-one, and error outputs that were never
    wired. Validation passing means the JSON is well-formed — not that the workflow is
-   correct.
+   correct. A green test run isn't proof either: JS errors inside `{{ }}` resolve silently to
+   `null` (a Filter with a broken condition drops every item and still shows success), so
+   inspect the output values. See `n8n-expression-syntax`.
 3. **Secrets never go in text fields.** Tokens, API keys, and passwords always go through
    the n8n credential system. If no native node exists, use the HTTP Request node with
    the official credential type. A Set node holding a token referenced via `{{ $json.token }}`
@@ -93,7 +95,7 @@ If you catch yourself thinking any of these, stop and invoke the named skill fir
 | `n8n-expression-syntax` | Writing `{{ }}`, `$json`/`$node`/`$now`; mapping data between nodes; the transform gatekeeper; Set-node discipline |
 | `n8n-validation-expert` | Interpreting validation errors/warnings; false positives; the validation loop; auto-fix; reviewing an existing workflow |
 | `n8n-code-javascript` | Any Code node in JavaScript; data access; `this.helpers`; DateTime; SplitInBatches loop patterns |
-| `n8n-code-python` | A Code node specifically requested in Python; standard-library limits |
+| `n8n-code-python` | A Code node specifically requested in Python; native runtime (`_items`/`_item` only, imports blocked by default, legacy `_input` code fails) |
 | `n8n-code-tool` | The AI-agent-callable Custom Code Tool (`toolCode`) — returns a string, no `$fromAI`/`$input` |
 | `n8n-error-handling` | Webhook/API or unattended workflows; wiring error outputs; retries; 4xx/5xx response shapes; silent failures |
 | `n8n-binary-and-data` | Files, images, PDFs, attachments, uploads/downloads, vision; passing a file to/from an agent tool |

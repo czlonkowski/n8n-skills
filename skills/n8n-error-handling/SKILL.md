@@ -74,6 +74,25 @@ Valid `onError` values:
 
 Full failure-mode catalog, fan-in/fan-out shapes, and verification: **NODE_ERROR_OUTPUTS.md**.
 
+### Failures the error output never sees
+
+A correctly wired error output still misses whole classes of failure. Verified on n8n 2.38.5:
+
+| Failure | With `continueErrorOutput` | With `continueRegularOutput` |
+|---|---|---|
+| JS error **inside `{{ }}`** (TypeError on a missing path, `JSON.parse` on bad input, a thrown `Error`, a JMESPath syntax error) | nothing fires; the field is `null` and items take the **success** path | same |
+| Python Code node **rejected before running** (blocked import, dunder access: `Security violations detected`) or **bad return shape** (list in each-item mode) | node marked failed, but the **unchanged input items leave through the success output**; `main[1]` stays empty and the execution shows success | unchanged input items pass through |
+| Exception **while** code runs (`raise`/`throw`, `KeyError`, `NameError`) | routed to `main[1]` as `{ error }` ✅ | `{ error }` item on the main output |
+
+So an error branch alone can't guard these:
+
+- **Guard the data, not just the node.** After a transform whose output matters, check that the
+  field you produced exists (IF/Filter on `{{ $json.total !== undefined && $json.total !== null }}`)
+  and send the miss down the error path yourself.
+- **Test-run and read node statuses and output values.** The Python cases show a red node inside a
+  green execution. The expression cases show nothing but `null`s.
+- Root causes and fixes: **n8n-expression-syntax** (Debugging) and **n8n-code-python** (Errors and `onError`).
+
 ---
 
 ## Self-healing first: `retryOnFail` before you wire error paths
