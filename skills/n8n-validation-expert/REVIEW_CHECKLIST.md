@@ -76,7 +76,7 @@ Pull the workflow first, then walk the list top to bottom. For each item, inspec
 - [ ] **Code node using `crypto.createHash` / `crypto.createHmac`.** Use the native Crypto node (`nodes-base.crypto`). Recurring slip. → **n8n-code-javascript**
 - [ ] **Code node parsing XML / SOAP / RSS.** Use the native XML node (`nodes-base.xml`) + Edit Fields for extraction. → **n8n-code-javascript**
 - [ ] **Code node + Set node combo** (Set builds inputs, Code transforms). One Edit Fields arrow-function IIFE does both. → **n8n-code-javascript**
-- [ ] **Python Code node where JS would do.** JS is recommended for ~95% of cases; reserve Python for its standard-library strengths (regex, hashlib, statistics) when the user asked for it. → **n8n-code-python**
+- [ ] **Python Code node where JS would do.** Use Python only when the user asked for it: native Python has no n8n helpers and, by default, no imports (not even `json`/`re`/`datetime`). Also flag legacy `_input`/`_json`/`_node`/`_now` usage or `item.json.x` dot access. Those fail on n8n 2.x. → **n8n-code-python**
 
 ### Expression discipline
 - [ ] **`$json.x` deep in a branchy / multi-step workflow.** Switch to `$('Source Node').item.json.x` for refactor stability; the `$json` form breaks silently when an intermediate is inserted or context is cleared. → **n8n-expression-syntax** (non-negotiable)

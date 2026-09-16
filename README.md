@@ -118,11 +118,10 @@ Write Python code in n8n Code nodes with proper limitations awareness.
 
 **Key Features**:
 - **Important**: Use JavaScript for 95% of use cases
-- Python data access (_input, _json, _node)
-- **Critical limitation**: No external libraries (requests, pandas, numpy)
-- Standard library reference (json, datetime, re, etc.)
-- Workarounds for missing libraries
-- Common Python patterns for n8n
+- Native Python (n8n 2.x): only `_items` / `_item`, dict access — the Pyodide helpers (`_input`, `_json`, `_node`, `_now`) are gone
+- **Critical limitation**: every import is blocked unless the instance allowlists it (none on n8n Cloud)
+- Sandbox limits (no classes, `type()`, `getattr`, dunders; `nonlocal` not `global`) and verified return shapes
+- 12 import-free patterns, each verified on a live instance
 
 ### 8. **n8n Code Tool**
 Write code for the AI-agent-callable Custom Code Tool (`@n8n/n8n-nodes-langchain.toolCode`) — a different node from the regular Code node with a different contract.

@@ -60,13 +60,12 @@ return [{
 
 ### Language Selection
 
-| Language | Use Case | Performance | Built-ins | Beta Status |
-|----------|----------|-------------|-----------|-------------|
-| **JavaScript** | General purpose, web APIs, JSON | Fast | Full n8n helpers | Stable |
-| **Python (Beta)** | Data science, ML, complex math | Slower | `_` syntax helpers | Beta |
-| **Python (Native)** | Standard Python, no helpers | Medium | `_items`, `_item` only | Beta |
+| Language | Use Case | Performance | Built-ins | Status |
+|----------|----------|-------------|-----------|--------|
+| **JavaScript** | General purpose, web APIs, JSON | Fast | Full n8n helpers (`$input`, `$('Node')`, `$jmespath`, Luxon, `this.helpers`) | Stable |
+| **Python** (`language: "pythonNative"`) | Only when the user explicitly wants Python | ~0.4 s per node (≈1 s cold) | `_items` / `_item` only; imports blocked unless allowlisted (none on n8n Cloud) | Native task runner since n8n 2.0 |
 
-**Recommendation:** Use JavaScript for 95% of use cases. Only use Python when you need specific libraries or data science capabilities.
+**Recommendation:** Use JavaScript. The Pyodide-based "Python (Beta)" with `_input`, `_json`, `_node`, `_now`, `_jmespath` was **removed in n8n 2.0** — code using those helpers fails with `NameError`. See the `n8n-code-python` skill for the native runtime's rules.
 
 ---
 
@@ -388,194 +387,66 @@ return [{
 
 ## 2. Python Code Examples & Best Practices
 
+Native Python (n8n ≥ 2.0). Verified behaviour and 12 tested patterns live in the `n8n-code-python` skill; the essentials:
+
 ### Python vs JavaScript: Key Differences
 
-| Feature | JavaScript | Python (Beta) | Python (Native) |
-|---------|-----------|---------------|-----------------|
-| Input access | `$input.all()` | `_input.all()` | `_items` |
-| Single item | `$input.first()` | `_input.first()` | `_items[0]` |
-| Current item | `$input.item` | `_input.item` | `_item` |
-| Return format | `[{json: {...}}]` | `[{json: {...}}]` | `[{"json": {...}}]` |
-| Date helper | `$now` | `_now` | Standard datetime |
-| JSON query | `$jmespath()` | `_jmespath()` | Not available |
+| Feature | JavaScript | Python (native) |
+|---------|-----------|-----------------|
+| All items | `$input.all()` | `_items` (All Items mode only) |
+| First item | `$input.first()` | `_items[0]` (guard `if _items`) |
+| Current item | `$input.item` | `_item` (Each Item mode only) |
+| Other nodes | `$('Node Name')` | not available — Merge upstream |
+| Field access | `item.json.field` | `item["json"]["field"]` / `.get()` — dot access raises `AttributeError` |
+| Return | `[{json: {...}}]` | `[{"json": {...}}]`; plain dicts auto-wrapped; Each Item: a dict, `None` drops the item, a list errors |
+| Dates | `$now`, Luxon | no `_now`; `datetime` import blocked by default |
+| JSON query | `$jmespath()` | not available |
+| Imports | allowlisted npm modules | blocked by default (`Security violations detected`); none on Cloud |
 
-### Python Pattern 1: Data Transformation (Run Once for All Items)
+### Python Pattern 1: Filter and Reshape (Run Once for All Items)
 
 ```python
-# Python (Beta) - Using n8n helpers
-items = _input.all()
-processed = []
-
-for item in items:
-    data = item["json"]
-    processed.append({
-        "json": {
-            "id": data.get("id"),
-            "name": data.get("name", "Unknown"),
-            "processed": True,
-            "timestamp": _now.isoformat()
-        }
-    })
-
-return processed
+return [
+    {"json": {"name": it["json"]["name"], "revenue": it["json"]["revenue"]}}
+    for it in _items
+    if it["json"].get("active") and it["json"].get("revenue", 0) >= 50000
+]
 ```
 
+### Python Pattern 2: Group and Aggregate
+
 ```python
-# Python (Native) - Standard Python
-processed = []
-
-for item in _items:
-    data = item["json"]
-    processed.append({
-        "json": {
-            "id": data.get("id"),
-            "name": data.get("name", "Unknown"),
-            "processed": True,
-            "timestamp": str(_now)  # _now is datetime object
-        }
-    })
-
-return processed
+groups = {}
+for it in _items:
+    row = it["json"]
+    key = row.get("country") or "unknown"
+    groups.setdefault(key, {"country": key, "customers": [], "revenue": 0})
+    groups[key]["customers"].append(row["name"])
+    groups[key]["revenue"] += row.get("revenue") or 0
+return [{"json": g} for g in sorted(groups.values(), key=lambda g: g["revenue"], reverse=True)]
 ```
 
-### Python Pattern 2: Filtering & Aggregation
+### Python Pattern 3: Validate and Flag (Run Once for Each Item)
 
 ```python
-# Filter and sum amounts
-items = _input.all()
-total = 0
-valid_items = []
-
-for item in items:
-    amount = item["json"].get("amount", 0)
-    if amount > 0:
-        total += amount
-        valid_items.append(item["json"])
-
-return [{
-    "json": {
-        "total": total,
-        "count": len(valid_items),
-        "items": valid_items
-    }
-}]
-```
-
-### Python Pattern 3: String Processing with Regex
-
-```python
-import re
-
-# Extract emails from text
-items = _input.all()
-email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
-all_emails = []
-for item in items:
-    text = item["json"].get("text", "")
-    emails = re.findall(email_pattern, text)
-    all_emails.extend(emails)
-
-# Remove duplicates
-unique_emails = list(set(all_emails))
-
-return [{
-    "json": {
-        "emails": unique_emails,
-        "count": len(unique_emails)
-    }
-}]
-```
-
-### Python Pattern 4: Data Science Operations
-
-```python
-# Calculate statistics (Python Native with standard library)
-from statistics import mean, median, stdev
-
-items = _items
-values = [item["json"].get("value", 0) for item in items if "value" in item["json"]]
-
-if len(values) > 0:
-    return [{
-        "json": {
-            "mean": mean(values),
-            "median": median(values),
-            "std_dev": stdev(values) if len(values) > 1 else 0,
-            "min": min(values),
-            "max": max(values),
-            "count": len(values)
-        }
-    }]
-else:
-    return [{"json": {"error": "No values found"}}]
-```
-
-### Python Pattern 5: Dictionary/Object Manipulation
-
-```python
-# Merge and deduplicate objects by key
-items = _input.all()
-merged = {}
-
-for item in items:
-    data = item["json"]
-    key = data.get("id")
-
-    if key:
-        if key not in merged:
-            merged[key] = data
-        else:
-            # Merge properties, preferring newer values
-            merged[key].update({k: v for k, v in data.items() if v})
-
-# Convert back to array format
-result = [{"json": value} for value in merged.values()]
-return result
+row = _item["json"]
+problems = []
+if not row.get("name"):
+    problems.append("name missing")
+email = (row.get("contact") or {}).get("email")
+if not email or "@" not in email:
+    problems.append("email missing or invalid")
+return {"json": {**row, "valid": not problems, "problems": problems}}
 ```
 
 ### Python Best Practices
 
-1. **Always use `.get()` for dictionary access** to avoid KeyError
-   ```python
-   # ✅ Safe
-   value = item["json"].get("field", "default")
-
-   # ❌ Risky
-   value = item["json"]["field"]  # Crashes if field missing
-   ```
-
-2. **Handle None/null values explicitly**
-   ```python
-   amount = item["json"].get("amount") or 0  # Default to 0
-   text = item["json"].get("text", "").strip()  # Default to empty string
-   ```
-
-3. **Use list comprehensions for filtering**
-   ```python
-   # ✅ Pythonic
-   valid = [item for item in items if item["json"].get("active")]
-
-   # ❌ Verbose
-   valid = []
-   for item in items:
-       if item["json"].get("active"):
-           valid.append(item)
-   ```
-
-4. **Return consistent structure**
-   ```python
-   # Always return list of objects with "json" key
-   return [{"json": result}]  # Single result
-   return results  # Multiple results (already formatted)
-   return []  # No results
-   ```
-
-5. **Debug with print() statements**
-   ```python
-   print(f"Processing {len(items)} items")  # Appears in browser console
-   print(f"Item data: {item['json']}")
-   ```
+1. **Use `.get()` for dictionary access** — `item["json"]["field"]` raises `KeyError` when the field is missing.
+2. **Write import-free code by default** — `json`, `re`, `datetime`, `hashlib` are rejected unless the instance allowlists them. Parse JSON, match regex, and do date math in expressions or JavaScript; hash with the Crypto node.
+3. **Mind the sandbox** — no `class` definitions (`__build_class__ not found`), no `type()`/`getattr()`/`hasattr()` (use `isinstance`, `in`, `.get()`), no dunder access, and `nonlocal` instead of `global` (code runs inside a wrapper function).
+4. **Convert output values explicitly** — sets become the string `"{1, 2}"` and datetimes become `str(dt)` on output.
+5. **Test with a real execution** — `continueRegularOutput` passes the *input* items through unchanged on import/security violations and bad return shapes.
+6. **Debug with `print()`** — output appears in the browser console.
 
 ---
 
@@ -911,32 +782,14 @@ const topScores = $jmespath(data, 'scores | sort_by(@, &value) | reverse(@) | [0
 | `$getWorkflowStaticData()` | Persistent workflow data | `const counter = $getWorkflowStaticData().counter \|\| 0;` |
 | `$evaluateExpression(expr, itemIndex)` | Evaluate n8n expression | `$evaluateExpression('{{ $json.field }}', 0)` |
 
-### Python Built-in Methods (Beta)
+### Python Built-ins (native)
 
 | Python | JavaScript | Description |
 |--------|------------|-------------|
-| `_input.all()` | `$input.all()` | Get all items |
-| `_input.first()` | `$input.first()` | Get first item |
-| `_input.last()` | `$input.last()` | Get last item |
-| `_input.item` | `$input.item` | Current item |
-| `_items` | `items` | All items array (Native) |
-| `_item` | `$item` | Current item (Native) |
-| `_now` | `$now` | Current datetime |
-| `_today` | `$today` | Today at midnight |
-| `_jmespath(data, query)` | `$jmespath()` | Query JSON |
+| `_items` | `$input.all()` | All items (Run Once for All Items) |
+| `_item` | `$input.item` | Current item (Run Once for Each Item) |
+| — | `$now`, `$today`, `$jmespath()`, `$('Node')` | No Python equivalent in native mode |
 
-```python
-# Python (Beta) examples
-from datetime import timedelta
-
-# Date operations
-tomorrow = _now + timedelta(days=1)
-last_week = _now - timedelta(weeks=1)
-
-# JMESPath querying
-data = _input.first()["json"]
-adults = _jmespath(data, 'users[?age >= `18`]')
-```
 
 ### Standard JavaScript/Python Objects (No imports needed)
 
@@ -949,13 +802,11 @@ adults = _jmespath(data, 'users[?age >= `18`]')
 - `Object` - Object methods: `Object.keys()`, `Object.entries()`
 - `Array` - Array methods: `.map()`, `.filter()`, `.reduce()`
 
-**Python:**
-- `re` - Regular expressions
-- `json` - JSON parsing
-- `datetime` - Date/time operations
-- `statistics` - Statistical functions
-- `base64` - Base64 encoding/decoding
-- `print()` - Debug logging
+**Python (native):**
+- Builtins: `len`, `sum`, `min`, `max`, `sorted`, `any`, `all`, `enumerate`, `zip`, `round`, `isinstance`, `print()` (browser console)
+- Syntax: comprehensions, generators, lambdas, closures (`nonlocal`), `try`/`except`, f-strings / `.format()` / `%`
+- **No imports by default** (`json`, `re`, `datetime`, `statistics`, `base64` all need an instance allowlist; none on n8n Cloud)
+- Denied: `eval`, `exec`, `open`, `type`, `getattr`, `hasattr`, `globals`, class definitions, dunder attributes
 
 ### Common Code Patterns
 

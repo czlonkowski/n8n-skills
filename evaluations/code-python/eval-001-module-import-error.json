@@ -1,28 +1,26 @@
 {
   "id": "code-python-001",
   "skill": "n8n-code-python",
-  "name": "Module Import Error - External Libraries Not Available",
-  "description": "Tests understanding that Python Code nodes have NO external libraries",
-  "query": "I'm writing a Python Code node to fetch data from an API. Here's my code:\n\n```python\nimport requests\n\nurl = \"https://api.example.com/users\"\nresponse = requests.get(url)\ndata = response.json()\n\nreturn [{\"json\": data}]\n```\n\nBut I'm getting a ModuleNotFoundError. What's wrong?",
+  "name": "Import Rejected - requests Is Not Available",
+  "description": "Tests that the agent knows imports are checked against an allowlist before the code runs, that requests is never available, and routes HTTP to the HTTP Request node",
+  "query": "I'm writing a Python Code node to fetch data from an API. Here's my code:\n\n```python\nimport requests\n\nurl = \"https://api.example.com/users\"\nresponse = requests.get(url)\ndata = response.json()\n\nreturn [{\"json\": data}]\n```\n\nThe node fails with \"Security violations detected\". What's wrong?",
   "expected_behavior": [
-    "Immediately identify this is the #1 Python Code node limitation",
-    "Explain that NO external libraries are available (no requests, pandas, numpy)",
-    "Recommend using JavaScript Code node instead (95% recommendation)",
-    "Suggest alternative: Use HTTP Request node BEFORE Python Code node",
-    "Mention urllib.request from standard library as limited workaround",
-    "Emphasize JavaScript has $helpers.httpRequest() built-in",
-    "Reference ERROR_PATTERNS.md Error #1"
+    "Explain that native Python Code nodes reject imports before execution unless the module is allowlisted on the instance",
+    "State that requests (third-party) is not available; n8n Cloud allows no imports at all",
+    "Recommend the HTTP Request node before the Code node (or JavaScript with this.helpers.httpRequest)",
+    "Show the Python node processing the HTTP Request node's output via _items",
+    "Not suggest pip install or urllib as a workaround"
   ],
   "expected_output_includes": [
-    "ModuleNotFoundError",
-    "NO external libraries",
-    "Use JavaScript",
+    "Security violations detected",
+    "allowlist",
     "HTTP Request node",
-    "standard library only"
+    "_items"
   ],
   "should_not_include": [
     "pip install",
     "install requests",
-    "add requirements.txt"
+    "requirements.txt",
+    "import urllib"
   ]
 }

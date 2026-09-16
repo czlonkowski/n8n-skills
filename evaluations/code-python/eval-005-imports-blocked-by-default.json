@@ -1,0 +1,23 @@
+{
+  "id": "code-python-005",
+  "skill": "n8n-code-python",
+  "name": "Imports Blocked by Default - json/hashlib/datetime/re",
+  "description": "Tests that the agent does not assume standard-library imports work and offers import-free or non-Python alternatives",
+  "query": "I need to do the following in a Python Code node:\n\n1. Parse JSON from a string field\n2. Calculate a SHA256 hash of some data\n3. Format the current date as an ISO string\n4. Extract email addresses using regex\n\nWhich Python modules can I use?",
+  "expected_behavior": [
+    "State that every import (even json, hashlib, datetime, re) is rejected by default and n8n Cloud allows none; self-hosted admins can allowlist modules",
+    "Suggest verifying the allowlist with a one-line import test before relying on it",
+    "Offer alternatives that work without imports: JSON.parse in an expression/Edit Fields, the Crypto node for SHA256, $now.toISO() for the date, .match() in an expression or a JavaScript Code node for regex",
+    "Recommend JavaScript if the user has no strong reason for Python"
+  ],
+  "expected_output_includes": [
+    "blocked",
+    "allowlist",
+    "Crypto node",
+    "$now"
+  ],
+  "should_not_include": [
+    "pip install",
+    "standard library is available"
+  ]
+}

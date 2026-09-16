@@ -1,0 +1,24 @@
+{
+  "id": "code-python-004",
+  "skill": "n8n-code-python",
+  "name": "Legacy Pyodide Code - _input Is Not Defined",
+  "description": "Tests migration of Pyodide-era code (_input, _now, dot access) to native Python on n8n 2.x",
+  "query": "I copied this Python Code node from an older n8n template and on n8n 2.x it fails with \"name '_input' is not defined\":\n\n```python\nall_items = _input.all()\ntotal = sum(item.json.amount for item in all_items)\nreturn [{\"json\": {\"total\": total, \"generated_at\": str(_now)}}]\n```\n\nHow do I fix it?",
+  "expected_behavior": [
+    "Explain n8n 2.x runs native Python; the Pyodide helpers (_input, _json, _node, _now, _jmespath) no longer exist",
+    "Replace _input.all() with _items (Run Once for All Items mode)",
+    "Replace dot access item.json.amount with item[\"json\"].get(\"amount\", 0)",
+    "Explain _now is unavailable and there is no datetime import by default; pass a timestamp in via an expression ({{ $now.toISO() }}) or use JavaScript",
+    "Show a working native version"
+  ],
+  "expected_output_includes": [
+    "_items",
+    "[\"json\"]",
+    "$now"
+  ],
+  "should_not_include": [
+    "_input.all()",
+    "item.json.amount",
+    "from datetime import"
+  ]
+}
