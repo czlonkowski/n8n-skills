@@ -53,6 +53,8 @@ n8n-skills/
 - Teaches correct n8n expression syntax ({{}} patterns)
 - Covers common mistakes and fixes
 - Critical gotcha: Webhook data under `$json.body`
+- `$jmespath(object, query)` for querying nested JSON in one expression (quoting rules: `'string'`, `` `number` ``, `"field"`; `json.` prefix over `.all()`)
+- Runtime JS errors inside `{{ }}` resolve silently to null (only n8n's own ExpressionErrors fail the node) — test with real items
 
 ### 2. n8n MCP Tools Expert (HIGHEST PRIORITY)
 - Teaches how to use n8n-mcp MCP tools effectively
@@ -78,8 +80,8 @@ n8n-skills/
 - Data access patterns, `$helpers`, DateTime
 
 ### 7. n8n Code Python
-- Write Python in n8n Code nodes
-- Limitations awareness (no external libraries)
+- Native Python (n8n 2.x, `pythonNative`): only `_items`/`_item`, dict access; the Pyodide helpers (`_input`, `_json`, `_node`, `_now`, `_jmespath`) raise NameError
+- Imports blocked by default (instance allowlist; none on Cloud); sandbox limits (no classes/`type()`/dunders, `nonlocal` not `global`); verified return shapes and the `continueRegularOutput` passthrough trap
 
 ### 8. n8n Code Tool
 - Write code for the AI-agent-callable Custom Code Tool (`@n8n/n8n-nodes-langchain.toolCode`)

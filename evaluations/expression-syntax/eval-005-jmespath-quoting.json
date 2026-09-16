@@ -1,0 +1,22 @@
+{
+  "id": "expr-005",
+  "skills": [
+    "n8n-expression-syntax"
+  ],
+  "query": "An HTTP Request returns {\"customers\": [{\"name\": \"Acme\", \"country\": \"PL\", \"revenue\": 120000}, {\"name\": \"Bar\", \"country\": \"PL\", \"revenue\": 80000}]}. In a Slack node I use {{ $jmespath($json, 'customers[?country==\"PL\" && revenue > 100000].name') }} and the message is always empty. The data is definitely there. What's wrong?",
+  "expected_behavior": [
+    "Explains that in JMESPath double quotes denote a field name, so country==\"PL\" compares to a missing field",
+    "Explains that string literals use single quotes and numbers use backticks",
+    "Explains that a bare 100000 is a parse error, which makes the whole expression resolve to null at runtime without failing the node",
+    "Provides the corrected expression: {{ $jmespath($json, \"customers[?country=='PL' && revenue > `100000`].name\") }}",
+    "Mentions the object-first argument order"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Assumes the data path is wrong or suggests a Code node; unlikely to know JMESPath's quote semantics or n8n's silent null",
+    "expected_quality": "Low"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - identifies both quoting bugs and the silent-null behaviour",
+    "uses_skill_content": "SKILL.md $jmespath() section, COMMON_MISTAKES.md #16"
+  }
+}

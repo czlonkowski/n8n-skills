@@ -146,18 +146,19 @@ The auto-wrapping works, but the explicit shape makes the intent obvious to the 
 
 ## Errors and `onError`
 
-A plain `raise ValueError("bad row")` fails the node with that message. With
-`onError: "continueRegularOutput"` the three failure kinds behave **differently**:
+A plain `raise ValueError("bad row")` fails the node with that message. When the node has an
+`onError` continue mode, the three failure kinds behave **differently** (verified):
 
-| Failure | Node status | What goes downstream |
+| Failure | `continueErrorOutput` | `continueRegularOutput` |
 |---|---|---|
-| Runtime exception (`raise`, `KeyError`, `NameError`, denied builtin) | success | one item `{"error": "<message>"}` |
-| Static rejection (`Security violations detected`: import, dunder) | error | the **input items, unchanged** |
-| Bad return shape (list in each-item mode, `None` in all-items mode) | error | the **input items, unchanged** |
+| Runtime exception (`raise`, `KeyError`, `NameError`, denied builtin) | `{"error": "<message>"}` on the error output (`main[1]`) ✅ | `{"error": "<message>"}` on the main output |
+| Static rejection (`Security violations detected`: import, dunder) | node marked failed, but the **input items, unchanged, go out the success output**; `main[1]` stays empty | input items, unchanged, on the main output |
+| Bad return shape (list in each-item mode, `None` in all-items mode) | same: **unchanged input on the success output** | same |
 
 The last two are silent-data traps: downstream nodes receive unprocessed input as if the code had
-run. Don't rely on `continueRegularOutput` to catch them. Validate the code with a real test run
-(see **n8n-error-handling**).
+run, and the execution still shows success. No error branch catches them. Prevent them (no
+imports unless confirmed, correct return shape) and confirm with a real test run, checking the
+Code node's status and output (see **n8n-error-handling**).
 
 Other messages:
 

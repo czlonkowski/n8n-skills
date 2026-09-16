@@ -1,0 +1,22 @@
+{
+  "id": "validation-005",
+  "skills": [
+    "n8n-validation-expert",
+    "n8n-error-handling"
+  ],
+  "query": "validate_workflow says: 'Incorrect error output configuration. Nodes \"Respond to Webhook\" appear to be error handlers but are in main[0] (success output) along with other nodes' and tells me to move Respond to Webhook to main[1] and add onError continueErrorOutput to 'Prepare Order'. My flow is Webhook -> Prepare Order -> [Respond to Webhook, Save Order]. Should I apply the fix?",
+  "expected_behavior": [
+    "Identifies this as a known false positive: a name/type heuristic, not evidence of a wiring mistake",
+    "Explains that applying the fix would make the webhook respond only when Prepare Order fails",
+    "Recommends keeping the fan-out on main[0]",
+    "Optionally points to the upstream issue (n8n-mcp#1111) and suggests re-checking after upgrading n8n-mcp"
+  ],
+  "baseline_without_skill": {
+    "likely_response": "Applies the validator's suggested fix because it is reported as an error",
+    "expected_quality": "Low - breaks a correct workflow"
+  },
+  "with_skill_expected": {
+    "response_quality": "High - rejects the harmful fix with the reason",
+    "uses_skill_content": "SKILL.md False Positives (known exceptions), FALSE_POSITIVES.md table"
+  }
+}

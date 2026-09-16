@@ -634,6 +634,38 @@ When accepting a warning, document why:
 
 ---
 
+## Known false positives and blind spots (n8n-mcp 2.85.0)
+
+Verified against a live n8n 2.38.5 instance and reported upstream. When a fix ships, the linked
+issue closes. Re-check before relying on this list.
+
+### False positives
+
+| Validator says | Reality | What to do |
+|---|---|---|
+| **ERROR** "Incorrect error output configuration. Nodes "X" appear to be error handlers but are in main[0]…" | A name/type heuristic: fires when `main[0]` fans out and a target is `respondToWebhook`, `emailSend`, or has *error / fail / catch / exception* in its name | If X is a success-path node (e.g. Respond to Webhook next to a "Save Order" node), keep the wiring. **Don't** move X to `main[1]` or add `continueErrorOutput`: that makes the webhook answer only on failure. Renaming the node clears the name-based variant. [n8n-mcp#1111](https://github.com/czlonkowski/n8n-mcp/issues/1111) |
+| Warning "Possible missing $ prefix for variable (e.g., use $json instead of json)" | The check reads inside string literals, e.g. the JMESPath query `"[?json.country=='PL'].json.name"` over `.all()` items, where `json.` is required | Ignore it for words inside quotes. [#1115](https://github.com/czlonkowski/n8n-mcp/issues/1115) |
+| `validate_node` → "Code cannot be empty" (`jsCode`) on a Code node with `language: "pythonNative"` | `validate_node` doesn't recognize `pythonNative`, the only Python option in n8n 2.x | Validate the workflow (`validate_workflow` / `n8n_validate_workflow`) instead. [#1112](https://github.com/czlonkowski/n8n-mcp/issues/1112) |
+| Python "Return value must be a list of dicts" for `return {"count": …}` in Run Once for All Items | Native Python auto-wraps a single dict into one item | Accept, or return `[{"json": {...}}]` to silence it. [#1113](https://github.com/czlonkowski/n8n-mcp/issues/1113) |
+
+### Blind spots — validates clean, breaks at runtime
+
+- **JS errors inside `{{ }}`** (TypeError on a missing path, `JSON.parse` on bad input, a thrown
+  `Error`) resolve to `null` and the execution stays green. A Filter/IF with such a condition
+  drops every item. See **n8n-expression-syntax** → Debugging.
+- **`$jmespath` mistakes inside expressions**: `country=="PL"` (→ `[]`), a bare number
+  `revenue > 100000`, or `and` instead of `&&` (→ `null`). Only Code-node source is checked.
+  [#1114](https://github.com/czlonkowski/n8n-mcp/issues/1114)
+- **Native Python Code nodes**: legacy `_input`/`_json`/`_node`/`_now`, `item.json.x` dot access,
+  any import not on the instance allowlist, `class`, `type()`/`getattr()`, dunder access,
+  `global` inside a function, and a list returned in each-item mode.
+  [#1113](https://github.com/czlonkowski/n8n-mcp/issues/1113), see **n8n-code-python**.
+
+For all three the cure is the same: a real test execution, then look at the output **values**,
+not just the status.
+
+---
+
 ## What the validator no longer flags
 
 Earlier versions of this guide listed "known n8n issues" to ignore. Those false positives are gone at the source (n8n-mcp ≥ 2.63.0) — the validator simply does not emit them anymore, so there is nothing to recognize or suppress. If you are on an older server and still see them, upgrading is the fix. Among the classes that no longer fire:
@@ -654,7 +686,7 @@ One precise caveat on template literals: they only evaluate **inside `{{ }}`**. 
 - ❌ Security warnings (surface under every profile)
 - ❌ Hardcoded credentials
 - ❌ SQL injection risks
-- ❌ Any error (`valid: false`) — these block activation
+- ❌ Any error (`valid: false`). These block activation, except the known false-positive errors listed above: check that table before "fixing" a correct workflow
 
 ### Usually Fix
 - ⚠️ Error handling (production)
