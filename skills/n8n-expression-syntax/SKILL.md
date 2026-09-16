@@ -536,11 +536,13 @@ What this means in practice:
 
 ### Runtime errors don't fail the node — they become `null`
 
-During execution n8n wraps every `{{ }}` in a handler that re-throws only its own
-`ExpressionError`s and **swallows every other JavaScript error**, so the field resolves to
-empty/`null` and the node still reports **success**. Verified on n8n 2.38: `$json.missing.field`
+Verified on n8n 2.38 with the default expression runtime: during execution the handler around
+each `{{ }}` re-throws only n8n's own `ExpressionError`s and swallows other JavaScript errors, so
+the field resolves to empty/`null` and the node still reports **success**. `$json.missing.field`
 (TypeError), `JSON.parse('{bad')`, `throw new Error(...)` and JMESPath syntax errors all
-produce `null`. In a Filter or IF condition every item then silently fails the check.
+produced `null`. In a Filter or IF condition every item then silently fails the check. On other
+versions or expression engines the same mistake may fail the node instead. Either way, never
+trust a green run on its own.
 
 This isn't a reason to avoid expressions (a Code node has silent traps of its own). It's a
 reason to **test with real items**:

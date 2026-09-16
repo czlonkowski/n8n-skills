@@ -229,7 +229,7 @@ return [{"json": {"name": it["json"]["name"], "cumulative": add(it["json"]["reve
 
 ## 12. ISO timestamps without datetime
 
-**Mode:** Run Once for All Items. With no `datetime` import, ISO-8601 strings in the same timezone still sort and compare correctly as strings; slice for year/month buckets. Real date math belongs in expressions (Luxon) or JS.
+**Mode:** Run Once for All Items. *Illustrative, no input needed* (the timestamps are inline). With no `datetime` import, ISO-8601 strings in the same timezone still sort and compare correctly as strings; slice for year/month buckets. Real date math belongs in expressions (Luxon) or JS.
 
 ```python
 stamps = ["2026-09-16T10:00:00Z", "2026-01-02T08:30:00Z", "2025-12-31T23:59:59Z"]

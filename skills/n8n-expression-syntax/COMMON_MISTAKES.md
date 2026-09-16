@@ -391,7 +391,7 @@ The same holds for optional chaining (`{{ $json.user?.email }}`) and string-keye
 
 ❌ **Wrong assumption**: "It ran green, so the expression works."
 
-**Why it happens**: at runtime n8n swallows every JavaScript error inside `{{ }}` except its own `ExpressionError`s. `$json.missing.field`, `JSON.parse` on bad input, a thrown `Error` and a JMESPath syntax error all resolve to `null` instead of failing the node. The editor preview shows the error; the execution doesn't.
+**Why it happens**: verified on n8n 2.38 with the default expression runtime: at runtime n8n swallows JavaScript errors inside `{{ }}` other than its own `ExpressionError`s. `$json.missing.field`, `JSON.parse` on bad input, a thrown `Error` and a JMESPath syntax error all resolved to `null` instead of failing the node. The editor preview shows the error; the execution doesn't. Other versions or engines may fail the node instead. Either way, never trust a green run on its own.
 
 ✅ **Fix / check**:
 ```

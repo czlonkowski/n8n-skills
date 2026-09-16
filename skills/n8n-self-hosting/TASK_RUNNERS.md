@@ -76,6 +76,9 @@ seconds of downtime.
 
 ## Queue mode: one sidecar per worker
 
+> Built from the docs and checked with `docker compose config`. Not yet exercised on a live queue
+> cluster. Verify with the `Registered runner` log line on **every** worker before handing off.
+
 The docs are explicit: **each worker needs its own runners sidecar**, and the main needs one too
 if `OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=false` (the template sets `true`, so the main doesn't).
 

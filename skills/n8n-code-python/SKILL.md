@@ -59,6 +59,10 @@ Node config: `{"language": "pythonNative", "mode": "runOnceForAllItems" | "runOn
 - **No other nodes.** There is no `_node` / `$('Node')` equivalent. If you need data from another
   branch, bring it in with Merge first, or read it in JavaScript.
 - **Webhook payloads** are under `["body"]`: `_items[0]["json"].get("body", {}).get("email")`.
+- **Binary data** isn't covered here. Read and write binary in JavaScript (see **n8n-binary-and-data**).
+- **pairedItem:** returning `_items` / `_item` keeps it. When you build new dicts and downstream
+  uses `$('Node').item`, add `"pairedItem": {"item": i}` to each returned item. That isn't
+  verified on native Python yet, so test-run before relying on it.
 - Missing keys: prefer `.get(key, default)`. `row["missing"]` raises `KeyError`.
 
 Migration table for legacy code:
@@ -116,6 +120,9 @@ recursion, `try`/`except`, f-strings / `.format()` / `%`, `sorted`/`min`/`max`/`
 ---
 
 ## Return shapes (verified)
+
+Observed on n8n 2.38.5. The auto-wrapping and passthrough behaviours below are undocumented and could
+change in a later release. Re-check with a test run after upgrading n8n.
 
 **Run Once for All Items**
 
