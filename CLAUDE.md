@@ -109,6 +109,7 @@ n8n-skills/
 ### 14. n8n Self-Hosting (deployment/ops, not workflow-building)
 - Deploy production self-hosted n8n end-to-end to a fresh Linux VM: Docker Compose behind Caddy (auto-TLS), single OR queue mode (asks the user first)
 - Secret-free/domain-free templates in `assets/`; fresh secrets generated on the box; secure defaults; DNS/ports preflight; Day-2 update/backup/restore
+- Python Code nodes need task runners in external mode: an `n8nio/runners` sidecar on the exact n8n version (the stock image has no Python 3, so internal mode fails with "Python runner unavailable"); one sidecar per queue worker; Python imports are all blocked until allowlisted in the sidecar's `/etc/n8n-task-runners.json` (`TASK_RUNNERS.md`)
 - Queue-mode env parity: the `x-n8n-env` anchor is the single source of the behavioural environment; only public-URL/proxy vars are main-only. Optional backend modules (`N8N_ENABLED_MODULES`, e.g. `agents`) must reach the workers or executions fail at runtime with `EntityMetadataNotFoundError`
 - Triggers on its own description; intentionally NOT wired into the workflow-building router or hooks (no relevant MCP tools)
 
