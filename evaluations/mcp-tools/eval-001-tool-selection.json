@@ -6,8 +6,8 @@
     "Recommends search_nodes as the starting tool",
     "Provides correct syntax: search_nodes({query: 'slack'})",
     "Explains the nodeType format returned (nodes-base.slack)",
-    "Suggests following up with get_node_essentials for configuration details",
-    "References the search → essentials workflow pattern",
+    "Suggests following up with get_node using standard detail for configuration details",
+    "References the search → get_node workflow pattern",
     "Mentions the tool is <20ms fast"
   ],
   "baseline_without_skill": {
