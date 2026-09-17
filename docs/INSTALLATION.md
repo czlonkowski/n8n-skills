@@ -36,12 +36,13 @@ npm install -g n8n-mcp
 
 **Note**: `N8N_API_URL` and `N8N_API_KEY` are optional but enable workflow creation/management tools.
 
-### 2. Claude Access
+### 2. Agent access
 
 You need one of:
 - **Claude Code** (desktop application)
 - **Claude.ai** (web interface)
 - **Claude API** (via SDK)
+- **[Grok](https://grok.x.ai)** (plugin install; hooks fire in this client)
 
 ---
 
@@ -167,7 +168,20 @@ function loadSkillsFromDirectory(dir: string) {
 
 ---
 
-### Method 4: Other Agents and IDEs (Antigravity, etc.)
+### Method 4: Grok
+
+Plugin install (recommended). Hooks fire in this client.
+
+```bash
+grok plugin marketplace add czlonkowski/n8n-skills
+grok plugin install n8n-mcp-skills --trust
+```
+
+Install from a local checkout with `grok plugin install /path/to/n8n-skills --trust`. Start a new session afterward; `grok inspect` should list the 15 skills as `plugin: n8n-mcp-skills` and report that the plugin provides hooks.
+
+---
+
+### Method 5: Other Agents and IDEs (Antigravity, etc.)
 
 Agent Skills are an open standard — any agent that supports the SKILL.md format can use these skills, not just Claude.
 

@@ -6,7 +6,8 @@
 # Fires AFTER validate_workflow. Validation passing is necessary, not sufficient.
 #
 # n8n-mcp's validate_workflow takes the FULL workflow JSON, so we parse the node
-# types out of .tool_input.workflow.nodes[].type (LONG form, e.g.
+# types out of .tool_input.workflow.nodes[].type (Claude) or
+# .toolInput.workflow.nodes[].type (Grok) — LONG form, e.g.
 # "n8n-nodes-base.set") and route to the relevant skills. This is more robust
 # than grepping source code. Fires every call (no dedup).
 #
@@ -21,7 +22,7 @@ INPUT="$(cat)"
 # Node types from the validated workflow JSON. Fall back to a flattened nodes
 # array in case a server nests differently.
 NODE_TYPES="$(echo "${INPUT}" | jq -r '
-  (.tool_input.workflow.nodes // .tool_input.nodes // [])
+  (.tool_input.workflow.nodes // .toolInput.workflow.nodes // .tool_input.nodes // .toolInput.nodes // [])
   | map(.type // empty) | .[]
 ' 2>/dev/null)"
 

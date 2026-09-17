@@ -21,9 +21,9 @@ cross-cutting rules.
 ## Skill Activation
 
 This skill is loaded automatically at session start (via the `SessionStart` hook) when
-the pack is installed as a Claude Code / Codex plugin. It also activates by description
-whenever the user mentions n8n, workflows, nodes, or automation — which makes it work as
-a plain skill on Claude.ai too, where hooks are not available.
+the pack is installed as a Claude Code / Codex / Grok plugin. It also activates by
+description whenever the user mentions n8n, workflows, nodes, or automation — which
+makes it work as a plain skill on Claude.ai too, where hooks are not available.
 
 **Example queries**:
 - "Build me an n8n workflow that …"
@@ -68,7 +68,7 @@ session proceeds normally and the skill still activates by its description.
 ## Version
 
 **Version**: 1.0.0
-**Compatibility**: n8n-mcp MCP server; hooks require the Claude Code / Codex plugin install.
+**Compatibility**: n8n-mcp MCP server; hooks require the Claude Code / Codex / Grok plugin install.
 
 ---
 
