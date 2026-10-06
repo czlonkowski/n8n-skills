@@ -284,6 +284,8 @@ return matching;
 
 **IMPORTANT**: Only use in "Each Item" mode. Will be undefined in "All Items" mode.
 
+Return one `{json: {...}}` item object per invocation. Use All Items mode when producing an array of output items.
+
 ### Basic Usage
 
 ```javascript
@@ -293,12 +295,12 @@ const data = currentItem.json;
 
 console.log('Processing item:', data.id);
 
-return [{
+return {
   json: {
     ...data,
     processed: true
   }
-}];
+};
 ```
 
 ### Example 1: Add Processing Metadata
@@ -306,14 +308,14 @@ return [{
 ```javascript
 const item = $input.item;
 
-return [{
+return {
   json: {
     ...item.json,
     processed: true,
     processedAt: new Date().toISOString(),
     processingDuration: Math.random() * 1000  // Simulated duration
   }
-}];
+};
 ```
 
 ### Example 2: Per-Item Validation
@@ -329,13 +331,13 @@ if (!data.email) errors.push('Email required');
 if (!data.name) errors.push('Name required');
 if (data.age && data.age < 18) errors.push('Must be 18+');
 
-return [{
+return {
   json: {
     ...data,
     valid: errors.length === 0,
     errors: errors.length > 0 ? errors : undefined
   }
-}];
+};
 ```
 
 ### Example 3: Item-Specific API Call
@@ -350,12 +352,12 @@ const response = await this.helpers.httpRequest({
   url: `https://api.example.com/users/${userId}/details`
 });
 
-return [{
+return {
   json: {
     ...item.json,
     details: response
   }
-}];
+};
 ```
 
 > ⚠️ **Use `this.helpers.httpRequest`, not `$helpers`.** In the Code node's task-runner sandbox (default since n8n v2.0) the bare `$helpers` global is undefined — `$helpers.httpRequest()` throws `ReferenceError: $helpers is not defined`. **For authenticated APIs, don't extend this pattern.** `this.helpers.httpRequestWithAuthentication` is blocked in the task-runner sandbox. Use an HTTP Request node with the credential attached, or delegate to a sub-workflow whose HTTP Request node holds the credential. For anything beyond a trivial unauthenticated GET, prefer the HTTP Request node anyway. See ERROR_PATTERNS.md Error #6.
@@ -368,21 +370,21 @@ const data = item.json;
 
 // Process based on item type
 if (data.type === 'premium') {
-  return [{
+  return {
     json: {
       ...data,
       discount: 0.20,
       tier: 'premium'
     }
-  }];
+  };
 } else {
-  return [{
+  return {
     json: {
       ...data,
       discount: 0.05,
       tier: 'standard'
     }
-  }];
+  };
 }
 ```
 
