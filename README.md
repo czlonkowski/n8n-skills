@@ -266,8 +266,8 @@ cp -r n8n-skills/skills/* ~/.claude/skills/
 ### ChatGPT and other SKILL.md hosts
 
 1. Download `n8n-skills-all-vX.Y.Z.zip` from the [latest release](https://github.com/czlonkowski/n8n-skills/releases/latest)
-2. Unzip it — every top-level folder (e.g. `n8n-expression-syntax/`) is one skill with its `SKILL.md`
-3. Upload each folder (or the matching per-skill zip from the same release) as a skill
+2. Unzip it — it holds one `.skill` file per skill (e.g. `n8n-expression-syntax.skill`). Don't upload the bundle itself; it is a container, not a skill
+3. In the host's skill upload dialog, select all the `.skill` files at once
 
 ### API / SDK
 
