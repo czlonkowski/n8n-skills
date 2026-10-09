@@ -68,6 +68,13 @@ for skill in "${SKILLS[@]}"; do
     (cd skills && zip -rq "../$DIST_DIR/${skill}-v${VERSION}.zip" "${skill}/" -x "*.DS_Store")
 done
 
+# Build skills-only bundle (for ChatGPT and other SKILL.md hosts)
+# Structure: one skill-name/SKILL.md folder per skill at zip root, no plugin
+# manifests or hooks. Unzip, then upload each folder (or its own zip) as a skill.
+echo "📦 Building skills-only bundle..."
+(cd skills && zip -rq "../$DIST_DIR/n8n-skills-all-v${VERSION}.zip" "${SKILLS[@]/%//}" -x "*.DS_Store")
+zip -q "$DIST_DIR/n8n-skills-all-v${VERSION}.zip" LICENSE NOTICES NOTICES-APACHE-2.0.txt
+
 # Build complete bundle (for Claude Code)
 echo "📦 Building complete bundle for Claude Code..."
 zip -rq "$DIST_DIR/n8n-mcp-skills-v${VERSION}.zip" \
