@@ -1,5 +1,7 @@
 # n8n-skills
 
+[![Listed on TakoAPI](https://takoapi.com/api/badge/czlonkowski-n8n-skills)](https://takoapi.com/agents/czlonkowski-n8n-skills)
+
 **Expert Claude Code skills for building flawless n8n workflows using the n8n-mcp MCP server**
 
 [![skills.sh](https://skills.sh/b/czlonkowski/n8n-skills)](https://skills.sh/czlonkowski/n8n-skills)
