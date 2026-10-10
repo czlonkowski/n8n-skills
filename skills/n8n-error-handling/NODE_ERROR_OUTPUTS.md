@@ -16,15 +16,16 @@ Set `onError: "continueErrorOutput"` on the node. This is what *adds* the second
 
 ```javascript
 { type: "updateNode", nodeName: "Google Sheets",
-  changes: { onError: "continueErrorOutput" } }
+  updates: { onError: "continueErrorOutput" } }
 ```
 
-Surgical alternative if you're touching only this field:
-
-```javascript
-{ type: "patchNodeField", nodeName: "Google Sheets",
-  fieldPath: "onError", value: "continueErrorOutput" }
-```
+**Do not reach for `patchNodeField` here.** It is a find/replace on an existing
+string field, not a setter: it takes `patches: [{find, replace}]`, and it errors
+with `property does not exist on node` when the field isn't set yet. A node whose
+error output you are switching on has no `onError` — that's the whole point — so
+the op fails in exactly the case you'd want it. `updateNode` above is the way to
+set a scalar node field; save `patchNodeField` for editing strings that already
+exist (Code node bodies, HTML, JSON payloads).
 
 The valid `onError` values:
 
