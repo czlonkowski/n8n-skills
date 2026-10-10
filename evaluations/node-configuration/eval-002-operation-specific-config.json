@@ -5,7 +5,7 @@
   "expected_behavior": [
     "Identifies need to set resource='message' and operation='post'",
     "Explains operation-specific required fields (channel, text)",
-    "Suggests using get_node_essentials with operation context",
+    "Suggests using get_node with standard detail for the operation context",
     "Provides example configuration for this operation",
     "May reference OPERATION_PATTERNS.md for Slack patterns",
     "Explains that different operations have different requirements"
