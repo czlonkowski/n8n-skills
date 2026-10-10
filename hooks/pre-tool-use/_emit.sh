@@ -4,9 +4,9 @@
 # Adapted for the community n8n-mcp MCP server. See /NOTICES.
 #
 # Shared helper for PreToolUse hooks.
-# Reads the session_id from stdin (Claude Code hook input is JSON), checks for
-# a per-session marker file, and emits a one-shot reminder telling Claude to
-# invoke the relevant Skill via the Skill tool.
+# Reads the session id from stdin (Claude Code: session_id; Grok: sessionId),
+# checks for a per-session marker file, and emits a one-shot reminder telling
+# the agent to invoke the relevant Skill.
 #
 # Usage: _emit.sh <marker-name> <reminder-text>
 #
@@ -26,13 +26,13 @@ if [[ -z "${MARKER_NAME}" || -z "${REMINDER}" ]]; then
   exit 0
 fi
 
-# Read session_id from the hook input JSON on stdin.
+# Read session id from the hook input JSON on stdin.
 INPUT="$(cat)"
 
 if command -v jq >/dev/null 2>&1; then
-  SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // empty' 2>/dev/null)"
+  SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // .sessionId // empty' 2>/dev/null)"
 elif command -v python3 >/dev/null 2>&1; then
-  SESSION_ID="$(echo "${INPUT}" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("session_id",""))' 2>/dev/null)"
+  SESSION_ID="$(echo "${INPUT}" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("session_id") or d.get("sessionId") or "")' 2>/dev/null)"
 else
   exit 0
 fi

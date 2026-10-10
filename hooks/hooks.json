@@ -13,7 +13,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "^mcp__.*__get_node$",
+        "matcher": "(^|__)get_node$",
         "hooks": [
           {
             "type": "command",
@@ -22,7 +22,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__n8n_create_workflow$",
+        "matcher": "(^|__)n8n_create_workflow$",
         "hooks": [
           {
             "type": "command",
@@ -31,7 +31,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__(n8n_update_partial_workflow|n8n_update_full_workflow)$",
+        "matcher": "(^|__)(n8n_update_partial_workflow|n8n_update_full_workflow)$",
         "hooks": [
           {
             "type": "command",
@@ -40,7 +40,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__(validate_workflow|n8n_validate_workflow)$",
+        "matcher": "(^|__)(validate_workflow|n8n_validate_workflow)$",
         "hooks": [
           {
             "type": "command",
@@ -49,7 +49,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__n8n_test_workflow$",
+        "matcher": "(^|__)n8n_test_workflow$",
         "hooks": [
           {
             "type": "command",
@@ -58,7 +58,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__n8n_instances$",
+        "matcher": "(^|__)n8n_instances$",
         "hooks": [
           {
             "type": "command",
@@ -67,7 +67,7 @@
         ]
       },
       {
-        "matcher": "^mcp__.*__n8n_manage_credentials$",
+        "matcher": "(^|__)n8n_manage_credentials$",
         "hooks": [
           {
             "type": "command",
@@ -78,7 +78,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "^mcp__.*__validate_workflow$",
+        "matcher": "(^|__)validate_workflow$",
         "hooks": [
           {
             "type": "command",
