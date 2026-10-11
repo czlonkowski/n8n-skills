@@ -1,0 +1,17 @@
+{
+  "id": "agents-004",
+  "skills": [
+    "n8n-agents"
+  ],
+  "query": "Add free web search and page fetching to my n8n agent without a Parallel API key.",
+  "expected_behavior": [
+    "Use the existing MCP Client Tool connected through ai_tool, not an HTTP Request Tool pointed at the MCP URL",
+    "Set endpointUrl to https://search.parallel.ai/mcp and serverTransport to httpStreamable",
+    "Use a Header Auth credential containing only User-Agent: n8n-skills-parallel-example/1.0; do not add Authorization or an API key",
+    "Explain that the AI Agent still needs its existing chat model"
+  ],
+  "baseline_without_skill": {
+    "observed_gap": "Existing TOOLS.md recommends MCP Client Tool but supplies no Parallel endpoint, transport or credential configuration."
+  },
+  "priority": "medium"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "agents-005",
+  "skills": [
+    "n8n-agents"
+  ],
+  "query": "My Parallel MCP Client Tool uses SSE and cannot connect. Should I add an API key?",
+  "expected_behavior": [
+    "Use Streamable HTTP (httpStreamable) with MCP Client Tool version 1.2 or newer",
+    "Keep the anonymous /mcp endpoint rather than /mcp-oauth",
+    "Refresh tool discovery and select web_search and web_fetch",
+    "Do not solve a transport mismatch by adding a Parallel key"
+  ],
+  "baseline_without_skill": {
+    "observed_gap": "Existing guide contains no transport-specific Parallel troubleshooting."
+  },
+  "priority": "medium"
+}
