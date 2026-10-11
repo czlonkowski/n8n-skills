@@ -1,0 +1,17 @@
+{
+  "id": "agents-006",
+  "skills": [
+    "n8n-agents"
+  ],
+  "query": "Search n8n documentation, then fetch a source page in the same conversation with Parallel. What inputs should the tools use?",
+  "expected_behavior": [
+    "Pass objective and search_queries to web_search; search excerpts may already answer the question",
+    "Use web_fetch for a specific URL or insufficient excerpts, passing urls and objective",
+    "Reuse one stable session_id within the conversation and create a new one for a new conversation",
+    "Explain that free requests use Fast mode with rate limits; respect a rate-limit response instead of retrying in a loop"
+  ],
+  "baseline_without_skill": {
+    "observed_gap": "Existing guide discusses tool schemas generically but does not document Parallel tool inputs or session continuity."
+  },
+  "priority": "medium"
+}
