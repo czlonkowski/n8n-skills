@@ -1,22 +1,24 @@
 {
   "id": "multi-instance-003",
-  "skills": ["n8n-multi-instance"],
+  "skills": [
+    "n8n-multi-instance"
+  ],
   "query": "Something weird: I asked you to open workflow abc123 and n8n_get_workflow came back NOT_FOUND. But I'm literally looking at that workflow open in my n8n UI right now. Did it get deleted? Should I rebuild it?",
   "expected_behavior": [
     "Activate n8n-multi-instance and recognize this as a likely wrong-instance misroute, NOT a deletion",
     "Explicitly tell the user NOT to recreate/rebuild the workflow",
-    "Diagnose: this MCP session is probably targeting a different instance than the one whose UI they're looking at",
-    "Call n8n_instances({mode:\"list\"}) to check current (or n8n_health_check to read the resolved instanceName)",
-    "If current is not the instance the workflow lives on, switch to the correct instance (own turn) and retry n8n_get_workflow",
-    "Mention the secondary possibility: if their previously-selected instance was deleted, the session silently falls back to the default instance — re-listing reveals where they actually are",
-    "Confirm the workflow is found after re-targeting before drawing any conclusion about deletion"
+    "Diagnose: the unnamed call went to the default instance, which is not the one whose UI they're looking at (another chat may have switched it)",
+    "Call n8n_instances({mode:\"list\"}) to get the names and ask/infer which instance the UI belongs to",
+    "Retry n8n_get_workflow({id:\"abc123\", instance:\"<that name>\"}) rather than switching",
+    "Mention the secondary possibility: if their previously-selected instance was deleted, unnamed calls fall back to the account default",
+    "Recommend naming the instance on later calls too"
   ],
   "expected_content": [
     "NOT_FOUND",
+    "instance",
     "n8n_instances",
-    "current",
-    "do not recreate"
+    "recreate"
   ],
   "priority": "high",
-  "notes": "NOT_FOUND for an object known to exist is almost always a misroute. The failure mode to prevent is recreating an object that already lives on another instance. Recovery = list/verify current -> switch -> retry."
+  "notes": "NOT_FOUND on a multi-instance account is a routing problem first. The fix is a named retry, not a rebuild."
 }

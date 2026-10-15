@@ -82,7 +82,7 @@ If you catch yourself thinking any of these, stop and invoke the named skill fir
 | "I'll pass this file/image through as JSON" | `n8n-binary-and-data` — file contents live in `$binary`, and can't cross the agent-tool boundary |
 | "I'll wire up an AI agent and give the model some tools" | `n8n-agents` — tool names & descriptions ARE the prompt; memory, structured output, and topology have traps |
 | "I'll copy this logic into another workflow" / "this is getting big" | `n8n-subworkflows` — extract a reusable sub-workflow; search before building |
-| "I'll create that credential / open that workflow" (account has >1 instance) | `n8n-multi-instance` — every call hits the currently-targeted instance; reads misroute silently, and an ambiguous credential write fails closed with `INSTANCE_AMBIGUOUS` |
+| "I'll create that credential / open that workflow" (account has >1 instance) | `n8n-multi-instance` — name the target with `instance: "<name>"` on each call; unnamed calls hit a default other chats can move, and reads misroute silently |
 
 ## Skill index
 
@@ -101,7 +101,7 @@ If you catch yourself thinking any of these, stop and invoke the named skill fir
 | `n8n-binary-and-data` | Files, images, PDFs, attachments, uploads/downloads, vision; passing a file to/from an agent tool |
 | `n8n-subworkflows` | Reusable / multi-step builds; Execute Workflow; extracting shared logic; Define-Below inputs; all-vs-each; exposing a workflow as an agent tool |
 | `n8n-agents` | AI Agent / LLM-with-tools / Text Classifier; tool design & `$fromAI`; system prompts; structured output; memory; RAG; human review; chat bots |
-| `n8n-multi-instance` | Accounts with multiple instances (the `n8n_instances` tool is present); switching the target instance; verifying before credential writes; recovering from an unexpected `NOT_FOUND`, wrong/empty reads, or an `INSTANCE_AMBIGUOUS` credential-write fail-close |
+| `n8n-multi-instance` | Accounts with multiple instances (the `n8n_instances` tool is present); the per-call `instance` argument; parallel agents on one connection; setting the default with `switch`; credential writes; recovering from an unexpected `NOT_FOUND`, wrong/empty reads, `INSTANCE_NOT_FOUND` or `INSTANCE_AMBIGUOUS` |
 | `n8n-self-hosting` | *Deployment, not workflow-building* — self-hosting / installing / deploying n8n on a VM (Docker Compose + Caddy, single vs queue mode), or updating / backing up / hardening it. Triggers on its own; not part of the build flow above. |
 
 ## n8n-mcp tools — working knowledge from turn one
@@ -145,7 +145,7 @@ their install:
 **Inspect & lifecycle**
 - `n8n_get_workflow` — fetch a workflow (full / structure / active / filtered / minimal). Use it to verify `connections` after edits; `mode="filtered"` + `nodeNames` reads one heavy node (e.g. long Code source) without pulling the whole workflow, which can truncate client-side.
 - `n8n_list_workflows` — list/filter (search before duplicating logic).
-- `n8n_delete_workflow`, `n8n_workflow_versions` (history/rollback/diff; `source: "local"` = n8n-mcp's own snapshots, `source: "native"` = n8n's own history including edits people made in the UI — see `n8n-mcp-tools-expert`), `n8n_instances` (multi-instance accounts only: list/switch the target instance — see `n8n-multi-instance`), `n8n_health_check` (returns the resolved `instanceName`, plus an `officialMcp` block saying whether the instance-level MCP server below is configured and reachable).
+- `n8n_delete_workflow`, `n8n_workflow_versions` (history/rollback/diff; `source: "local"` = n8n-mcp's own snapshots, `source: "native"` = n8n's own history including edits people made in the UI — see `n8n-mcp-tools-expert`), `n8n_instances` (multi-instance accounts only: list instances and switch the default; every n8n tool there also takes an optional per-call `instance` name — see `n8n-multi-instance`), `n8n_health_check` (returns the resolved `instanceName`, plus an `officialMcp` block saying whether the instance-level MCP server below is configured and reachable).
 
 **Test & run**
 - `n8n_test_workflow` — runs real nodes (Code, HTTP, DB writes, sends all fire). Ask the user before running when side effects exist. `method` picks the path: `auto` (default) and `trigger` fire a webhook/form/chat trigger over HTTP on an **active** workflow; `prepare`/`pinned`/`direct` route through n8n's own MCP server and can run a workflow that has no HTTP trigger at all (Manual, Schedule, sub-workflow) — see `n8n-mcp-tools-expert`.
