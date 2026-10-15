@@ -105,8 +105,9 @@ n8n-skills/
 - Tool names/descriptions as prompt; structured output + autoFix; memory/sessionId; human review; chat topologies
 
 ### 13. n8n Multi-Instance
-- `n8n_instances` `list`/`switch`; per-session target binding that persists across reconnects/deploys; uniform resolution across all tools
-- Verify `current` before credential writes (the server fail-closes only the ambiguous case with `INSTANCE_AMBIGUOUS`); NOT_FOUND ≈ wrong-instance misroute, not deletion; copy-between-instances flow
+- Per-call `instance: "<name>"` on every n8n tool (backend 0.1.120+ / n8n-mcp 2.94.0+): stateless, the preferred way to target; unknown names fail closed with `INSTANCE_NOT_FOUND`
+- `n8n_instances` `list`/`switch`; `switch` sets the default for unnamed calls, shared by every chat on a hosted connection
+- Name the instance on credential writes (never `INSTANCE_AMBIGUOUS`); NOT_FOUND ≈ wrong-instance misroute, not deletion; copy-between-instances flow without switching
 
 ### 14. n8n Self-Hosting (deployment/ops, not workflow-building)
 - Deploy production self-hosted n8n end-to-end to a fresh Linux VM: Docker Compose behind Caddy (auto-TLS), single OR queue mode (asks the user first)

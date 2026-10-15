@@ -184,12 +184,13 @@ Design n8n AI agents the right way.
 ### 13. **n8n Multi-Instance**
 Target the right n8n instance when an account has more than one.
 
-**Activates when**: The `n8n_instances` tool is available, the user mentions multiple instances/environments (prod vs staging, several clients), or a call returns an unexpected `NOT_FOUND` or wrong/empty data.
+**Activates when**: The `n8n_instances` tool is available, the user mentions multiple instances/environments (prod vs staging, several clients) or several agents working at once, or a call returns an unexpected `NOT_FOUND` or wrong/empty data.
 
 **Key Features**:
-- `n8n_instances` `list`/`switch` shapes and the real error envelope (`UNKNOWN_INSTANCE`, `MULTI_INSTANCE_DISABLED`, …)
-- Switching in its own turn; the per-session binding that persists across reconnects/deploys
-- Verifying `current` before credential writes — the server fail-closes only the *ambiguous* case (`INSTANCE_AMBIGUOUS`); an explicit wrong switch still writes the secret silently
+- The per-call `instance` argument: name the target on each call, so parallel agents on one connection can work on different instances at once
+- `n8n_instances` `list`/`switch` shapes and the real error envelopes (`INSTANCE_NOT_FOUND`, `INSTANCE_AMBIGUOUS`, `UNKNOWN_INSTANCE`, …)
+- `switch` as the shared default for unnamed calls, and why it moves every chat on a hosted connection
+- Naming the instance on credential writes — a named write is never ambiguous
 - Recovering from a misroute (NOT_FOUND ≈ wrong instance, not a deletion) and copying objects between instances
 
 ### 14. **n8n Self-Hosting** (deployment/ops)

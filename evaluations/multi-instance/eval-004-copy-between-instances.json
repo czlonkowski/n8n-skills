@@ -1,23 +1,25 @@
 {
   "id": "multi-instance-004",
-  "skills": ["n8n-multi-instance"],
+  "skills": [
+    "n8n-multi-instance"
+  ],
   "query": "I built a workflow called 'Lead Intake' on my prod n8n and I want the same workflow copied onto my staging instance so I can test changes there. Both are connected through n8n-mcp. Can you replicate it?",
   "expected_behavior": [
     "Activate n8n-multi-instance and treat this as the copy-between-instances task",
-    "Switch to prod (own turn), confirm current, then read the source with n8n_get_workflow",
-    "Switch to staging as its OWN separate call — never batched with the create-on-staging step (parallel-batch order isn't guaranteed, so a batched create could run against prod)",
-    "Re-verify current == staging with n8n_instances({mode:\"list\"}) before creating, because the create is what makes the copy permanent",
-    "Create the workflow on staging with n8n_create_workflow only after the target is confirmed",
-    "Sequence each instance's steps in its own turn rather than overlapping switch and operation",
-    "Note that credentials referenced by the workflow are per-instance and won't copy automatically — they must exist on staging too"
+    "Call n8n_instances({mode:\"list\"}) to get the exact names",
+    "Read the source with n8n_get_workflow({id, instance:\"prod\"})",
+    "Create the copy with n8n_create_workflow({..., instance:\"staging\"}) — no switching between the read and the write",
+    "Verify the copy with n8n_get_workflow({id:<new>, instance:\"staging\"})",
+    "Note that credentials referenced by the workflow must exist on staging (n8n doesn't return secret values, so the user re-enters them)",
+    "On older servers without the `instance` argument: switch to each instance in its own turn and verify current before the create"
   ],
   "expected_content": [
-    "switch",
-    "prod",
-    "staging",
     "n8n_get_workflow",
-    "n8n_create_workflow"
+    "n8n_create_workflow",
+    "instance",
+    "prod",
+    "staging"
   ],
   "priority": "medium",
-  "notes": "Two-instance choreography: read on A, switch to B in its own turn, verify current == B, write on B. The ordering rule (switch not batched with the dependent op) is the trap that quietly writes to the wrong instance."
+  "notes": "With per-call targeting the copy needs no switches, so nothing can move the target between the read and the create."
 }

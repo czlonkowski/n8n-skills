@@ -1,0 +1,23 @@
+{
+  "id": "multi-instance-006",
+  "skills": [
+    "n8n-multi-instance"
+  ],
+  "query": "I'm running three Claude chats at once on the same n8n-mcp connector: one fixing workflows on 'client-a', one on 'client-b', and this one on 'client-c'. Last week the agents kept editing each other's instances. In this chat, update the 'Invoice Sync' workflow on client-c to add an error branch.",
+  "expected_behavior": [
+    "Activate n8n-multi-instance (parallel agents on one connection)",
+    "Explain that the connection's default instance is shared by all three chats, so a switch in one moves the others — that caused last week's cross-edits",
+    "Not call n8n_instances switch",
+    "Call n8n_instances({mode:\"list\"}) to confirm the exact name 'client-c'",
+    "Pass instance:\"client-c\" on every call in the task: finding the workflow, reading it, updating it, validating it",
+    "Suggest the other chats also name their instance on each call",
+    "Hand off the error-branch design to n8n-error-handling"
+  ],
+  "expected_content": [
+    "instance",
+    "client-c",
+    "switch"
+  ],
+  "priority": "high",
+  "notes": "The FM360 scenario: per-call targeting is what makes parallel agents on one connection safe."
+}

@@ -1,0 +1,23 @@
+{
+  "id": "multi-instance-001",
+  "skills": [
+    "n8n-multi-instance"
+  ],
+  "query": "I run two n8n instances through n8n-mcp — a prod and a staging. I want you to build a small webhook-to-Slack workflow on STAGING, not prod. Please create it on the right one.",
+  "expected_behavior": [
+    "Activate n8n-multi-instance skill (the n8n_instances tool is available / user named multiple instances)",
+    "Call n8n_instances({mode:\"list\"}) first to learn the exact instance names",
+    "Pass instance:\"staging\" on the create (and on any follow-up read/validate/update) instead of relying on the current default",
+    "Not switch the shared default just to do this task — a switch would move every other chat on the connection",
+    "If the tools' schemas have no `instance` property (older server), fall back to a switch in its own turn, confirm current.name == 'staging', then create",
+    "Hand off the actual workflow build to n8n-workflow-patterns / n8n-mcp-tools-expert"
+  ],
+  "expected_content": [
+    "n8n_instances",
+    "list",
+    "instance",
+    "staging"
+  ],
+  "priority": "high",
+  "notes": "Core flow: discover names -> name the instance on every call. The default here is prod, so an unnamed create would land on prod; naming staging on the call routes it without touching the shared default."
+}
