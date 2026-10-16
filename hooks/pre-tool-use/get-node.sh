@@ -14,8 +14,8 @@
 #    decision after the first.
 #
 # n8n-mcp's get_node takes a single SHORT-form node type, e.g. nodes-base.set or
-# nodes-langchain.agent, in .tool_input.nodeType (not an array like the official
-# get_node_types). The anchored regexes below match the short form.
+# nodes-langchain.agent, in .tool_input.nodeType (Claude) or .toolInput.nodeType
+# (Grok). The anchored regexes below match the short form.
 
 set -uo pipefail
 
@@ -25,10 +25,10 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // empty' 2>/dev/null)"
+SESSION_ID="$(echo "${INPUT}" | jq -r '.session_id // .sessionId // empty' 2>/dev/null)"
 [ -z "${SESSION_ID}" ] && exit 0
 
-NODE_TYPE="$(echo "${INPUT}" | jq -r '.tool_input.nodeType // empty' 2>/dev/null)"
+NODE_TYPE="$(echo "${INPUT}" | jq -r '.tool_input.nodeType // .toolInput.nodeType // empty' 2>/dev/null)"
 
 STATE_DIR="${TMPDIR:-/tmp}/n8n-mcp-skills-state"
 mkdir -p "${STATE_DIR}" 2>/dev/null || exit 0
