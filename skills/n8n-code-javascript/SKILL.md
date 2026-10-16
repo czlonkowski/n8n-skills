@@ -12,7 +12,7 @@ Expert guidance for writing JavaScript code in n8n Code nodes.
 ## Quick Start
 
 ```javascript
-// Basic template for Code nodes
+// Basic template for Code nodes in Run Once for All Items mode
 const items = $input.all();
 
 // Process data
@@ -31,7 +31,7 @@ return processed;
 
 1. **Choose "Run Once for All Items" mode** (recommended for most use cases)
 2. **Access data**: `$input.all()`, `$input.first()`, or `$input.item`
-3. **Return `[{json: {...}}]`** — the canonical, mode-portable form. In *Run Once for All Items* mode n8n also auto-wraps a bare `return {…}` object, so that runs too; what genuinely fails is returning a primitive (string/number) or `null`.
+3. **Match the return shape to the mode**: *Run Once for All Items* → `[{json: {...}}]`; *Run Once for Each Item* → `{json: {...}}`. In All Items mode, n8n also auto-wraps a bare object; primitive returns fail in that mode.
 4. **CRITICAL**: Webhook data is under `$json.body` (not `$json` directly)
 5. **Built-ins available**: `this.helpers.httpRequest()` (no auth — the bare `$helpers` global is **undefined** in the task-runner sandbox, so `$helpers.httpRequest()` throws `ReferenceError: $helpers is not defined`), DateTime (Luxon), $jmespath(). **Not available**: `this.helpers.httpRequestWithAuthentication` (deny-listed), $env (when N8N_BLOCK_ENV_ACCESS_IN_NODE=true), require() (unless allowlisted). For anything beyond a trivial unauthenticated GET (auth, pagination, retries), prefer the **HTTP Request node** and keep Code nodes for pure logic.
 6. **Instance-allowlisted libraries**: Self-hosted instances can allowlist modules via `N8N_RUNNERS_ALLOWED_BUILT_IN_MODULES` and `N8N_RUNNERS_ALLOWED_EXTERNAL_MODULES` (legacy: `NODE_FUNCTION_ALLOW_BUILTIN` / `NODE_FUNCTION_ALLOW_EXTERNAL`). If the user says their instance allows specific modules (e.g. `axios`, `lodash`, `crypto`), use them via `require()` — don't refuse. If unsure, ask or default to built-ins only.
@@ -87,13 +87,13 @@ return [{
 // Example: Add processing timestamp to each item
 const item = $input.item;
 
-return [{
+return {
   json: {
     ...item.json,
     processed: true,
     processedAt: new Date().toISOString()
   }
-}];
+};
 ```
 
 **When to use:**
@@ -166,11 +166,18 @@ const name = webhookData.name;
 
 ## Return Format Requirements
 
-**Canonical form**: `[{json: {...}}]` — an array of objects each with a `json` property. It is unambiguous and works identically in both execution modes, so make it your default.
+**Choose the explicit return shape for the selected mode:**
 
-In *Run Once for All Items* mode n8n auto-normalizes looser shapes on the way out: a single bare object, or an array of bare objects, gets wrapped under `json` for you. So `return {foo: 1}` runs. What has nothing to wrap — and therefore genuinely fails at runtime with "Code doesn't return items properly" — is a primitive (string/number/boolean) or `null`/`undefined`. (n8n-mcp ≥ 2.63.0 no longer flags a bare-object return as an error; it reflects this auto-wrap behavior.)
+| Mode | Return shape |
+|---|---|
+| Run Once for All Items | `[{json: {...}}]` — an array of output items |
+| Run Once for Each Item | `{json: {...}}` — one output item for the current input |
 
-### Correct Return Formats
+Each Item mode validates one item object per invocation; an array return causes a runtime error. To emit no data, return `[]` in All Items mode or `null` in Each Item mode. All Items mode also accepts `null` as an empty result.
+
+In *Run Once for All Items* mode n8n auto-normalizes looser shapes on the way out: a single bare object, or an array of bare objects, gets wrapped under `json` for you. So `return {foo: 1}` runs. What has nothing to wrap — and therefore genuinely fails at runtime with "Code doesn't return items properly" — is a primitive (string/number/boolean) or `undefined`. (n8n-mcp ≥ 2.63.0 no longer flags a bare-object return as an error; it reflects this auto-wrap behavior.)
+
+### Correct Return Formats — All Items Mode
 
 ```javascript
 // ✅ Single result
@@ -209,7 +216,13 @@ if (shouldProcess) {
 }
 ```
 
-### Non-Canonical Returns (auto-wrapped — prefer the canonical form)
+### Each Item Return Format
+
+```javascript
+return { json: { ...$input.item.json, checked: true } };
+```
+
+### Non-Canonical Returns — All Items Mode (auto-wrapped)
 
 ```javascript
 // ⚠️ Auto-wrapped in All Items mode → [{json: {field: value}}]. Runs, but prefer the array form.
@@ -224,17 +237,17 @@ return [{field: value}];
 return $input.all();
 ```
 
-### Genuinely Broken Returns
+### Broken Returns — All Items Mode
 
 ```javascript
 // ❌ FAILS: primitive — n8n errors "Code doesn't return items properly"
 return "processed";
 
-// ❌ FAILS: null / undefined — nothing to pass to the next node
-return null;
+// ❌ FAILS: undefined — provide an explicit result
+return undefined;
 ```
 
-**Why it matters**: The canonical `[{json: {...}}]` is unambiguous and behaves the same in both modes. n8n auto-normalizes bare objects and arrays-of-objects in All Items mode, but a primitive or `null` return has nothing to wrap and stops execution.
+**Why it matters**: All Items mode collects an array of outputs; Each Item mode processes a single item object. Matching the return shape keeps the examples aligned with the runtime contract.
 
 **See**: [ERROR_PATTERNS.md](ERROR_PATTERNS.md) #3 for detailed error solutions
 
@@ -260,9 +273,9 @@ The full library covers 10 patterns: multi-source aggregation, regex filtering, 
 
 The recurring Code node failures, in rough frequency order:
 
-1. **Empty code / missing return** — always end with `return [...]`, and make sure *every* branch returns.
+1. **Empty code / missing return** — return an array in All Items mode or an item object in Each Item mode, and make sure *every* branch returns.
 2. **Expression syntax as code** — don't write `{{ }}` where JavaScript belongs (`return {{ $json.x }}` is a syntax error). Use `` `${$json.field}` `` or `$input.first().json.field`. `{{ }}` *inside a string literal* is fine — it's just literal text n8n won't evaluate.
-3. **Return shape** — prefer `return [{json:{...}}]`. A bare `return {…}` auto-wraps in All Items mode, but returning a primitive (string/number) or `null` is what actually fails.
+3. **Return shape** — All Items: `return [{json:{...}}]`; Each Item: `return {json:{...}}`. A bare object auto-wraps in All Items mode; an array return fails in Each Item mode.
 4. **Missing null checks** — use optional chaining: `item.json?.user?.email || 'fallback'`.
 5. **Webhook body nesting** — `$json.email` is undefined; use `$json.body.email`.
 6. **Auth helpers blocked** (`httpRequestWithAuthentication`) and `$env` blocked — route secrets through credentials/HTTP Request node, not the Code node sandbox.
@@ -377,8 +390,8 @@ Consider other nodes when:
 Before deploying Code nodes, verify:
 
 - [ ] **Code is not empty** - Must have meaningful logic
-- [ ] **Return statement exists** - Returns items, not a primitive/`null`
-- [ ] **Canonical return format** - Each item: `{json: {...}}` (bare objects auto-wrap, but be explicit)
+- [ ] **Return statement exists** - Returns data in the selected mode's format
+- [ ] **Mode-specific return format** - All Items: `[{json: {...}}]`; Each Item: `{json: {...}}`
 - [ ] **Data access correct** - Using `$input.all()`, `$input.first()`, or `$input.item`
 - [ ] **No `{{ }}` written as code** - Use JavaScript template literals: `` `${value}` ``
 - [ ] **Error handling** - Guard clauses for null/undefined inputs

@@ -39,7 +39,7 @@ Teaches how to write effective JavaScript in n8n Code nodes, avoid common errors
 ### Quick Start
 - Mode selection (All Items vs Each Item)
 - Data access patterns ($input.all(), $input.first(), $input.item)
-- Correct return format: `[{json: {...}}]`
+- Mode-specific return formats: All Items `[{json: {...}}]`; Each Item `{json: {...}}`
 - Webhook data structure (.body nesting)
 - Built-in functions overview
 
@@ -66,7 +66,7 @@ Teaches how to write effective JavaScript in n8n Code nodes, avoid common errors
 Top 5 errors to avoid:
 1. **Empty code / missing return** (38% of failures)
 2. **Expression syntax confusion** (using `{{}}` in code)
-3. **Incorrect return format** (missing array wrapper or json property)
+3. **Incorrect return format** (mode/return-shape mismatch or invalid json property)
 4. **Unmatched brackets** (string escaping issues)
 5. **Missing null checks** (crashes on undefined)
 
@@ -194,13 +194,13 @@ const name = $json.body.name;
 ```
 
 ### #2: Return Format
-**Prefer the canonical `[{json: {...}}]`** — unambiguous in both execution modes. A bare object auto-wraps in *Run Once for All Items* mode, so it runs too; what actually fails is returning a primitive (string/number) or `null`.
+**Match the return shape to the mode**: All Items returns an array of items; Each Item returns a single item object. All Items also auto-wraps a bare object; primitive returns fail in that mode.
 
 ```javascript
-// ⚠️ Auto-wrapped in All Items mode → [{json: {result: 'success'}}]. Runs, but prefer the array form.
+// ✅ Run Once for Each Item
 return {json: {result: 'success'}};
 
-// ✅ CANONICAL
+// ✅ Run Once for All Items
 return [{json: {result: 'success'}}];
 ```
 
@@ -290,7 +290,7 @@ const value = $json.field;
 ### Essential Rules
 1. Choose "All Items" mode (recommended)
 2. Access data: `$input.all()`, `$input.first()`, `$input.item`
-3. **Return** the canonical `[{json: {...}}]` (bare objects auto-wrap in All Items mode; primitives/`null` fail)
+3. **Return** `[{json: {...}}]` in All Items mode or `{json: {...}}` in Each Item mode
 4. **Webhook data**: Under `.body` property
 5. **No `{{}}` syntax**: Use JavaScript directly
 
@@ -322,7 +322,7 @@ const value = $json.field;
 
 **5 test scenarios** covering:
 1. Webhook body gotcha (most common mistake)
-2. Return format error (missing array wrapper)
+2. Return format error (Each Item array return)
 3. HTTP request with this.helpers.httpRequest()
 4. Aggregation pattern with $input.all()
 5. Expression syntax confusion (using `{{}}`)
