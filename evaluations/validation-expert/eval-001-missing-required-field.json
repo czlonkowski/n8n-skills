@@ -6,7 +6,7 @@
     "Identifies this as a 'missing_required' error type",
     "Explains that the node configuration is incomplete",
     "Provides guidance on finding what value to provide",
-    "Suggests using get_node_essentials to see required fields",
+    "Suggests using get_node with standard detail to see required fields",
     "Explains where to add the missing field in the node configuration",
     "May reference ERROR_CATALOG.md for details"
   ]
