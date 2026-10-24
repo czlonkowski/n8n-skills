@@ -7,7 +7,7 @@ whether every node is wired to the trigger.
 
 | Case | Expects |
 |---|---|
-| `build-001-computed-fields` | Edit Fields computes values two nodes read; no Code; ≤ 6 nodes |
+| `build-001-computed-fields` | One Edit Fields node computes values three independent nodes read (subtotal computed once); no Code; ≤ 7 nodes |
 | `build-002-xml-api` | XML node parses the response; Slack node posts; HTTP Request has a `Why HTTP:` note; no Code |
 | `build-003-paginated-api` | HTTP Request pagination option with a page cap; no Code, no Loop Over Items |
 | `build-004-service-node` | Slack node, no HTTP Request, no Set that only re-maps; ≤ 4 nodes |
@@ -29,17 +29,25 @@ Every run is a real, billed agent session, so the suite is run by hand, never in
 
 ```bash
 evaluations/build-tasks/run.sh                       # all cases, 3 runs each, plugin from the working tree
-evaluations/build-tasks/run.sh --ref main            # the same against main, for a baseline
+evaluations/build-tasks/run.sh --ref main            # the same against main, for a baseline (on a branch)
 evaluations/build-tasks/run.sh --runs 1 cases/build-004-service-node.json   # one smoke run
 ```
 
-Compare a branch against `--ref main` on the same model: a pass rate without a baseline says little. Results land in
-`evaluations/build-tasks/results/<timestamp>/` (gitignored): per run the prompt, the transcript, stderr, the
-`workflow.json` and `score.json`.
+Compare against a baseline on the same model: a pass rate alone says little. On a branch, `--ref main`; after a
+change has merged, `--ref <the commit before it>`. Results land in `evaluations/build-tasks/results/<timestamp>/`
+(gitignored): per run the prompt, the event stream (`transcript.jsonl`), stderr, the `workflow.json`, `run.json` (what
+loaded, cost, permission denials) and `score.json`.
 
-The runner loads the plugin only from `--plugin-dir`, skips user settings and installed plugins, and gives the agent
-n8n-mcp in docs-only mode (no instance), so nothing is deployed. Requires the Claude Code CLI (signed in), `npx`,
-`python3`, `git` and `perl`.
+Isolation, so the two arms differ only in the plugin:
+
+- Each agent works in a fresh temp directory outside any repository. Running inside this repo would load its own
+  `CLAUDE.md`, `.claude/settings.local.json` and `.claude/skills/`, which contaminates both arms.
+- The plugin loads only from `--plugin-dir`; user settings and installed plugins are skipped.
+- n8n-mcp runs in docs-only mode (no instance, nothing deployed), pinned to one version per invocation: the latest on
+  npm, or `N8N_MCP_VERSION=2.97.0`. Pin the same version for both arms.
+
+A run where the plugin or n8n-mcp didn't load, Write was denied, or the session errored is reported as `INFRA` and left
+out of the pass rate. Requires the Claude Code CLI (signed in), `npm`/`npx`, `python3`, `git` and `perl`.
 
 The structural checks are a regression signal, not proof that a workflow works: they can't see whether an expression
 computes the right value. Read a few `workflow.json` files when a pass rate moves.

@@ -1,12 +1,12 @@
 {
   "id": "build-001-computed-fields",
-  "title": "Computed fields read by two nodes → Edit Fields, no Code",
+  "title": "Computed fields read by three independent nodes → one Edit Fields node, no Code",
   "skills": [
     "using-n8n-mcp-skills",
     "n8n-expression-syntax",
     "n8n-node-configuration"
   ],
-  "task": "Build an n8n workflow. A Webhook (POST, path \"orders\") receives JSON like {\"customer\":{\"first_name\":\"Ada\",\"last_name\":\"Lovelace\"},\"items\":[{\"sku\":\"A1\",\"price\":12.5,\"qty\":2},{\"sku\":\"B2\",\"price\":3,\"qty\":4}]}. Compute full_name (first and last name joined with a space), item_count (number of items) and subtotal (the sum of price × qty). Insert one row with those three fields into the n8n Data Table \"orders\", and respond to the caller with the same three fields as JSON.",
+  "task": "Build an n8n workflow. A Webhook (POST, path \"orders\") receives JSON like {\"customer\":{\"first_name\":\"Ada\",\"last_name\":\"Lovelace\"},\"items\":[{\"sku\":\"A1\",\"price\":12.5,\"qty\":2},{\"sku\":\"B2\",\"price\":3,\"qty\":4}]}. Compute full_name (first and last name joined with a space), item_count (number of items) and subtotal (the sum of price × qty). Three independent steps then use those values: insert one row with the three fields into the n8n Data Table \"orders\"; post a Slack message to #orders that reads \"<full_name> ordered <item_count> items, subtotal <subtotal>\"; and respond to the caller with the three fields as JSON. The Slack message and the response must not wait for or depend on the Data Table insert. A Slack credential already exists in n8n.",
   "assertions": [
     {
       "type": "no_node",
@@ -25,11 +25,24 @@
       "label": "Edit Fields computes the fields"
     },
     {
+      "type": "max_nodes_matching",
+      "pattern": "price",
+      "max": 1,
+      "label": "subtotal computed in one node"
+    },
+    {
       "type": "has_node",
       "node_types": [
         "n8n-nodes-base.dataTable"
       ],
       "label": "Data Table insert"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.slack"
+      ],
+      "label": "Slack node"
     },
     {
       "type": "has_node",
@@ -40,14 +53,14 @@
     },
     {
       "type": "max_nodes",
-      "max": 6,
-      "label": "no native sprawl (≤ 6 nodes)"
+      "max": 7,
+      "label": "no native sprawl (≤ 7 nodes)"
     },
     {
       "type": "connected",
       "label": "every node wired to the trigger"
     }
   ],
-  "notes": "Two consumers read the same computed values, so one Edit Fields node is the right named step. A Code node, or a chain of Sets, fails.",
+  "notes": "Three consumers on separate branches read the same computed values, so one Edit Fields node computing them once is the right named step. Repeating the subtotal expression in each consumer fails 'computed in one node'; a Code node fails 'no Code'. (The first version had the consumers in a chain, where computing in the Data Table insert and reading its output is equally valid — that version penalized a good design.)",
   "runs": 3
 }
