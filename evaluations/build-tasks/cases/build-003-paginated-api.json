@@ -1,0 +1,63 @@
+{
+  "id": "build-003-paginated-api",
+  "title": "Paginated API → HTTP Request pagination option, capped, no loop",
+  "skills": [
+    "using-n8n-mcp-skills",
+    "n8n-node-configuration",
+    "n8n-workflow-patterns"
+  ],
+  "task": "Build an n8n workflow (manual trigger) that fetches every contact from https://api.example.com/v1/contacts and inserts each contact into the n8n Data Table \"contacts\". The API is page-based: ?page=N&per_page=100, pages start at 1, and each response is {\"data\":[...contacts...],\"has_more\":true|false}. Authenticate with an existing Header Auth credential.",
+  "assertions": [
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.code",
+        "n8n-nodes-base.function",
+        "n8n-nodes-base.functionItem"
+      ],
+      "label": "no Code node"
+    },
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.splitInBatches"
+      ],
+      "label": "no Loop Over Items"
+    },
+    {
+      "type": "node_param",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "path": "options.pagination.pagination.paginationMode",
+      "op": "truthy",
+      "label": "pagination option set"
+    },
+    {
+      "type": "node_param",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "path": "options.pagination.pagination.limitPagesFetched",
+      "op": "equals",
+      "value": true,
+      "label": "page cap on (limitPagesFetched)"
+    },
+    {
+      "type": "node_param",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "path": "options.pagination.pagination.maxRequests",
+      "op": "exists",
+      "label": "maxRequests set"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.dataTable"
+      ],
+      "label": "Data Table insert"
+    },
+    {
+      "type": "connected",
+      "label": "every node wired to the trigger"
+    }
+  ],
+  "notes": "The pagination option replaces the Set → HTTP → IF loop. Without a page cap a stop condition that never fires pages forever.",
+  "runs": 3
+}

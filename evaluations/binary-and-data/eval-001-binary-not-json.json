@@ -1,13 +1,15 @@
 {
   "id": "binary-and-data-001",
-  "skills": ["n8n-binary-and-data"],
+  "skills": [
+    "n8n-binary-and-data"
+  ],
   "query": "I'm downloading a PDF invoice with an HTTP Request node and then trying to read its text in a Code node with const text = $json.data; but text is always empty (or undefined). The download node runs fine and the file is clearly there. Where is the PDF content and how do I actually read it?",
   "expected_behavior": [
     "Activate n8n-binary-and-data skill",
     "Explain that file contents live in the $binary slot, not $json — $json.data is empty because the bytes are in $binary.<key> (default key 'data')",
     "Flag that the HTTP Request node must use responseFormat: 'file' or the body arrives as mangled text instead of clean binary",
     "Show reading the bytes in a Code node with this.helpers.getBinaryDataBuffer(itemIndex, propertyName), not by base64-decoding $binary.data by hand",
-    "Note that a PDF is a binary container — buffer.toString('utf-8') will NOT yield clean text; a real parse/OCR step is needed to extract text",
+    "Note that a PDF is a binary container — buffer.toString('utf-8') will NOT yield clean text; point to Extract From File (operation pdf), which extracts the text without a Code node",
     "Remind that the Code node must re-attach binary on return (binary: $input.item.binary) or the file is dropped downstream",
     "Reference BINARY_BASICS.md for the slot shape, getBinaryDataBuffer, and confirming binary in an execution"
   ],
@@ -15,7 +17,8 @@
     "$binary",
     "responseFormat",
     "getBinaryDataBuffer",
-    "binaryPropertyName"
+    "binaryPropertyName",
+    "Extract From File"
   ],
   "priority": "high",
   "notes": "The foundational binary mistake: reading file contents from $json. Must redirect to $binary + getBinaryDataBuffer and catch the responseFormat: 'file' precondition. Bonus: PDF text isn't plain UTF-8."

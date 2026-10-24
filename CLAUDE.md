@@ -45,12 +45,13 @@ n8n-skills/
 └── .claude-plugin/        # Claude Code plugin configuration
 ```
 
-**Enforcement layer (hooks/):** the plugin ships hooks that surface the right skill at the moment of decision. `session-start.sh` injects the `using-n8n-mcp-skills` router every session; PreToolUse hooks fire node-specific reminders on `get_node`, one-shot reminders on create/update/validate/test, and one-shot multi-instance/credential reminders on `n8n_instances`/`n8n_manage_credentials`; the PostToolUse hook parses `validate_workflow`'s node JSON and routes to the relevant skills. Hooks run only in the Claude Code / Codex plugin install (not Claude.ai zip uploads), fail open, and never block a tool call. Attribution for the adapted scripts lives in `NOTICES` and the script headers — never inside agent-facing SKILL.md content.
+**Enforcement layer (hooks/):** the plugin ships hooks that surface the right skill at the moment of decision. `session-start.sh` injects the `using-n8n-mcp-skills` router every session; PreToolUse hooks fire node-specific reminders on `get_node`, one-shot reminders on create/update/validate/test (create/update also scan the payload for Code / HTTP Request nodes without a `Why Code:` / `Why HTTP:` note and for function bodies in `{{ }}`, once per node), and one-shot multi-instance/credential reminders on `n8n_instances`/`n8n_manage_credentials`; the PostToolUse hook parses `validate_workflow`'s node JSON and routes to the relevant skills. Hooks run only in the Claude Code / Codex plugin install (not Claude.ai zip uploads), fail open, and never block a tool call. Attribution for the adapted scripts lives in `NOTICES` and the script headers — never inside agent-facing SKILL.md content.
 
 ## The 14 Skills
 
 ### 1. n8n Expression Syntax
 - Teaches correct n8n expression syntax ({{}} patterns)
+- The transform gatekeeper: service node → native node → short expression → Code (a function body in `{{ }}` counts as code); expression-only helpers (`.pluck()`, `.sum()`, `$ifEmpty()`, `.diffTo()`)
 - Covers common mistakes and fixes
 - Critical gotcha: Webhook data under `$json.body`
 - `$jmespath(object, query)` for querying nested JSON in one expression (quoting rules: `'string'`, `` `number` ``, `"field"`; `json.` prefix over `.all()`)
@@ -74,10 +75,11 @@ n8n-skills/
 ### 5. n8n Node Configuration
 - Operation-aware node configuration guidance
 - Property dependencies and common patterns
+- NATIVE_NODES.md: configs for the native nodes that replace Code (Summarize, Merge, Compare Datasets, Remove Duplicates, HTTP pagination, Webhook raw body + Crypto v2, node settings)
 
 ### 6. n8n Code JavaScript
-- Write JavaScript in n8n Code nodes
-- Data access patterns, `$helpers`, DateTime
+- Write JavaScript in n8n Code nodes once native nodes are ruled out (closed list of exceptions, `Why Code:` note)
+- Data access patterns, `this.helpers`, DateTime
 
 ### 7. n8n Code Python
 - Native Python (n8n 2.x, `pythonNative`): only `_items`/`_item`, dict access; the Pyodide helpers (`_input`, `_json`, `_node`, `_now`, `_jmespath`) raise NameError

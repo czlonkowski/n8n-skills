@@ -1,0 +1,53 @@
+{
+  "id": "build-001-computed-fields",
+  "title": "Computed fields read by two nodes → Edit Fields, no Code",
+  "skills": [
+    "using-n8n-mcp-skills",
+    "n8n-expression-syntax",
+    "n8n-node-configuration"
+  ],
+  "task": "Build an n8n workflow. A Webhook (POST, path \"orders\") receives JSON like {\"customer\":{\"first_name\":\"Ada\",\"last_name\":\"Lovelace\"},\"items\":[{\"sku\":\"A1\",\"price\":12.5,\"qty\":2},{\"sku\":\"B2\",\"price\":3,\"qty\":4}]}. Compute full_name (first and last name joined with a space), item_count (number of items) and subtotal (the sum of price × qty). Insert one row with those three fields into the n8n Data Table \"orders\", and respond to the caller with the same three fields as JSON.",
+  "assertions": [
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.code",
+        "n8n-nodes-base.function",
+        "n8n-nodes-base.functionItem"
+      ],
+      "label": "no Code node"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.set"
+      ],
+      "label": "Edit Fields computes the fields"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.dataTable"
+      ],
+      "label": "Data Table insert"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.respondToWebhook"
+      ],
+      "label": "Respond to Webhook"
+    },
+    {
+      "type": "max_nodes",
+      "max": 6,
+      "label": "no native sprawl (≤ 6 nodes)"
+    },
+    {
+      "type": "connected",
+      "label": "every node wired to the trigger"
+    }
+  ],
+  "notes": "Two consumers read the same computed values, so one Edit Fields node is the right named step. A Code node, or a chain of Sets, fails.",
+  "runs": 3
+}

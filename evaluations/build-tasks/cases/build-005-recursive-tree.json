@@ -1,0 +1,42 @@
+{
+  "id": "build-005-recursive-tree",
+  "title": "Arbitrary-depth tree → Code is right, with a Why Code: note",
+  "skills": [
+    "using-n8n-mcp-skills",
+    "n8n-code-javascript"
+  ],
+  "task": "Build an n8n workflow. A Webhook (POST, path \"categories\") receives a category tree of arbitrary depth, like {\"name\":\"Root\",\"children\":[{\"name\":\"A\",\"children\":[{\"name\":\"A1\",\"children\":[]}]},{\"name\":\"B\",\"children\":[]}]}. Respond to the caller with a JSON array that has one entry per category, {\"path\":\"Root > A > A1\",\"depth\":2}, with depth counted from 0 at the root.",
+  "assertions": [
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.code"
+      ],
+      "label": "Code node (recursion is on the closed list)"
+    },
+    {
+      "type": "node_note",
+      "node_type": "n8n-nodes-base.code",
+      "pattern": "Why Code:",
+      "label": "Code node carries a Why Code: note"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.respondToWebhook"
+      ],
+      "label": "Respond to Webhook"
+    },
+    {
+      "type": "max_nodes",
+      "max": 5,
+      "label": "≤ 5 nodes"
+    },
+    {
+      "type": "connected",
+      "label": "every node wired to the trigger"
+    }
+  ],
+  "notes": "Guards against overcorrection: arbitrary depth needs recursion, which no native node expresses (Split Out handles one level).",
+  "runs": 3
+}

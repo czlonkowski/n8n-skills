@@ -1,0 +1,52 @@
+{
+  "id": "build-004-service-node",
+  "title": "Post to Slack → Slack node, no HTTP Request, no Set",
+  "skills": [
+    "using-n8n-mcp-skills",
+    "n8n-workflow-patterns"
+  ],
+  "task": "Build an n8n workflow. A Webhook (POST, path \"deploy-finished\") receives JSON like {\"service\":\"api\",\"version\":\"1.4.2\",\"status\":\"success\"}. Post a message to the Slack channel #deploys that reads \"<service> <version> deployed: <status>\". The Slack workspace is already connected in n8n as a Slack credential.",
+  "assertions": [
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.slack"
+      ],
+      "label": "Slack node"
+    },
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.httpRequest"
+      ],
+      "label": "no HTTP Request"
+    },
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.code",
+        "n8n-nodes-base.function",
+        "n8n-nodes-base.functionItem"
+      ],
+      "label": "no Code node"
+    },
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.set"
+      ],
+      "label": "no Set that only re-maps for Slack"
+    },
+    {
+      "type": "max_nodes",
+      "max": 4,
+      "label": "≤ 4 nodes"
+    },
+    {
+      "type": "connected",
+      "label": "every node wired to the trigger"
+    }
+  ],
+  "notes": "Rung 1: the service's own node, with the message as one expression in its text field.",
+  "runs": 3
+}

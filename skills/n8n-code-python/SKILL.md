@@ -97,7 +97,7 @@ Line 1: Import of standard library module 'json' is disallowed. Allowed stdlib m
   one-line test node `import json` + `return [{"json": {"ok": True}}]`, or ask the user. Never
   assume.
 - Without imports: parse JSON strings upstream (`{{ JSON.parse($json.payload) }}` in Edit Fields).
-  Do date math in expressions (Luxon) or JS. ISO-8601 strings still compare and sort correctly as
+  Do date math with the Date & Time node or Luxon in an expression. ISO-8601 strings still compare and sort correctly as
   plain strings. Use the Crypto node for hashing.
 - `requests`, `pandas` and `numpy` are never available unless the admin built a custom runner
   image. Use the HTTP Request node for HTTP.

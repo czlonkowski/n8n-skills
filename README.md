@@ -47,7 +47,8 @@ Teaches correct n8n expression syntax and common patterns.
 - Core variables ($json, $node, $now, $env)
 - **Critical gotcha**: Webhook data is under `$json.body`
 - Common mistakes catalog with fixes
-- When NOT to use expressions (Code nodes!)
+- The transform gatekeeper: service node → native node → short expression → Code; a function body in `{{ }}` is code
+- Built-in helpers (`.pluck()`, `.sum()`, `$ifEmpty()`, `.diffTo()`), expression-only
 
 ### 2. **n8n MCP Tools Expert** (HIGHEST PRIORITY)
 Expert guide for using n8n-mcp MCP tools effectively.
@@ -97,11 +98,12 @@ Operation-aware node configuration guidance.
 - Operation-specific requirements
 - AI connection types (8 types for AI Agent workflows)
 - Common configuration patterns
+- Configs for the native nodes that replace Code (Summarize, Aggregate, Split Out, Merge, Compare Datasets, Remove Duplicates, Sort/Limit, Date & Time, HTTP Request pagination, Webhook raw body + Crypto) — NATIVE_NODES.md
 
 ### 6. **n8n Code JavaScript**
 Write effective JavaScript code in n8n Code nodes.
 
-**Activates when**: Writing JavaScript in Code nodes, troubleshooting Code node errors, making HTTP requests with `this.helpers` (the `$helpers` global), working with dates.
+**Activates when**: Editing or debugging a Code node, or writing a new one after native nodes and expressions are ruled out (the closed list: loops or recursion, state across runs, custom parsing, libraries, heavy all-items work).
 
 **Key Features**:
 - Data access patterns ($input.all(), $input.first(), $input.item)
@@ -109,7 +111,8 @@ Write effective JavaScript code in n8n Code nodes.
 - Correct return format: `[{json: {...}}]`
 - Built-in functions (`this.helpers.httpRequest()` — the bare `$helpers` global is undefined in the task-runner sandbox; prefer the HTTP Request node for non-trivial/authenticated calls — DateTime, $jmespath())
 - Top 5 error patterns with solutions (covering 62%+ of failures)
-- 10 production-tested patterns
+- 10 production-tested patterns, each opening with its native-node alternative
+- The `Why Code:` note every kept Code node carries
 
 ### 7. **n8n Code Python**
 Write Python code in n8n Code nodes with proper limitations awareness.
@@ -213,7 +216,7 @@ Deploy a production self-hosted n8n end-to-end to a fresh Linux VM.
 Beyond the capability skills, the plugin ships an **always-on enforcement layer** so the right guidance surfaces at the moment of decision — not only when a query happens to match a skill description.
 
 - **Router skill (`using-n8n-mcp-skills`)** — loaded into every session by a `SessionStart` hook. It routes you to the right skill, summarizes every n8n-mcp tool, and states the cross-cutting rules. It re-fires on resume/clear/compact so it survives context compaction.
-- **PreToolUse hooks** — before high-impact n8n-mcp calls, a short reminder points at the relevant skill. Looking up a Set, Code, Merge, Loop Over Items, DateTime, Data Table, or AI Agent node via `get_node` fires a node-specific reminder (and re-fires each time, because a re-lookup usually means you're reconsidering the same decision). Calls to `n8n_instances` and `n8n_manage_credentials` fire one-shot reminders pointing at the multi-instance and credential-discipline skills.
+- **PreToolUse hooks** — before high-impact n8n-mcp calls, a short reminder points at the relevant skill. Looking up a Set, Code, Merge, Loop Over Items, Date & Time, Data Table, or AI Agent node via `get_node` fires a node-specific reminder (and re-fires each time, because a re-lookup usually means you're reconsidering the same decision). Create and update calls are scanned for Code / HTTP Request nodes without a `Why Code:` / `Why HTTP:` note and for function bodies inside `{{ }}`, with one short reminder per node. Calls to `n8n_instances` and `n8n_manage_credentials` fire one-shot reminders pointing at the multi-instance and credential-discipline skills.
 - **PostToolUse hook** — after `validate_workflow`, it inspects the workflow's node types and routes you to the skills that own the remaining risks, with the reminder that *validation passing is necessary, not sufficient*.
 
 Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (individual skill uploads) the skills still activate by description — the pack degrades gracefully, just without the proactive nudges. Every hook fails open and never blocks a tool call.
@@ -224,7 +227,7 @@ Hooks run only in the **Claude Code / Codex plugin** install. On Claude.ai (indi
 
 ### Prerequisites
 
-1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
+1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp)). Version 2.97.0+ adds what the native-first guidance builds on: `get_node` standard detail lists each node's `options`, `search_nodes` ranks the core node first for phrases like "group by" or "deduplicate", and `tools_documentation({topic: "expression_helpers"})` documents the expression helpers. Older servers still work; the skills then carry that guidance alone.
 2. **Claude Code**, Claude.ai, or Claude API access
 3. `.mcp.json` configured with n8n-mcp server
 

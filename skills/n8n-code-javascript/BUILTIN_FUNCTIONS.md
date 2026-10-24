@@ -61,7 +61,7 @@ Built-in modules need `N8N_RUNNERS_ALLOWED_BUILT_IN_MODULES` (or legacy `NODE_FU
 
 ## 1. this.helpers.httpRequest() - HTTP Requests
 
-Make HTTP requests directly from Code nodes without using HTTP Request node. The accessor is `this.helpers.httpRequest()` — the bare `$helpers` global is undefined in the task-runner sandbox and throws `ReferenceError: $helpers is not defined`. For non-trivial calls (pagination, retries, credentials) prefer the HTTP Request node.
+Call an API from inside Code logic, for example one lookup per step of a recursive algorithm. A plain API call, paging, retries or credentials belong in the HTTP Request node. The accessor is `this.helpers.httpRequest()` — the bare `$helpers` global is undefined in the task-runner sandbox and throws `ReferenceError: $helpers is not defined`. For non-trivial calls (pagination, retries, credentials) prefer the HTTP Request node.
 
 ### Basic Usage
 
@@ -743,7 +743,7 @@ return [{
 
 ### crypto Module
 
-> **Gated**: `require('crypto')` only works if `N8N_RUNNERS_ALLOWED_BUILT_IN_MODULES` (or legacy `NODE_FUNCTION_ALLOW_BUILTIN`) includes `crypto` (or is `*`). On default installs it throws "Cannot find module 'crypto'". For hashing you control, prefer doing it before reaching the Code node, or — if you must — verify your instance's config first.
+> **Gated**: `require('crypto')` only works if `N8N_RUNNERS_ALLOWED_BUILT_IN_MODULES` (or legacy `NODE_FUNCTION_ALLOW_BUILTIN`) includes `crypto` (or is `*`). On default installs it throws "Cannot find module 'crypto'". For hashing, HMAC, signing or UUIDs use the **Crypto node** instead (typeVersion 2; HMAC and signing secrets come from a `crypto` credential) — no allowlist needed. Use `require('crypto')` only for what the Crypto node can't do, and only after confirming the instance allows it.
 
 ```javascript
 const crypto = require('crypto');
@@ -824,14 +824,14 @@ return [{
 **Workarounds**:
 - HTTP with auth → HTTP Request node with credential attached, or sub-workflow pattern
 - Secrets → arrive as data from an upstream HTTP Request / credential-aware node
-- Hashing/crypto → do it in a service the workflow calls, or get your instance config updated
+- Hashing/crypto → the Crypto node (hash, HMAC, sign, UUID), no allowlist needed
 
 ---
 
 ## Summary
 
 **Most Useful Built-ins**:
-1. **this.helpers.httpRequest()** - API calls without HTTP Request node (the bare `$helpers` global is undefined)
+1. **this.helpers.httpRequest()** - API calls inside Code logic; a plain call belongs in the HTTP Request node (the bare `$helpers` global is undefined)
 2. **DateTime** - Professional date/time handling
 3. **$jmespath()** - Complex JSON queries
 4. **Math, JSON, Object, Array** - Standard JavaScript utilities
@@ -839,9 +839,9 @@ return [{
 **Common Patterns**:
 - API calls: Use this.helpers.httpRequest() (or, preferably, the HTTP Request node)
 - Date operations: Use DateTime (Luxon)
-- Data filtering: Use $jmespath() or JavaScript .filter()
+- Data filtering: a Filter node before the Code node; inside Code, $jmespath() or .filter()
 - Persistent data: Use $getWorkflowStaticData()
-- Hashing: Use crypto module
+- Hashing: the Crypto node; `require('crypto')` only if allowlisted
 
 **See Also**:
 - [SKILL.md](SKILL.md) - Overview

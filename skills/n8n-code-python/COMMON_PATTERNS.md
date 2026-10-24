@@ -246,6 +246,6 @@ return [{"json": {
 
 ## Not covered here — and why
 
-- **Parsing JSON strings, regex, hashing, real date arithmetic** need `json` / `re` / `hashlib` / `datetime`, which are blocked unless the instance allowlists them. Do these in an expression (`JSON.parse`, `.match()`, Luxon), the Crypto node, or a JavaScript Code node.
+- **Parsing JSON strings, regex, hashing, real date arithmetic** need `json` / `re` / `hashlib` / `datetime`, which are blocked unless the instance allowlists them. Do these with a native node or an expression first (Date & Time or Luxon, `.parseJson()`, `.match()`, the Crypto node), or in a JavaScript Code node.
 - **Reading another node's output** — native Python has no `_node`. Merge the branches first, or use JavaScript `$('Node Name')`.
 - **HTTP calls** — HTTP Request node.

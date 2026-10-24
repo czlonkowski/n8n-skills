@@ -1,25 +1,26 @@
 {
   "id": "code-js-003",
-  "skills": ["n8n-code-javascript"],
+  "skills": [
+    "n8n-code-javascript"
+  ],
   "query": "How do I make an HTTP API call from inside a JavaScript Code node in n8n? I need to call an external API with authentication.",
   "expected_behavior": [
     "Activate n8n-code-javascript skill",
-    "Explain $helpers.httpRequest() built-in function",
-    "Show complete example with method, url, headers",
-    "Include authentication example (Bearer token or API key)",
+    "Recommend the HTTP Request node with a credential for an authenticated call: Code nodes can't read credentials, this.helpers.httpRequestWithAuthentication is deny-listed, and a token written into code is a secret in a text field",
+    "If the call must stay inside Code logic, explain this.helpers.httpRequest() (the bare $helpers global is undefined in the task-runner sandbox)",
+    "Show a complete example with method, url, headers, and await",
     "Show try-catch error handling pattern",
-    "Reference BUILTIN_FUNCTIONS.md for complete API reference",
-    "Mention this is async, needs await",
-    "Show both GET and POST examples if appropriate"
+    "Reference BUILTIN_FUNCTIONS.md for the complete API reference",
+    "If Code stays, mention the Why Code: note"
   ],
   "expected_content": [
-    "$helpers.httpRequest",
+    "HTTP Request node",
+    "credential",
+    "this.helpers.httpRequest",
     "await",
-    "headers",
-    "Authorization",
     "BUILTIN_FUNCTIONS.md",
-    "try-catch"
+    "try"
   ],
   "priority": "medium",
-  "notes": "$helpers.httpRequest() is a key built-in function that many users need to learn."
+  "notes": "Authenticated API calls belong in the HTTP Request node with a credential (native-first + secrets rule). this.helpers.httpRequest() is the in-Code fallback; $helpers is undefined."
 }

@@ -1,14 +1,16 @@
 {
   "id": "error-handling-002",
-  "skills": ["n8n-error-handling"],
+  "skills": [
+    "n8n-error-handling"
+  ],
   "query": "I have a webhook API in n8n (Webhook trigger → validate → call a third-party API → Respond to Webhook). Right now everything that goes wrong returns a 500 with {\"error\":\"internal_error\"} — including when the caller sends a missing or malformed field. The team consuming my API complains they can't tell their bad requests apart from my outages, and their monitoring keeps paging on what are really their own mistakes. How should I structure the responses and status codes?",
   "expected_behavior": [
     "Activate n8n-error-handling skill",
     "Explain the core principle: status code maps to cause — 4xx is the caller's fault, 5xx is yours",
     "Explain why it matters: caller monitoring alerts on 5xx but not 4xx, and 5xx implies retry while 4xx implies don't",
-    "Distinguish the two flows: validation/4xx is checked UPSTREAM (IF/Switch or a Set-node schema validator + dedicated Respond), 5xx comes out of node error outputs",
+    "Distinguish the two flows: validation/4xx is checked UPSTREAM (IF conditions, or the per-field Code validator when the caller needs field-level messages, + dedicated Respond), 5xx comes out of node error outputs",
     "Provide a cause-to-status-code mapping table (e.g. missing/invalid field = 400 validation_error, auth = 401, not allowed = 403, not found = 404, upstream API error = 502, upstream timeout = 504, unknown node failure = 500)",
-    "Recommend a single expression-driven Respond node for the 5xx path (compute responseCode and body inline) rather than fanning out to N Respond nodes, since the shapes only differ by number/message",
+    "Route the 5xx path by cause with a Switch on the error message (fallbackOutput: extra → 500), each output to a Respond with a fixed responseCode and body; a computed ternary code only for two outcomes; no multi-statement expression in the Respond",
     "Warn that responseCode defaults to 200 on every Respond node, so it must be set explicitly on error branches",
     "Warn against leaking internals (stack traces, SQL, upstream bodies, tokens) into the error body",
     "Reference RESPONSE_SHAPES.md and API_WORKFLOWS.md for the body conventions and the upstream-validation pattern"
@@ -19,8 +21,9 @@
     "validation_error",
     "responseCode",
     "upstream_error",
-    "expression"
+    "Switch",
+    "fallbackOutput"
   ],
   "priority": "high",
-  "notes": "Tests the cause-to-status-code mapping, the upstream-4xx vs error-output-5xx distinction, and the single expression-driven Respond instead of a Switch. Should surface the responseCode-defaults-to-200 trap and the don't-leak-internals rule."
+  "notes": "Tests the cause-to-status-code mapping, the upstream-4xx vs error-output-5xx distinction, and routing 5xx causes with a Switch to static Responds (native-first, no function bodies in expressions). Should surface the responseCode-defaults-to-200 trap and the don't-leak-internals rule."
 }

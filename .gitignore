@@ -3,3 +3,4 @@
 .claude/
 *-workspace/
 dist/
+evaluations/build-tasks/results/
