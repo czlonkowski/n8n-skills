@@ -75,6 +75,7 @@ Main skill content — loaded when the skill activates.
 | File | Read when |
 |---|---|
 | **TOOLS.md** | Choosing among the four tool types, writing names/descriptions, `$fromAI` anatomy |
+| **PARALLEL_SEARCH_MCP.md** | Optional keyless web search and fetching; importable MCP Client Tool in `assets/parallel-search-mcp.json` |
 | **SUBWORKFLOW_AS_TOOL.md** | Wiring a sub-workflow as a tool via `.toolWorkflow` |
 | **SYSTEM_PROMPT.md** | Writing/refactoring a system prompt; the modular split |
 | **STRUCTURED_OUTPUT.md** | Forcing JSON output, autoFix, the fixer model, parse-failure fixes |
@@ -178,3 +179,7 @@ After using this skill, you should be able to:
 ---
 
 **Remember**: the model can't see your wiring — it sees a system prompt and a list of named, described tools. Design those like an API and most "the agent won't behave" problems disappear.
+
+## Parallel Search MCP example evaluations
+
+Three scenarios cover setup (`agents-004`), transport troubleshooting (`agents-005`) and search/fetch session continuity (`agents-006`). See [PARALLEL_SEARCH_MCP.md](PARALLEL_SEARCH_MCP.md) for the opt-in example.

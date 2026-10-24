@@ -169,3 +169,34 @@ This log contains real responses from n8n-mcp tools to inform accurate skill con
 ---
 
 **Testing Complete**: Ready for skill implementation with real data!
+
+
+## Parallel Search MCP through n8n MCP Client Tool (2026-10-11)
+
+**Configuration:** [PARALLEL_SEARCH_MCP.md](../skills/n8n-agents/PARALLEL_SEARCH_MCP.md) and its importable node asset. Node package `@n8n/n8n-nodes-langchain@2.42.4`, MCP Client Tool `typeVersion: 1.2`, Streamable HTTP, and a Header Auth credential containing only the documented User-Agent. No Parallel key, Authorization header, or saved credentials were used.
+
+**Caller:** Loaded the asset with n8n's `Workflow` class, refreshed tools through the node's `loadOptions.getTools`, then obtained its toolkit through `supplyData`. The shipped n8n Tools Agent V2 executor dispatched both tools with a scripted tool-calling model and received their results before returning a final answer. This checks tool execution and wiring compatibility, not the behavior of a particular hosted model.
+
+**Inputs:** The search and fetch argument objects in the reference guide. Search returned source URLs and excerpts; fetch returned excerpts from the requested n8n documentation page with no extraction errors. Selected fields from the actual responses:
+
+```json
+{
+  "tools": [
+    "web_search",
+    "web_fetch"
+  ],
+  "search_result": {
+    "url": "https://www.n8n-mcp.com/docs",
+    "title": "Documentation | n8n-mcp"
+  },
+  "fetch_result": {
+    "url": "https://docs.n8n.io/integrations/builtin/cluster-nodes/sub-nodes/n8n-nodes-langchain.toolmcp/",
+    "title": "MCP Client Tool"
+  },
+  "fetch_errors": []
+}
+```
+
+**Observed requests:** Both discovery connections and both tool calls used `https://search.parallel.ai/mcp` and `User-Agent: n8n-skills-parallel-example/1.0`. Discovery and tool calls returned HTTP 200. Both calls reused the same `session_id`. The node preserved its 60000 ms timeout and native cancellation handling.
+
+**Findings:** Use `httpStreamable`, not SSE; node version 1 cannot select this transport. The node prefixes tool names with its name (`Parallel_Search_web_search`, `Parallel_Search_web_fetch`) while selection uses unprefixed server tool IDs. Header Auth can carry a non-secret caller identifier on anonymous requests.
