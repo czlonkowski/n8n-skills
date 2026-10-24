@@ -16,6 +16,9 @@ Assertion types (the "assertions" list in a case file):
   node_note       {"node_type", "pattern"}          every node of that type has
                                                     notes matching the regex
   max_nodes       {"max"}                           node count, sticky notes excluded
+  max_nodes_matching {"pattern", "max"}             at most this many nodes whose parameters
+                                                    (as JSON) match the regex — e.g. a value
+                                                    computed in one node, not repeated per consumer
   connected       {}                                every node is linked to a trigger
                                                     (any connection type, either direction)
 
@@ -126,6 +129,10 @@ def check(wf, a):
         rx = re.compile(a["pattern"], re.I)
         bad = [n.get("name") for n in nodes if not rx.search(str(n.get("notes") or ""))]
         return not bad, ("no matching note on " + ", ".join(map(str, bad))) if bad else "ok on %d node(s)" % len(nodes)
+    if kind == "max_nodes_matching":
+        rx = re.compile(a["pattern"], re.I)
+        hits = [n.get("name") for n in real_nodes(wf) if rx.search(json.dumps(n.get("parameters") or {}))]
+        return len(hits) <= a["max"], "%d node(s) match (%s), max %d" % (len(hits), ", ".join(map(str, hits)) or "none", a["max"])
     if kind == "max_nodes":
         count = len(real_nodes(wf))
         return count <= a["max"], "%d node(s), max %d" % (count, a["max"])
