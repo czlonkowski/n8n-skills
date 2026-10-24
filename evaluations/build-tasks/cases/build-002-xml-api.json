@@ -1,0 +1,52 @@
+{
+  "id": "build-002-xml-api",
+  "title": "XML API response → XML node, no Code",
+  "skills": [
+    "using-n8n-mcp-skills",
+    "n8n-node-configuration",
+    "n8n-workflow-patterns"
+  ],
+  "task": "Build an n8n workflow that runs every morning at 07:00, fetches https://legacy.example.com/api/stock.xml (no authentication; the response is XML like <stock><item sku=\"A1\" qty=\"3\"/><item sku=\"B2\" qty=\"9\"/></stock>), and posts one Slack message to the channel #ops listing the SKUs whose qty is below 5. A Slack credential already exists in n8n.",
+  "assertions": [
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.xml"
+      ],
+      "label": "XML node parses the response"
+    },
+    {
+      "type": "no_node",
+      "node_types": [
+        "n8n-nodes-base.code",
+        "n8n-nodes-base.function",
+        "n8n-nodes-base.functionItem"
+      ],
+      "label": "no Code node"
+    },
+    {
+      "type": "has_node",
+      "node_types": [
+        "n8n-nodes-base.slack"
+      ],
+      "label": "Slack node (not HTTP)"
+    },
+    {
+      "type": "node_note",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "pattern": "Why HTTP:",
+      "label": "HTTP Request carries a Why HTTP: note"
+    },
+    {
+      "type": "max_nodes",
+      "max": 9,
+      "label": "≤ 9 nodes"
+    },
+    {
+      "type": "connected",
+      "label": "every node wired to the trigger"
+    }
+  ],
+  "notes": "The legacy endpoint has no service node, so HTTP Request is right — with a Why HTTP: note.",
+  "runs": 3
+}

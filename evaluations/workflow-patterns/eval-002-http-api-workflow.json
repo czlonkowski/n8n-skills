@@ -1,14 +1,17 @@
 {
   "id": "pattern-002",
-  "skills": ["n8n-workflow-patterns"],
+  "skills": [
+    "n8n-workflow-patterns"
+  ],
   "query": "I want to fetch data from a REST API, transform it, and store it in my database. How should I structure this workflow?",
   "expected_behavior": [
     "Identifies this as an HTTP API Integration pattern",
+    "Prefers the service's own node over HTTP Request when n8n has one",
     "References the http_api_integration.md pattern file",
     "Explains the structure: Trigger → HTTP Request → Transform → Database → Error Handler",
     "Discusses authentication handling (credentials)",
-    "Mentions pagination for large datasets",
+    "Recommends HTTP Request's pagination option (with a page cap), or the service node's Return All, for paged APIs — not a Code/IF loop",
     "Suggests retry logic for API failures",
-    "Provides guidance on response parsing and data mapping"
+    "Maps fields in the database node's column slots (Split Out when the body wraps an array) rather than adding a Code or Set node"
   ]
 }

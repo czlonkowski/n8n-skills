@@ -60,16 +60,14 @@ if matches '(^|\.)set$'; then
   WARNINGS+="
 
 [Set node detected]
-STOP and invoke the n8n-expression-syntax skill via the Skill tool. The most common antipattern in n8n: a Set / Edit Fields node feeding only ONE downstream consumer.
-
-If this Set node's only job is to map fields for the next node (before a Data Table insert, an email/Slack body, a Respond to Webhook, an HTTP body), delete it and put the expressions DIRECTLY in the next node's parameter slots. Those slots are expressions too. A Set node earns its place only when 2+ downstream consumers reference the same derived value, or as the FINAL return-shape node of a sub-workflow (the implicit consumer is every caller). See also n8n-node-configuration for field configuration."
+Invoke the n8n-expression-syntax skill via the Skill tool. Edit Fields is right for a named step: a constant item, an error or return item, a payload object, or a value several nodes read. The antipattern is narrower: a Set whose only job is to re-map fields for the next node (before a Data Table insert, an email/Slack body, a Respond to Webhook, an HTTP body). Delete that one and put the expressions in the next node's own fields. Keep each field a short expression; a function body or several statements belongs in a Code node. See also n8n-node-configuration for field configuration."
 fi
 
 if matches '(^|\.)code$'; then
   WARNINGS+="
 
 [Code node detected]
-Invoke the n8n-code-javascript skill via the Skill tool before writing a Code node. Decision order: expression first, then an arrow function inside Edit Fields, then a Code node only if neither can do the job. Default to JavaScript; use Python (n8n-code-python) only when the user explicitly asked; code an AI agent will call is a different runtime (n8n-code-tool). Much of what looks like a Code-node job has a native node instead (Crypto, XML, HTTP Request pagination) or belongs in an expression — the skill covers which, so route there rather than reaching for Code by reflex."
+Check the job-to-node table in using-n8n-mcp-skills before writing a Code node: Filter, IF/Switch, Summarize, Aggregate, Split Out, Merge, Compare Datasets, Remove Duplicates, Sort + Limit, Date & Time, XML / HTML / Extract From File, HTTP Request pagination and Crypto cover most Code reaches. Code is for a closed list: loops or recursion, state across runs, parsing no node handles, libraries, heavy all-items work, or one short node replacing 4+ glue nodes. If Code stays, invoke n8n-code-javascript via the Skill tool and set the node's notes to \"Why Code: <native node considered> — <reason>\". Default to JavaScript; Python (n8n-code-python) only when the user asked; code an AI agent calls is a different runtime (n8n-code-tool)."
 fi
 
 if matches '(^|\.)merge$'; then
@@ -78,7 +76,7 @@ if matches '(^|\.)merge$'; then
 [Merge node detected]
 STOP and invoke the n8n-node-configuration skill via the Skill tool. Two silent failure modes:
 
-1. Merge defaults to 2 inputs. If 3+ sources converge here, set numberOfInputs explicitly to match, or the third+ sources silently drop at runtime even though the connection lines are drawn.
+1. Merge defaults to 2 inputs. If 3+ sources converge here, set numberInputs explicitly to match (append, SQL, combine by position, choose branch; combine by fields is fixed at 2), or the third+ sources silently drop at runtime even though the connection lines are drawn.
 2. The input index pairing is easy to wire backwards; off-by-one passes data from the wrong branch with no error. For wiring mistakes that survive into runtime, n8n-validation-expert."
 fi
 
@@ -94,11 +92,11 @@ fi
 if matches '(^|\.)dateTime$'; then
   WARNINGS+="
 
-[DateTime node detected]
-Invoke the n8n-expression-syntax skill via the Skill tool first. Date math, formatting, and parsing usually work inline with Luxon at the consumer field, with no separate node:
+[Date & Time node detected]
+Both forms are fine. The Date & Time node suits a named step; set options.includeInputFields to true, or it outputs only the new date field. A Luxon one-liner in the consuming field needs no node:
   {{ DateTime.fromISO(\$('Source').item.json.created_at).toFormat('yyyy-MM-dd') }}
-  {{ DateTime.now().minus({ days: 7 }).toISO() }}
-Reach for the DateTime node only when an inline expression genuinely can't express the transform."
+  {{ \$now.minus({ days: 7 }).toISO() }}
+Take v2 operation and field names (addToDate, formatDate, getTimeBetweenDates) from get_node; v1 names differ. See n8n-node-configuration, and n8n-expression-syntax for Luxon."
 fi
 
 if matches '(^|\.)dataTable$'; then

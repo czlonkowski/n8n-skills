@@ -343,7 +343,7 @@ See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for the two scanning approaches, exam
 
 ## Self-Help Tools
 
-- `tools_documentation()` — overview of all tools; `tools_documentation({topic, depth: "full"})` for a specific tool. Code node guides via topics `javascript_code_node_guide` / `python_code_node_guide`.
+- `tools_documentation()` — overview of all tools (from n8n-mcp 2.97.0 it opens with the native-first node-selection steps); `tools_documentation({topic, depth: "full"})` for a specific tool. `expression_helpers` (2.97.0+) lists the helper methods for `{{ }}` (`.pluck()`, `.sum()`, `.unique()`, `.diffTo()`, `$ifEmpty()`): check it before writing a Code node for a one-line transformation. Code node guides via topics `javascript_code_node_guide` / `python_code_node_guide`.
 - **AI agent guide** — `tools_documentation({topic: "ai_agents_guide", depth: "full"})` (no standalone tool); returns architecture, connections, tools, validation, best practices.
 - `n8n_health_check()` — quick check; `n8n_health_check({mode: "diagnostic"})` returns status, env vars, tool status, API connectivity. Both modes also return an **`officialMcp`** block — `{configured, endpoint, reachable, toolCount, agentTools}` — the preflight for everything gated on `N8N_MCP_ACCESS_TOKEN`: the agent tools, `n8n_test_workflow`'s routed methods, native version history, the data-table column actions. Read it once before reaching for any of them, rather than discovering the gap through a `NOT_CONFIGURED` envelope mid-task.
 
@@ -357,7 +357,7 @@ See [OPERATIONS_GUIDE.md](OPERATIONS_GUIDE.md) for examples.
 - search_nodes, get_node
 - validate_node, validate_workflow
 - search_templates, get_template
-- tools_documentation (includes the ai_agents_guide topic)
+- tools_documentation (includes the ai_agents_guide and, from 2.97.0, expression_helpers topics)
 
 **Requires n8n API** (N8N_API_URL + N8N_API_KEY):
 - n8n_create_workflow

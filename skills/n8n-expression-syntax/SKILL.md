@@ -210,25 +210,31 @@ Use n8n credential system, not expressions
 
 ## The transform gatekeeper
 
-Before you add any node — or write any code — to transform data, walk this order and stop at the first that fits:
+Before you add a node — or write any code — to transform data, walk this order and stop at the first that fits:
 
-1. **Expression** (`{{ ... }}`) in the consuming field. Property access, method chains (`.map().filter().join()`), ternaries, string building, Luxon date math — if it's "take A, produce B" without intermediate variables, it's an expression. This covers most "just transform this" cases.
-   - **Querying nested JSON** (filter an array, pick fields, sum, sort, flatten) → `$jmespath()` inside that same expression, before you split into items or chain `.map().filter()`. One query replaces a Split Out → Filter → Aggregate chain. Rules below.
-2. **Arrow-function IIFE inside an Edit Fields field.** When the logic needs intermediate variables, branching, or comments but still operates on one item, wrap it in an immediately-invoked arrow function right in the field value:
+1. **The service's own node** does it in its own fields: a CRM node's field slots, the Slack node's Blocks field, a
+   Data Table insert's per-column slots. HTTP Request only when no node covers the operation.
+2. **A native node for the job.** Filter, IF / Switch, Summarize, Aggregate, Split Out, Merge, Compare Datasets, Remove
+   Duplicates, Sort + Limit, Date & Time, XML / HTML / Extract From File, HTTP Request pagination, Crypto. The job-to-node
+   table in `using-n8n-mcp-skills` maps jobs to nodes; their configs are in `n8n-node-configuration` → NATIVE_NODES.md.
+3. **A short expression** (`{{ ... }}`) inside that node's field. Property access, method chains
+   (`.map().filter().join()`), a ternary, string building, Luxon date math, the helper functions below — "take A,
+   produce B" in one expression, without intermediate variables.
+   - **Querying nested JSON for one field** (pick, filter, sum inside an array) → `$jmespath()` in that same expression
+     (rules below). When downstream needs one item per element, use Split Out / Filter / Aggregate instead.
+4. **Code node**, only for the closed list: loops or recursion no node expresses, state across runs, parsing no node
+   handles, an allowlisted library, heavy all-items work (thousands of items, stated or measured), or one short Code node
+   (~15 lines) replacing 4+ glue nodes. Give it a `Why Code:` note. See `n8n-code-javascript`.
 
-   ```
-   ={{ (() => {
-       const items = $json.line_items;
-       const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-       const tax = subtotal * 0.08;
-       return (subtotal + tax).toFixed(2);
-   })() }}
-   ```
+**A function body is code.** When the logic needs `const`, `if`, `return` or several statements — an
+`(() => { ... })()` wrapped in `{{ }}` — it has outgrown an expression. Split it into a native node plus short
+expressions, or move it into a Code node with a `Why Code:` note. A long expression is harder to read than either, and a
+runtime error inside it resolves silently to `null` (see Debugging). The create/update hooks flag function bodies in
+non-Code nodes.
 
-   The outer `(...)` brackets the function; the trailing `()` invokes it. Drop either and n8n refuses to run. Inside you get the full expression scope (`$json`, `$('Node')`, `$now`, Luxon) plus `const`/`let`, `if`/`switch`, `try`/`catch`, and regex. No `require`, no `await`.
-3. **Code node — last resort.** Only when you need multi-item aggregation across the whole dataset (`$input.all()`), an allowlisted library, or async work.
-
-**Why the order matters.** It's not style — it's readability and performance. The Code node runs in a sandboxed VM with per-invocation setup and value marshaling — a cold-start cost that can reach 500–1000ms before your logic runs. (It amortizes on warm, high-item-count runs, so treat this as the common-case cost, not a universal constant.) The same logic in an expression or Edit Fields IIFE runs in-process in single-digit milliseconds and skips the sandbox entirely. For pure single-item shaping that's a large gap with no functional difference, and it compounds on hot paths like per-request webhooks. The expression also stays visible in the field that uses it, instead of hiding in an upstream node someone has to open to understand. Reach past a stage only when the input or scope genuinely demands it.
+**Why the order matters.** Readability: a native node says on the canvas what it does, and a short expression stays
+visible in the field that uses it, instead of hiding in an upstream node someone has to open. Performance rarely decides
+it — below a few hundred items none of the costs matter, and the measured model lives in `n8n-code-javascript`.
 
 ## `$jmespath()` — query nested JSON in one expression
 
@@ -262,11 +268,39 @@ returns, with no extra nodes. The syntax is unforgiving, and **most mistakes fai
 - **Where it exists:** expressions and JavaScript Code nodes (same argument order). Not in native
   Python Code nodes.
 
+## Built-in helper functions
+
+n8n adds methods to values inside `{{ }}`. Together with a native node they replace most one-line Code nodes. **They
+exist only in expressions, not in Code nodes** — inside Code use plain JavaScript (and `toFormat()` instead of `format()`).
+They see only the current item's values: jobs across items (dedupe items, group and total, join two lists) belong in a
+node. On n8n-mcp 2.97.0+, `tools_documentation({topic: "expression_helpers", depth: "full"})` lists every helper with a
+tested example.
+
+| Need | Expression | Note |
+|---|---|---|
+| One field from every object | `{{ $json.items.pluck('name') }}` | several names → one array per object |
+| Sum / average / min / max | `{{ $json.prices.sum() }}` | throws on non-numbers, numeric strings included |
+| Dedupe an array | `{{ $json.rows.unique('email') }}` | each argument is one field name; none → compares whole values (`removeDuplicates` is an alias) |
+| Default for an empty value | `{{ $ifEmpty($json.name, 'there') }}` | empty = undefined, null, `''`, `[]`, `{}`; exactly two arguments |
+| Email or domain in text | `{{ $json.text.extractEmail() }}`, `.extractDomain()` | `undefined` when nothing matches |
+| Hash a string | `{{ $json.email.hash('sha256') }}` | md5 by default; HMAC needs the Crypto node |
+| Days between dates | `{{ $now.diffTo($json.created_at, 'days') }}` | receiver minus argument: positive when the argument is earlier |
+| String to date | `{{ $json.created_at.toDateTime().format('yyyy-MM-dd') }}` | then `.diffTo()`, `.plus(7, 'days')`, `.extract('month')` |
+| Split an array into batches | `{{ $json.ids.chunk(100) }}` | for bulk API bodies |
+| Drop empty values | `{{ $json.tags.compact() }}`, `{{ $json.compact() }}` | arrays and objects |
+
+- `diffTo` takes a DateTime, a JS Date or an ISO string, and an optional unit (default `days`) or a list of units (then it
+  returns an object). `$json.created_at.toDateTime().diffToNow('days')` is **negative** for past dates.
+- `.sum()` over strings throws: `{{ $json.items.pluck('price').map(Number).sum() }}`.
+- A helper called on `null` or `undefined` throws: guard with `?.` (`{{ $json.email?.extractDomain() }}`) or `$ifEmpty()`.
+- A helper that throws (bad unit, wrong argument count, a missing value) fails the node; a plain JavaScript error inside
+  `{{ }}` returns `null` silently. Test with real items either way.
+
 ## The Set-node antipattern and branch convergence
 
-### Delete Set nodes that feed one consumer
+### Delete Set nodes that only re-map fields for the next node
 
-A Set / Edit Fields node whose only job is to extract a value and hand it to **one** downstream node is dead weight. Inline its expression at the consumer instead.
+A Set / Edit Fields node whose only job is to copy or rename fields so the **next** node can read them is dead weight. Inline its expressions at the consumer instead.
 
 ```
 ❌  Webhook → Set { customer_id: {{ $json.body.customer_id }} } → Postgres: WHERE id = {{ $json.customer_id }}
@@ -276,11 +310,14 @@ A Set / Edit Fields node whose only job is to extract a value and hand it to **o
 
 The Set node adds a hop, more canvas clutter, and a refactor hazard, while doing nothing the consumer couldn't do itself. To remove it cleanly with `n8n_update_partial_workflow`: rewire the connection (`removeConnection` from the Set's source-and-target, `addConnection` straight from source to consumer), `patchNodeField` the consumer's expression to reference the original source by node name, then `removeNode` the Set.
 
-**Quick test:** count how many downstream nodes reference each field the Set produces.
-- **0 or 1** → delete, inline at the consumer.
-- **2+** → it may earn its place.
+**Quick test:** does the Set only re-map fields the next node could read directly (`$('Source').item.json.x`)?
+- **Yes** → delete it, inline the expressions at the consumer.
+- **No, it creates something** → keep it as a named step (name it for what it produces).
 
-**Legitimate exceptions** — keep the Set when:
+**Edit Fields earns its place** when:
+- **It creates a constant item** — fixed config, a default payload, a test fixture.
+- **It builds an error or return item** — `{ error: 'validation_error', message: … }` before a Respond, or a sub-workflow's output.
+- **It builds a payload object** several nodes, or a whole request body, are built from.
 - **2+ consumers** read the same derived value and the derivation is non-trivial (a name aids readability and you compute it once).
 - **It's a sub-workflow's final Return node**, shaping the output contract. Here the "single consumer" is every caller, so the Set *is* the API boundary — and with `Include Other Fields: false` it whitelists the output shape so internal scratch fields don't leak.
 - **You're renaming or whitelisting fields** and want that visible in one place rather than spread across consumer expressions.
@@ -520,15 +557,16 @@ Hello {{$json.name}}!
 
 ## Performance: expression complexity is (almost) free
 
-A common worry is that a complex `{{ }}` is slow. It isn't — what costs is *how many times* n8n evaluates an expression, not how elaborate each one is.
-
-Measured on an n8n 2.x instance, an elaborate expression (`sqrt`, `split`, `reduce`, arithmetic) costs the same per item as a trivial `{{ $json.x > 50 }}` — roughly **~0.2 ms/item either way**, because ~90% of that is n8n building the per-item evaluation context, not running your expression.
+A common worry is that a complex `{{ }}` is slow. It isn't — what costs is *how many times* n8n evaluates an
+expression, not how elaborate each one is. Measured on n8n 2.x, an elaborate expression (`sqrt`, `split`, `reduce`)
+costs about the same per item as `{{ $json.x > 50 }}`: most of the cost is n8n building the per-item evaluation context.
 
 What this means in practice:
 
-- **Don't break a working expression into a chain of nodes for "speed."** Each extra node re-evaluates per item and re-copies all items; one node with one richer expression beats three nodes with simple ones.
-- **An expression (~0.2 ms/item) is ~3× cheaper than a Code node in "Run Once for Each Item" mode** (~0.6 ms/item) for the same per-item check — but a Code node in "Run Once for All Items" mode is cheaper still (~0.02 ms/item), because it crosses the per-item boundary once instead of N times.
-- This only bites at **thousands of items**; below that it's sub-100 ms. The **n8n Code JavaScript** skill has the full per-item-boundary model.
+- **Don't split a working short expression into extra nodes for speed**, and don't grow it into a function body for
+  speed either. Choose by readability: native node, then a short expression, then Code (the gatekeeper above).
+- Per-item costs only bite at thousands of items, mostly through the number of per-item boundaries (Code in "Each Item"
+  mode is the worst case). The **n8n Code JavaScript** skill has the measured per-item model.
 
 ---
 

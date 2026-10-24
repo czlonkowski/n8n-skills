@@ -1,5 +1,10 @@
 # n8n CODE Node - Best Practices & Pattern Analysis
 
+> **Historical analysis, not current guidance.** These numbers describe how Code nodes were used, not when to use one.
+> The pack's rule is native node first, Code last: see the job-to-node table in `skills/using-n8n-mcp-skills/SKILL.md`
+> and the closed list of Code exceptions in `skills/n8n-code-javascript/SKILL.md`. Many patterns below (aggregation,
+> filtering, merging, date formatting) are native-node jobs today.
+
 **Analysis Period:** Last 60 days | **Data Quality:** 38,094 CODE node instances analyzed
 
 ---
