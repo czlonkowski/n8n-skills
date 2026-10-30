@@ -11,7 +11,7 @@ This guide covers the **top 5 error patterns** encountered in n8n Code nodes. Un
 **Error frequency (roughly ordered)**:
 1. Empty Code / Missing Return - the dominant error n8n itself rejects
 2. Expression Syntax used as Code - `{{ }}` written where JavaScript belongs
-3. Return Shape - primitive/`null` returns (bare objects auto-wrap)
+3. Return Shape - mode/return-shape mismatches
 4. Broken Strings / Escaping - unbalanced quotes/brackets throw a JS syntax error
 5. Missing Null Checks - common runtime error
 
@@ -108,7 +108,7 @@ if (items.length === 0) {
 - [ ] Code field is not empty
 - [ ] Return statement exists
 - [ ] ALL code paths return data (if/else branches)
-- [ ] Return format is correct (`[{json: {...}}]`)
+- [ ] Return format matches the mode (All Items `[{json: {...}}]`; Each Item `{json: {...}}`)
 - [ ] Return happens even on errors (use try-catch)
 
 ---
@@ -219,15 +219,23 @@ return [{
 
 ## Error #3: Return Shape
 
-**What actually happens** — n8n is more forgiving than the old advice implied:
-- In *Run Once for All Items* mode, n8n **auto-normalizes** a single bare object, or an array of bare objects, by wrapping each under a `json` property. So these run.
-- What genuinely fails, with "Code doesn't return items properly", is returning a **primitive** (string/number/boolean) or **`null`/`undefined`** — there is nothing to wrap.
+**The return contract depends on the execution mode:**
+- *Run Once for All Items*: return `[{json: {...}}]`. n8n also **auto-normalizes** a single bare object or an array of bare objects. Primitive and `undefined` returns fail in this mode.
+- *Run Once for Each Item*: return one `{json: {...}}` object. An array return fails at runtime, including a one-element array.
+- **Empty output**: `return []` in All Items mode, or `return null` in Each Item mode. All Items mode also accepts `null` as an empty result.
 
 (n8n-mcp ≥ 2.63.0 no longer errors "Return value must be an array of objects" on a bare-object return; the earlier claim contradicted n8n's auto-wrap behavior.)
 
-### Prefer the Canonical Form
+### Each Item Mode
 
-The canonical `[{json: {...}}]` is unambiguous and behaves identically in both execution modes, so make it your default even though looser shapes are auto-wrapped:
+```javascript
+// Run Once for Each Item: one item object
+return { json: { ...$input.item.json, checked: true } };
+```
+
+### All Items Mode
+
+Use `[{json: {...}}]` for explicit item wrappers. The following examples use All Items mode:
 
 ```javascript
 // ⚠️ Auto-wrapped → [{json: {result: 'success'}}]. Runs, but prefer the array + json form.
@@ -257,11 +265,11 @@ return "processed";
 ```
 
 ```javascript
-// ❌ FAILS: null / undefined — no items to pass on
-return null;
+// ❌ FAILS: undefined — provide an explicit result
+return undefined;
 ```
 
-### The Solution
+### All Items Solutions
 
 ```javascript
 // ✅ CORRECT: Single result
@@ -312,12 +320,11 @@ if (shouldProcess) {
 
 ### Return Format Checklist
 
-- [ ] Return value is an **array** `[...]` (canonical — preferred)
-- [ ] Each array element has a **`json` property**
-- [ ] Structure is `[{json: {...}}]` or `[{json: {...}}, {json: {...}}]`
-- [ ] Not a primitive (string/number/boolean) or `null`/`undefined` — those are the shapes that actually fail
+- [ ] All Items: return an **array** of items, e.g. `[{json: {...}}]`
+- [ ] Each Item: return one **item object**, e.g. `{json: {...}}`
+- [ ] Every output item has an object-valued **`json` property**
 
-### Common Scenarios
+### Common Scenarios — All Items Mode
 
 ```javascript
 // Scenario 1: Single object from API
@@ -354,7 +361,7 @@ return {total};
 // ✅ CORRECT
 return [];
 
-// ❌ FAILS — null has no items to pass on
+// ✅ Also accepted as an empty result
 return null;
 ```
 
@@ -737,8 +744,8 @@ Use this checklist before deploying Code nodes:
 - [ ] All code paths return data
 
 ### Return Format
-- [ ] Returns items, not a primitive/`null`
-- [ ] Canonical shape `[{json: {...}}]` (bare objects auto-wrap, but be explicit)
+- [ ] Returns data or an intentional empty result in the selected mode
+- [ ] Return shape matches the mode: All Items `[{json: {...}}]`; Each Item `{json: {...}}`
 
 ### Syntax
 - [ ] No `{{ }}` written as code (it's for other nodes' fields; in a string it's just literal text)
@@ -766,8 +773,9 @@ Use this checklist before deploying Code nodes:
 | Error Message | Likely Cause | Fix |
 |---------------|--------------|-----|
 | "Code cannot be empty" | Empty code field | Add meaningful code |
-| "Code must return data" | Missing return statement | Add `return [...]` |
-| "Code doesn't return items properly" | Returned a primitive (string/number) or `null` | Return `[{json:{...}}]` (objects/arrays auto-wrap; primitives don't) |
+| "Code must return data" | Missing return statement | Return an array in All Items mode or one item object in Each Item mode |
+| "Code doesn't return items properly" | All Items mode returned a primitive (string/number) or `undefined` | Return `[{json:{...}}]` |
+| "A 'json' property isn't an object" / "Code doesn't return a single object" | Each Item mode returned an array, or an item has invalid `json` | Each Item: return one `{json: {...}}` object; ensure `json` is an object |
 | "Not all items have a json key" | Mixed return — some items wrapped, some bare | Wrap every item: `{json: {...}}` |
 | "Expression syntax {{...}} is not valid in Code nodes" / "Unexpected token" | `{{ }}` written as code (not inside a string) | Use JavaScript: `$json.x` or `` `${$json.x}` `` |
 | "Cannot read property X of undefined" | Missing null check | Use optional chaining `?.` |
@@ -838,14 +846,14 @@ console.log('Input structure:', JSON.stringify(items[0], null, 2));
 **Top 7 Errors to Avoid**:
 1. **Empty code / missing return** - Always return data
 2. **Expression syntax as code** - Use JavaScript, not `{{ }}` (in-string `{{ }}` is just literal text)
-3. **Return shape** - prefer `[{json: {...}}]`; primitives/`null` fail (bare objects auto-wrap)
+3. **Return shape** - All Items: `[{json: {...}}]`; Each Item: `{json: {...}}`
 4. **Broken strings** - unbalanced quotes/brackets throw a JS syntax error; escape or use template literals
 5. **Missing null checks** - Use optional chaining `?.`
 6. **`httpRequestWithAuthentication` blocked** - Use HTTP Request node + credential
 7. **`$env` blocked** - Route secrets through credentials, not env access
 
 **Quick Prevention**:
-- Prefer the canonical `[{json: {...}}]` return; never return a primitive or `null`
+- Use the explicit return shape for your mode: All Items `[{json: {...}}]`; Each Item `{json: {...}}`
 - Write JavaScript — don't put `{{ }}` where code belongs
 - Check for null/undefined before accessing
 - Test with empty and invalid data
