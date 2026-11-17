@@ -19,13 +19,13 @@ n8n-mcp provides tools organized into categories:
 4. **Template Library** - Search and deploy 2,700+ real workflows
 5. **Data Tables** - Manage n8n data tables, rows and columns (`n8n_manage_datatable`)
 6. **Workflow Folders** - Folder CRUD + workflow placement (`n8n_manage_folders`)
-7. **Variables** - Instance variables read as `{{ $vars.KEY }}` (`n8n_manage_variables`, paid plans)
+7. **Variables** - Instance variables read as `{{ $vars.KEY }}` (`n8n_manage_variables`, needs a license that includes Variables)
 8. **Credential Management** - Full credential CRUD + schema discovery (`n8n_manage_credentials`)
 9. **Security & Audit** - Instance security auditing with custom deep scan (`n8n_audit_instance`)
 10. **Documentation & Guides** - Tool docs, AI agent guide, Code node guides
-10. **Agents** - Create, configure, validate, run and publish persisted n8n Agents (`n8n_manage_agents`, requires `N8N_MCP_ACCESS_TOKEN`)
-11. **Node Resource Resolution** - Resolve live dropdown/resource-locator values with a real credential (`n8n_explore_node_resources`, requires `N8N_MCP_ACCESS_TOKEN`)
-12. **Instance Catalog** - List projects and tags (`n8n_list_catalog`)
+11. **Agents** - Create, configure, validate, run and publish persisted n8n Agents (`n8n_manage_agents`, requires `N8N_MCP_ACCESS_TOKEN`)
+12. **Node Resource Resolution** - Resolve live dropdown/resource-locator values with a real credential (`n8n_explore_node_resources`, requires `N8N_MCP_ACCESS_TOKEN`)
+13. **Instance Catalog** - List projects and tags (`n8n_list_catalog`)
 
 ---
 
@@ -320,7 +320,7 @@ See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for all actions, list filters/counts,
 
 ## Variables
 
-`n8n_manage_variables` manages the instance variables that workflows read as `{{ $vars.KEY }}` (actions `list`/`get`/`create`/`update`/`delete`). Variables are a **paid-plan feature**: on the free Community edition every action returns 403, and operators can hide the tool with `DISABLE_ENTERPRISE_TOOLS=true`. A variable is global (default) or scoped to one project; keys are unique per scope, so the same key can exist globally and in a project. Three things to internalize: workflows can only **read** variables (no node can change them), values are visible to everyone in their scope (secrets belong in credentials), and `update` with `value: ""` is ignored — pass `clearValue: true` to empty a value.
+`n8n_manage_variables` manages the instance variables that workflows read as `{{ $vars.KEY }}` (actions `list`/`get`/`create`/`update`/`delete`). Variables need an n8n **license that includes Variables** (not the free Community edition, and not every paid plan); without it every action returns 403, and operators can hide the tool with `DISABLE_ENTERPRISE_TOOLS=true`. A variable is global (default) or scoped to one project; keys are unique per scope, so the same key can exist globally and in a project. Three things to internalize: workflows can only **read** variables (no node can change them), values are visible to everyone in their scope (secrets belong in credentials), and `update` with `value: ""` is ignored — pass `clearValue: true` to empty a value.
 
 See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for all actions, scopes and error codes.
 
@@ -383,7 +383,7 @@ See [OPERATIONS_GUIDE.md](OPERATIONS_GUIDE.md) for examples.
 - n8n_autofix_workflow
 - n8n_manage_datatable
 - n8n_manage_folders (folder CRUD: n8n 2.19+, registered Community tier and up; workflow placement via parentFolderId/moveToFolder: n8n 2.32+)
-- n8n_manage_variables (paid plans with the Variables feature; API key with variable:* scopes)
+- n8n_manage_variables (an n8n license that includes Variables; API key with variable:* scopes)
 - n8n_manage_credentials
 - n8n_audit_instance
 - n8n_list_catalog (works without the token; needs it only for the team-project fallback)
@@ -465,7 +465,7 @@ If API tools unavailable, use templates and validation-only workflows.
 8. Workflows are built **iteratively** (56s avg between edits)
 9. **Data tables** managed with `n8n_manage_datatable` (CRUD + filtering)
 10. **Folders** managed with `n8n_manage_folders`; workflow placement is write-only (verify via folder counts, not the workflow)
-11. **Variables** managed with `n8n_manage_variables` (paid plans); workflows read them as `{{ $vars.KEY }}` and cannot change them
+11. **Variables** managed with `n8n_manage_variables` (needs a license that includes Variables); workflows read them as `{{ $vars.KEY }}` and cannot change them
 12. **Credentials** managed with `n8n_manage_credentials` (CRUD + schema discovery)
 13. **Security audits** via `n8n_audit_instance` (built-in + custom deep scan)
 14. **AI agent guide** available via `tools_documentation({topic: "ai_agents_guide", depth: "full"})`

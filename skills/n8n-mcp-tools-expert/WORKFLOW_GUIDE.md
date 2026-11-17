@@ -1173,7 +1173,7 @@ Without `transferToFolderId`, the folder's workflows are moved to the project ro
 
 **Use when**: Setting up environment-specific values (base URLs, channel names, thresholds) that workflows read as `{{ $vars.KEY }}`, so the same workflow JSON runs on staging and production; checking which variables exist before deploying a workflow that uses them.
 
-Variables need an n8n license with the **Variables** feature (paid plans; not the free Community edition) and an API key with `variable:*` scopes. Without them every action returns 403. Operators can remove the tool with `DISABLE_ENTERPRISE_TOOLS=true`.
+Variables need an n8n license with the **Variables** feature (not the free Community edition, and not every paid plan) and an API key with `variable:*` scopes. Without them every action returns 403. A 403 is not retryable: tell the user, and do not write `$vars` expressions for that instance. Operators can remove the tool with `DISABLE_ENTERPRISE_TOOLS=true`.
 
 ### 5 Actions
 
@@ -1205,7 +1205,7 @@ n8n_manage_variables({action: "get", key: "API_BASE_URL"})    // or id: "..."
 ```javascript
 n8n_manage_variables({action: "update", id: "abc123", value: "https://staging.example.com"})
 n8n_manage_variables({action: "update", id: "abc123", key: "API_URL"})        // rename
-n8n_manage_variables({action: "update", id: "abc123", projectId: null})       // make global
+n8n_manage_variables({action: "update", id: "abc123", projectId: "global"})   // make global
 n8n_manage_variables({action: "update", id: "abc123", clearValue: true})      // empty the value
 n8n_manage_variables({action: "delete", id: "abc123"})
 ```
@@ -1327,7 +1327,7 @@ update → update → update → ... (56s avg between edits)
 - `n8n_executions` - Manage executions
 - `n8n_evaluations` - Evaluation test runs: reads (n8n 2.30+), run/cancel (n8n 2.32+)
 - `n8n_manage_datatable` - Data table and row management
-- `n8n_manage_variables` - Instance variables (`$vars`, paid plans)
+- `n8n_manage_variables` - Instance variables (`$vars`; needs a license that includes Variables)
 - `n8n_manage_credentials` - Credential CRUD + schema discovery
 - `n8n_audit_instance` - Security audit (built-in + custom scan)
 - `n8n_delete_workflow` - Permanently delete workflows

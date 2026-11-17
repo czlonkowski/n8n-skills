@@ -78,7 +78,7 @@ Access environment variables:
 
 **Warning**: Some n8n instances have `N8N_BLOCK_ENV_ACCESS_IN_NODE` enabled, which blocks `$env` access entirely. If `$env` returns errors, use alternative approaches:
 - Store values in credentials instead
-- Use n8n Variables (`$vars`, below) on paid plans
+- Use n8n Variables (`$vars`, below) when the instance's license includes them
 - Use a Set node with manually entered values
 - Pass values through webhook query parameters
 
@@ -91,7 +91,7 @@ Read instance variables set in the n8n UI or with `n8n_manage_variables`:
 {{$vars.SLACK_CHANNEL}}
 ```
 
-Values are always strings and read-only at runtime. Variables are a paid-plan feature, so the free Community edition has none to read. They are visible to every user in their scope, so keep secrets in credentials.
+Values are always strings and read-only at runtime. A missing variable resolves to `undefined` without an error (`{{$vars.API_BASE_URL}}/users` becomes `undefined/users`), so confirm the key with `n8n_manage_variables` (`list`) before using it. Variables need an n8n license that includes them (not the free Community edition). They are visible to every user in their scope, so keep secrets in credentials.
 
 ---
 
