@@ -53,8 +53,23 @@ ADDITIONAL_CONTEXT="${SKILL_BODY}"
 
 # --- Emit hook output ---------------------------------------------------------
 
-# jq is the safe way to escape arbitrary text into JSON. Fall back to python3
-# if jq isn't installed (rare on macOS, possible on minimal Linux).
+# jq is the safe way to escape arbitrary text into JSON. Fall back to a Python
+# interpreter if jq isn't installed (rare on macOS, possible on minimal Linux).
+#
+# `command -v` only proves a name resolves on PATH, not that it runs. On
+# Windows, `python3` frequently resolves to the Microsoft Store's app
+# execution alias stub (WindowsApps\python3.exe) even when a real
+# interpreter is installed only as `python`. That stub exits non-zero and
+# prints "Python was not found; ...", so probe each candidate by actually
+# running it rather than trusting PATH resolution alone.
+PYTHON_BIN=""
+for candidate in python3 python; do
+  if command -v "${candidate}" >/dev/null 2>&1 && "${candidate}" -c "import sys" >/dev/null 2>&1; then
+    PYTHON_BIN="${candidate}"
+    break
+  fi
+done
+
 if command -v jq >/dev/null 2>&1; then
   jq -n --arg ctx "${ADDITIONAL_CONTEXT}" '{
     hookSpecificOutput: {
@@ -62,8 +77,8 @@ if command -v jq >/dev/null 2>&1; then
       additionalContext: $ctx
     }
   }'
-elif command -v python3 >/dev/null 2>&1; then
-  python3 -c '
+elif [[ -n "${PYTHON_BIN}" ]]; then
+  "${PYTHON_BIN}" -c '
 import json, sys
 ctx = sys.stdin.read()
 print(json.dumps({
