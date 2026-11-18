@@ -1,0 +1,31 @@
+{
+  "name": "Parallel Search MCP tool",
+  "nodes": [
+    {
+      "id": "parallel-search",
+      "name": "Parallel Search",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "endpointUrl": "https://search.parallel.ai/mcp",
+        "serverTransport": "httpStreamable",
+        "authentication": "headerAuth",
+        "include": "selected",
+        "includeTools": [
+          "web_search",
+          "web_fetch"
+        ],
+        "options": {
+          "timeout": 60000
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

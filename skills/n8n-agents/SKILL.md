@@ -231,6 +231,7 @@ n8n ships the LangChain RAG primitives (document loaders, splitters, embeddings,
 | File | Read when |
 |---|---|
 | **TOOLS.md** | Adding tools, choosing among the four types, writing names/descriptions, `$fromAI` anatomy |
+| **PARALLEL_SEARCH_MCP.md** | Adding optional keyless web search and page fetching through the MCP Client Tool |
 | **SUBWORKFLOW_AS_TOOL.md** | Wiring a sub-workflow as a tool via `.toolWorkflow`, mapping agent-filled vs plumbed params |
 | **SYSTEM_PROMPT.md** | Writing/refactoring a system prompt, the system-prompt-vs-tool-description split |
 | **STRUCTURED_OUTPUT.md** | Forcing JSON output, configuring autoFix, the fixer model, parse-failure fixes |

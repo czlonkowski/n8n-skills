@@ -46,6 +46,8 @@ Connects the agent to any MCP server. Two flavors:
 - **Cons**: tool descriptions and shapes come from the server, so quality varies and you can't easily tune them. Auth and reachability are yours.
 - **Use when**: a maintained MCP server already covers the capability, or you want one published workflow to serve many agents.
 
+For a keyless web search and page-fetching example, see [PARALLEL_SEARCH_MCP.md](PARALLEL_SEARCH_MCP.md). It uses Streamable HTTP through this native node.
+
 ### Plus: Custom Code Tool (`@n8n/n8n-nodes-langchain.toolCode`)
 
 Pure inline computation (math, parsing, formatting). Its runtime contract is **string in / string out, no `$fromAI`, no `$helpers`** and is owned by the **n8n-code-tool** skill — read it before writing one. Rule of thumb: if you want `$fromAI()` in the code, you want `.toolWorkflow` instead.
