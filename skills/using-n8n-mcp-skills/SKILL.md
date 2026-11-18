@@ -176,9 +176,10 @@ and nothing needs a retry — say so and point the user at the fix for their ins
 - `n8n_executions` — list/inspect executions. **There is no `execute_workflow` tool.**
 - `n8n_evaluations` — evaluation runs, metrics and per-case results (n8n ≥ 2.30); `run`/`cancel` (≥ 2.32). `run` fires real nodes across the whole dataset, so ask the user first. For a 403, see `n8n-mcp-tools-expert`.
 
-**Data, folders, credentials, audit**
+**Data, folders, variables, credentials, audit**
 - `n8n_manage_datatable` — Data Table CRUD, filtering, dry-run. `addColumn`/`deleteColumn`/`renameColumn` change an existing table's columns (the Public API cannot) through n8n's MCP server — `deleteColumn` drops the column's values along with it.
 - `n8n_manage_folders` — folder CRUD (n8n ≥ 2.19). Place workflows with `parentFolderId` or the `moveToFolder` op; verify via the folder's `get` counts, not the workflow. `delete` without `transferToFolderId` ARCHIVES the folder's workflows. See `n8n-mcp-tools-expert`.
+- `n8n_manage_variables` — instance variables that workflows read as `{{ $vars.KEY }}` (needs a license that includes Variables; 403 otherwise, not retryable). `update` with `value: ""` is ignored — use `clearValue: true`. See `n8n-mcp-tools-expert`.
 - `n8n_manage_credentials` — credential CRUD + `getSchema` discovery.
 - `n8n_audit_instance` — security audit (hardcoded secrets, unauthenticated webhooks, error-handling gaps).
 

@@ -370,6 +370,7 @@ These skills work together with Workflow Patterns:
 - Use `tools_documentation({topic: "ai_agents_guide", depth: "full"})` for AI pattern guidance
 - Manage data tables with `n8n_manage_datatable`
 - Organize workflows into folders with `n8n_manage_folders`
+- Keep environment-specific values in variables with `n8n_manage_variables` (needs a license that includes Variables; workflows read them as `{{ $vars.KEY }}`)
 
 **n8n Expression Syntax** - Use to:
 - Write expressions in transformation nodes

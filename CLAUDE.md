@@ -143,6 +143,9 @@ The n8n-mcp server provides these unified tools:
 ### Data Tables
 - `n8n_manage_datatable` - Manage data tables and rows (CRUD, filtering, dry-run)
 
+### Variables
+- `n8n_manage_variables` - Manage instance variables read as `$vars.KEY` (list, get, create, update, delete; needs a license that includes Variables)
+
 ### Credential Management
 - `n8n_manage_credentials` - Full credential CRUD (list, get, create, update, delete) + schema discovery (`getSchema`)
 
