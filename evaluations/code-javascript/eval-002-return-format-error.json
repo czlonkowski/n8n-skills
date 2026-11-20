@@ -1,22 +1,21 @@
 {
   "id": "code-js-002",
   "skills": ["n8n-code-javascript"],
-  "query": "My Code node is showing an error: 'Return value must be an array of objects'. My code returns: return {json: {result: 'success', data: processedData}}; What's wrong?",
+  "query": "My JavaScript Code node is set to Run Once for Each Item. With input {\"name\":\"Test\"}, return [{json: {...$input.item.json, checked: true}}]; fails with \"A 'json' property isn't an object [item 0]\" on n8n 2.35.4. What's the correct return format, and how does All Items mode differ?",
   "expected_behavior": [
     "Activate n8n-code-javascript skill",
-    "Explain the return format must be an ARRAY of objects",
-    "Show correct syntax: return [{json: {result: 'success', data: processedData}}];",
-    "Note the square brackets [] wrapping the object",
-    "Reference ERROR_PATTERNS.md #3 for detailed explanation",
-    "Show multiple items format as well",
-    "Emphasize this is error #3 in top 5 errors (5% of failures)"
+    "Identify Run Once for Each Item as requiring a single item object",
+    "Show return {json: {...$input.item.json, checked: true}}; for Each Item mode",
+    "Explain that All Items mode uses an array of items, such as return $input.all().map(item => ({json: {...item.json, checked: true}}));",
+    "Mention that All Items mode also auto-wraps a bare object",
+    "Reference ERROR_PATTERNS.md #3 for the mode-specific return contract"
   ],
   "expected_content": [
-    "array",
-    "[{json:",
-    "ERROR_PATTERNS.md",
-    "square brackets"
+    "Run Once for Each Item",
+    "{json:",
+    "All Items",
+    "ERROR_PATTERNS.md"
   ],
   "priority": "high",
-  "notes": "Return format error is 5% of all failures. Must clearly show array wrapper requirement."
+  "notes": "Regression for issue #60: array returns in Each Item mode fail; a single item object succeeds. Preserve the All Items array-return control."
 }
