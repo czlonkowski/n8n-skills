@@ -18,7 +18,9 @@
 		flush_interval -1
 		header_up Host {host}
 		header_up X-Real-IP {remote_host}
-		header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
+		# Don't override X-Forwarded-For: Caddy sets it from the real client IP and
+		# drops client-supplied values. n8n trusts it (N8N_PROXY_HOPS=1), so passing
+		# the client's header through would let anyone spoof their IP.
 	}
 
 	# Baseline security headers.
