@@ -78,7 +78,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "^mcp__.*__validate_workflow$",
+        "matcher": "^mcp__.*__(validate_workflow|n8n_validate_workflow)$",
         "hooks": [
           {
             "type": "command",
